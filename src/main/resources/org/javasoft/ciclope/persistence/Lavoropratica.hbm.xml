@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Lavoropratica" table="lavoropratica" catalog="ciclope" optimistic-lock="version">
+        <composite-id name="id" class="org.javasoft.ciclope.persistence.LavoropraticaId">
+            <key-property name="pratica" type="int">
+                <column name="pratica" />
+            </key-property>
+            <key-property name="tipolavoro" type="int">
+                <column name="tipolavoro" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="pratica" class="org.javasoft.ciclope.persistence.Pratica" update="false" insert="false" fetch="select">
+            <column name="pratica" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tipolavoro" class="org.javasoft.ciclope.persistence.Tipolavoro" update="false" insert="false" fetch="select">
+            <column name="tipolavoro" not-null="true" />
+        </many-to-one>
+        <property name="descrizioneAltro" type="string">
+            <column name="descrizione_altro" />
+        </property>
+    </class>
+</hibernate-mapping>

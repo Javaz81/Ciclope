@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ciclope?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">ciclope</property>
+    <property name="hibernate.connection.password">ciclope</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.connection.isolation">8</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <mapping resource="org/javasoft/ciclope/persistence/Orelavorate.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Veicolo.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Lavoropratica.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Categoriatipolavoro.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Tipolavoro.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Cliente.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Materialepratica.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Personale.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Pratica.hbm.xml"/>
+    <mapping resource="org/javasoft/ciclope/persistence/Articolo.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

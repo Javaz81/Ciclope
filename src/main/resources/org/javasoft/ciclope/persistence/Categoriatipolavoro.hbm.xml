@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Categoriatipolavoro" table="categoriatipolavoro" catalog="ciclope" optimistic-lock="version">
+        <id name="idCategoriaTipoLavoro" type="int">
+            <column name="idCategoriaTipoLavoro" />
+            <generator class="assigned" />
+        </id>
+        <property name="nome" type="string">
+            <column name="nome" length="100" not-null="true" unique="true" />
+        </property>
+        <set name="tipolavoros" table="tipolavoro" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="categoria" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Tipolavoro" />
+        </set>
+    </class>
+</hibernate-mapping>

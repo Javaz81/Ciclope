@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Pratica" table="pratica" catalog="ciclope" optimistic-lock="version">
+        <id name="idPratica" type="int">
+            <column name="idPratica" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="cliente" class="org.javasoft.ciclope.persistence.Cliente" fetch="select">
+            <column name="Cliente_idCliente" not-null="true" />
+        </many-to-one>
+        <property name="arrivo" type="string">
+            <column name="arrivo" length="45" unique="true" />
+        </property>
+        <property name="dataArrivo" type="date">
+            <column name="data_arrivo" length="10" />
+        </property>
+        <property name="uscita" type="string">
+            <column name="uscita" length="45" unique="true" />
+        </property>
+        <property name="dataUscita" type="date">
+            <column name="data_uscita" length="10" />
+        </property>
+        <property name="lavoriSegnalati" type="string">
+            <column name="lavori_segnalati" length="65535" />
+        </property>
+        <property name="numeroFattura" type="string">
+            <column name="numero_fattura" length="45" />
+        </property>
+        <property name="dataFattura" type="date">
+            <column name="data_fattura" length="10" />
+        </property>
+        <property name="preventivoLavori" type="java.lang.Boolean">
+            <column name="preventivo_lavori" />
+        </property>
+        <property name="revisioneMctc" type="java.lang.Boolean">
+            <column name="revisione_mctc" />
+        </property>
+        <property name="collaudoUsl" type="java.lang.Boolean">
+            <column name="collaudo_usl" />
+        </property>
+        <property name="registroDiControllo" type="java.lang.Boolean">
+            <column name="registro_di_controllo" />
+        </property>
+        <property name="preventivoLavoriData" type="date">
+            <column name="preventivo_lavori_data" length="10" />
+        </property>
+        <property name="revisioneMctcData" type="date">
+            <column name="revisione_mctc_data" length="10" />
+        </property>
+        <property name="collaudoUslData" type="date">
+            <column name="collaudo_usl_data" length="10" />
+        </property>
+        <property name="registroDiControlloData" type="date">
+            <column name="registro_di_controllo_data" length="10" />
+        </property>
+        <set name="orelavorates" table="orelavorate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="pratica" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Orelavorate" />
+        </set>
+        <set name="lavoropraticas" table="lavoropratica" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="pratica" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Lavoropratica" />
+        </set>
+        <set name="materialepraticas" table="materialepratica" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="pratica" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Materialepratica" />
+        </set>
+    </class>
+</hibernate-mapping>

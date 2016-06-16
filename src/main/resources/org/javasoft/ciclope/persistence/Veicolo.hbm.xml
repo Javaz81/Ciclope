@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Veicolo" table="veicolo" catalog="ciclope" optimistic-lock="version">
+        <id name="idVeicolo" type="java.lang.Integer">
+            <column name="idVeicolo" />
+            <generator class="identity" />
+        </id>
+        <property name="marca" type="string">
+            <column name="marca" length="45" />
+        </property>
+        <property name="modello" type="string">
+            <column name="modello" length="45" />
+        </property>
+        <property name="targa" type="string">
+            <column name="targa" length="10" unique="true" />
+        </property>
+        <property name="kilometraggio" type="java.lang.Integer">
+            <column name="kilometraggio" />
+        </property>
+        <property name="anno" type="java.lang.Integer">
+            <column name="anno" />
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="7" />
+        </property>
+        <property name="ore" type="java.lang.Integer">
+            <column name="ore" />
+        </property>
+        <property name="matricola" type="string">
+            <column name="matricola" length="30" not-null="true" unique="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Cliente" table="cliente" catalog="ciclope" optimistic-lock="version">
+        <id name="idCliente" type="java.lang.Integer">
+            <column name="idCliente" />
+            <generator class="identity" />
+        </id>
+        <property name="nome" type="string">
+            <column name="nome" length="45" not-null="true" />
+        </property>
+        <property name="cognome" type="string">
+            <column name="cognome" length="45" not-null="true" />
+        </property>
+        <property name="cellulare" type="string">
+            <column name="cellulare" length="45" />
+        </property>
+        <property name="localita" type="string">
+            <column name="localita" length="45" />
+        </property>
+        <set name="praticas" table="pratica" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Cliente_idCliente" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Pratica" />
+        </set>
+    </class>
+</hibernate-mapping>

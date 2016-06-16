@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Materialepratica" table="materialepratica" catalog="ciclope" optimistic-lock="version">
+        <composite-id name="id" class="org.javasoft.ciclope.persistence.MaterialepraticaId">
+            <key-property name="pratica" type="int">
+                <column name="pratica" />
+            </key-property>
+            <key-property name="articolo" type="int">
+                <column name="articolo" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="articolo" class="org.javasoft.ciclope.persistence.Articolo" update="false" insert="false" fetch="select">
+            <column name="articolo" not-null="true" />
+        </many-to-one>
+        <many-to-one name="pratica" class="org.javasoft.ciclope.persistence.Pratica" update="false" insert="false" fetch="select">
+            <column name="pratica" not-null="true" />
+        </many-to-one>
+        <property name="quantitaConsumata" type="big_decimal">
+            <column name="quantita_consumata" precision="10" scale="3" />
+        </property>
+    </class>
+</hibernate-mapping>

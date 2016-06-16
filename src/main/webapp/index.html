@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CICLOPE - SUPER ASSISTENZA</title>
+        <!-- Include meta tag to ensure proper rendering and touch zooming -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+
+        <!-- Include jQuery Mobile stylesheets -->
+        <link rel="stylesheet" href="js/libs/jquery-mobile/jquery.mobile.min.css"/>
+
+        <!-- Include the jQuery library -->
+        <script src="js/libs/jquery/jquery.min.js"></script>
+
+        <!-- Include the jQuery Mobile library -->
+        <script src="js/libs/jquery-mobile/jquery.mobile.min.js"></script>
+        <!-- others scripting stuff -->
+        <script type="text/javascript" src="js/jquery.scannerdetection.js"></script>
+        <script>
+            //delarations...
+            var praticaName, pratica_corrente, praticaJson, materialeJson;
+            var listaMateriali = null;
+            var materialeAggiornato = null;
+            function MaterialeMagazzino(codice, description, qty) {
+                this._codice = codice;
+                this._description = description;
+                this._qty = qty;
+                this.addQty = function (qty) {
+                    this._qty += qty;
+                };
+                this.removeQty = function (qty) {
+                    this._qty -= qty;
+                };
+            }
+
+            //codes...
+            function currentMaterial(idMateriale) {
+                var itemMateriale = $("#lista_materiale.div");
+            }
+            function updatePraticaId(id) {
+                var pratica = {"praticaId": id.toString(), "praticaHeader": $("#".concat(id)).text()};
+                praticaName = $("#".concat(id)).text();
+                praticaJson = JSON.stringify(pratica);
+                pratica_corrente = id.toString();
+            }
+            function updateMaterialName(idMateriale, qty) {
+                materialeAggiornato = $("#" + idMateriale).text();
+                var pos = materialeAggiornato.lastIndexOf(" ");
+                var dlgTitolo = materialeAggiornato.slice(0, pos);
+                $("#titleAggiornamento").text(dlgTitolo);
+                $('input[name="praticaId"]').val(pratica_corrente);
+                $('input[name="materialeId"]').val(idMateriale.toString());
+                $('input[name="quantita_corrente"]').val(qty.toString());
+                $('input[name="quantita_da_aggiornare"]').val("0".toString());
+                $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty.toString());
+            }
+            function cleanUpdateLoader(qty) {
+                $.mobile.loading("hide");
+                $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty);
+                $('input[name="quantita_corrente"]').val(qty);
+            }
+            function AggiornaQuantitaMaterialeDlg() {
+                var _p1 = $('input[name="praticaId"]').val();
+                var _p2 = $('input[name="materialeId"]').val();
+                var _p3 = $('input[name="quantita_da_aggiornare"]').val();
+                var _p4 = $('input[name="quantita_corrente"]').val();
+                var p = {"praticaId": _p1, "materialeId": _p2, "quantita_da_aggiornare": _p3, "quantita_corrente": _p4};
+                materialeJson = JSON.stringify(p);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "UpdateQuantitaMateriale",
+                    cache: false,
+                    data: materialeJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(cleanUpdateLoader, 1000, data.qty);
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            function AggiornaQuantitaMateriale(mId, qtyCur) {
+                var _p1 = pratica_corrente;
+                var _p2 = mId;
+                var _p3 = '1';
+                var _p4 = qtyCur;
+                var p = {"praticaId": _p1, "materialeId": _p2, "quantita_da_aggiornare": _p3, "quantita_corrente": _p4};
+                materialeJson = JSON.stringify(p);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "UpdateQuantitaMateriale",
+                    cache: false,
+                    data: materialeJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 250);
+                        } else {
+                            $.mobile.loading('show', {
+                                text: 'Errore: aggiornamento non eseguito!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 250);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 250);
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            function addMaterialePratica(mId) {
+                $("#lista_materiale").empty();
+                $.mobile.loading('show', {
+                    text: 'Caricamento dati, attendere...',
+                    textVisible: true,
+                    theme: 'z',
+                    html: ""
+                });
+                var _p1 = pratica_corrente;
+                var _p2 = mId;
+                var _p3 = '1';
+                var p = {"praticaId": _p1, "materialeId": _p2, "quantita_da_aggiornare": _p3, praticaHeader: praticaName};
+                materialeJson = JSON.stringify(p);
+                $.ajax({
+                    url: "AddMaterialeInRiparazione",
+                    cache: false,
+                    data: materialeJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        var items2 = [];
+                        var items = [];
+                        if (data.length > 0) {
+                            $("#nome_riparazione").empty();
+                            $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
+                        }
+                        for (var i = 0; i < data.length; i++) {
+                            items2.push('<li><a href="#dlgAggiornaQuantita" \n\
+                     onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
+                                    + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
+                        }
+
+                        items = items.concat(items2);
+                        items.sort(function (a, b) {
+                            var valA = $(a).text(),
+                                    valB = $(b).text();
+                            if (valA < valB) {
+                                return -1;
+                            }
+                            if (valA > valB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        $("#lista_materiale").empty();
+                        $("#lista_materiale").html(items);
+                        $("#lista_materiale").listview("refresh");
+                        $.mobile.loading("hide");
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                        $.mobile.loading("hide");
+                    }
+                });
+            }
+            function reloadRiparazioni(){
+                location.reload(true);
+            }
+            //events...
+            $(document).on("mobileinit", function () {
+                $.mobile.loader.prototype.options.text = "Caricamento dati, attendere...";
+                $.mobile.loader.prototype.options.textVisible = true;
+                $.mobile.loader.prototype.options.theme = "a";
+                $.mobile.loader.prototype.options.html = "";
+            });
+            $(document).on("pagecontainercreate", function (event, ui) {
+                if (event.target.firstElementChild.id === 'pgMagazzino') {
+                    if (listaMateriali === null) {
+                        //load all material list...
+                        $.mobile.loading('show', {
+                            text: 'Caricamento lista materiali di magazzino, attendere...',
+                            textVisible: true,
+                            theme: 'z',
+                            html: ""
+                        });
+                        $.ajax({
+                            url: "GetMaterialiMagazzino",
+                            cache: false,
+                            dataType: 'json',
+                            type: 'POST',
+                            async: true,
+                            success: function (data) {
+                                listaMateriali = [];
+                                if (data.length !== 0) {
+                                    for (var i = 0; i < data.length; i++) {
+                                        listaMateriali.push(new MaterialeMagazzino(data[i].codice, 0, data[i].rimanenza));
+                                    }
+                                }
+                                $.mobile.loading("hide");
+                            },
+                            error: function (xhttpjqr, err, data) {
+                                $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                            },
+                            complete: function (xhttpjqr, evtobj, data) {
+                                $.mobile.loading("hide");
+                            }
+                        });
+                    }
+                }
+            });
+            // Initialize/deinitialize BARCODE SCANNING
+            $(document).on('pagecontainerhide', '#pgMaterialeUtilizzato', function (event, ui) {
+                $(document).scannerDetection(false);
+            });
+             $(document).on('pagecontainerhide', '#pgApprovvigionamenti', function (event, ui) {
+                $(document).scannerDetection(false);
+            });
+
+            $(document).on("pagecontainershow", function (event, ui)
+            {
+                if (ui.toPage[0].id === 'pgSelezioneEntrate') {
+                    $("#lstRiparazioni").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetRiparazioniCorrenti",
+                        cache: false,
+                        dataType: 'json',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessun materiale utilizzato al momento...</li>');
+                            } else {
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id)">'
+                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                }
+
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                            }
+                            $("#lstRiparazioni").empty();
+                            $("#lstRiparazioni").html(items);
+                            $("#lstRiparazioni").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgMaterialeUtilizzato') {
+                    //Initialize BARCODE
+                    $(document).scannerDetection({
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+                        startChar: [], // Prefix character for the cabled scanner (OPL6845R)
+                        endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+                        minLength: 4,
+                        onComplete: function (barcode, qty) {
+                            console.log('Barcode: ' + barcode);
+                            var element = $("#" + barcode);
+                            if (this.getElementById(barcode) === null) {
+                                addMaterialePratica(barcode);
+                            } else {
+                                var count = parseInt($("#" + barcode + " .ui-li-count").text());
+                                $("#" + barcode + " .ui-li-count").text(count + 1);
+                                AggiornaQuantitaMateriale(barcode.toString(), count.toString());
+                            }
+                        },
+                        onError: function (string) {
+                            console.log('Errore: ' + string);
+                        }
+                    });
+                    $("#lista_materiale").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetMaterialiRiparazione",
+                        cache: false,
+                        data: praticaJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length > 0) {
+                                $("#nome_riparazione").empty();
+                                $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
+                            }
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li><a href="#dlgAggiornaQuantita" \n\
+                     onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
+                                        + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
+                            }
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $("#lista_materiale").empty();
+                            $("#lista_materiale").html(items);
+                            $("#lista_materiale").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                }
+            });
+            $('.ui-btn').css('font-size', '30px !important');
+        </script>
+    </head>
+
+    <body>
+        <div data-role="page" id="pgMagazzino" data-title="Gestione Magazzino">
+            <div data-role="header" id="header" data-position="fixed">
+                <h1>Ciclope - Magazzino</h1>
+            </div>
+            <div data-role="content">
+                <div class="div-widget" id="main_content">
+                    <div id="type_selection" class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Magazzino</a>
+                        </div>
+                        <div class="ui-block-b">
+                            <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="pgSelezioneEntrate" data-title="Magazzino - Selezione Veicolo\Piattaforma">
+            <div data-role="header" data-position="fixed">
+                <h1>Seleziona Veicolo/Piattaforma</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                   data-icon="back">Indietro</a>
+                <a data-role="button" class="ui-btn-right" onClick="reloadRiparazioni()" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <div class="div-widget">
+                    <ul data-role="listview" id="lstRiparazioni" data-inset="true" data-filter="true"
+                        data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div data-role="page" id="pgMaterialeUtilizzato" data-title="Ciclope - materiale utilizzato per riparazioni.">
+            <div data-role="header" data-position="fixed">
+                <h1>Materiale Utilizzato per la Riparazione</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" href="#pgSelezioneEntrate" data-icon="back">Riparazioni</a>
+            </div>
+            <div data-role="content">
+                <div id="nome_riparazione">
+                    <h1>Riparazione aaa 2</h1>
+                </div>
+                <ol data-role="listview" id="lista_materiale" data-inset="true" data-filter="true"
+                    data-filter-placeholder="Cerca materiale...">
+
+                </ol>
+            </div>
+        </div>
+
+        <div data-role="page" id="pgApprovvigionamenti" data-title="Ciclope - Approvvigionamenti">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Lista Approvvigionamenti</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh"  href="#pgApprovvigionamenti">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <ul data-role="listview" id="lista_materiale_approvvigionamento" data-inset="true"
+                    data-filter="true" data-filter-placeholder="Cerca Materiale...">
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- DIALOG Aggiornamento quantita -->
+        <div data-role="dialog" id="dlgAggiornaQuantita" data-title="Ciclope - Aggiornamento quantità materiale">
+            <div data-role="header" data-position="fixed">
+                <h1 id="titleAggiornamento">Ciclope - Aggiornamento quantità materiale</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="back" data-icon="back">Annulla</a>
+            </div>
+            <div data-role="content">
+                <form>
+                    <label for="quantita_da_aggiornare" id="title_qty_corrente">Quantita utilizzata: </label>
+                    <input type="hidden" name="praticaId" id="praticaId" value="">
+                    <input type="hidden" name="materialeId" id="materialeId" value="">
+                    <input type="hidden" name="quantita_corrente" id="quantita_corrente" value="">
+                    <input type="number" id="quantita_da_aggiornare" name="quantita_da_aggiornare" value="">
+                    <input type="button" onClick="AggiornaQuantitaMaterialeDlg()" value="Aggiorna" data-icon="check">
+                </form>
+            </div>
+        </div>
+
+        <div data-role="page" data-dialog="true" id="pagetwo">
+            <div data-role="header">
+                <h1>Errore caricamento dati</h1>
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <p>I dati non possono essere caricati al momento...</p>
+                <ol>
+                    <li>Il server è acceso?</li>
+                    <li>I cavi di rete sono tutti attaccati?</li>
+                    <li>Il servizio è attivo?</li>
+                    <li style="font: italic bold 12px/30px Georgia, serif"> CHIAMATE ANDREA 329 0846309 :) (borda!)</li>
+                </ol>
+                <p>Quando il problema è risolto premi<a href="#pgMagazzino">qua.</a></p>
+            </div>
+
+            <div data-role="footer">
+                <h1>Footer Text In Dialog</h1>
+            </div>
+        </div> 
+
+    </body>
+
+</html>

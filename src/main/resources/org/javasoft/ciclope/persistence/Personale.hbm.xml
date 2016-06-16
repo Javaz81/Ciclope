@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="org.javasoft.ciclope.persistence.Personale" table="personale" catalog="ciclope" optimistic-lock="version">
+        <id name="idPersonale" type="java.lang.Integer">
+            <column name="idPersonale" />
+            <generator class="identity" />
+        </id>
+        <property name="nome" type="string">
+            <column name="Nome" length="45" not-null="true" />
+        </property>
+        <property name="cognome" type="string">
+            <column name="Cognome" length="45" not-null="true" />
+        </property>
+        <property name="posizione" type="string">
+            <column name="posizione" length="16" not-null="true" />
+        </property>
+        <set name="orelavorates" table="orelavorate" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="personale" not-null="true" />
+            </key>
+            <one-to-many class="org.javasoft.ciclope.persistence.Orelavorate" />
+        </set>
+    </class>
+</hibernate-mapping>

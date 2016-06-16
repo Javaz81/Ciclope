@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    
+    <head>
+        <title>title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="lib/jquery-1.6.4.js"></script>
+        <script src="lib/jquery.mobile-1.1.0.js"></script>
+        <link href="src/css/jquery.mobile.structure-1.1.0.css" rel="stylesheet"
+        />
+        <link href="src/css/jquery.mobile.theme-1.1.0.css" rel="stylesheet" />
+    </head>
+    
+    <body>
+        <div data-role="page" id="pgMagazzino" data-title="Gestione Magazzino">
+            <div data-role="header" id="header" data-position="fixed">
+                <h1>Ciclope - Magazzino</h1>
+            </div>
+            <div data-role="content">
+                <div class="div-widget" id="main_content">
+                    <div id="type_selection" class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate" data-rel="page">Magazzino</a>
+                        </div>
+                        <div class="ui-block-b">
+                            <a data-role="button" href="#pgApprovvigionamenti" data-rel="page">Approvvigionamenti</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="pgSelezioneEntrate" data-title="Magazzino - Selezione Veicolo\Piattaforma">
+            <div data-role="header" data-position="fixed">
+                <h1>Seleziona Veicolo/Piattaforma</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                data-icon="back">Indietro</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <div class="div-widget">
+                    <ul data-role="listview" id="lstRiparazioni" data-inset="true" data-filter="true"
+                    data-filter-placeholder="Seleziona la riparazione...">
+                        <li>
+                            <a>Riparazione 1</a>
+                        </li>
+                        <li>
+                            <a>Riparazione 2</a>
+                        </li>
+                        <li>
+                            <a>Riparazione 3</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="pgMaterialeUtilizzato" data-title="Ciclope - materiale utilizzato per riparazioni.">
+            <div data-role="header" data-position="fixed">
+                <h1>Materiale Utilizzato per la Riparazione</h1>
+                <a data-role="button" href="#pgMagazzino"
+                data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" href="#pgSelezioneEntrate" data-icon="back">Riparazioni</a>
+            </div>
+            <div data-role="content">
+                <div class="div-widget">
+                    <h1 id="nome_riparazione">Riparazione 2</h1>
+                </div>
+                <ol data-role="listview" id="lista_materiale" data-inset="true" data-filter="true"
+                data-filter-placeholder="Cerca materiale...">
+                    <li>List Item</li>
+                    <li>List Item</li>
+                    <li>List Item</li>
+                    <li>List Item</li>
+                </ol>
+            </div>
+        </div>
+        <div data-role="page" id="pgApprovvigionamenti" data-title="Ciclope - Approvvigionamenti">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Lista Approvvigionamenti</h1>
+                <a data-role="button" href="#pgMagazzino"
+                data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <ol data-role="listview" id="lista_materiale_approvvigionamento" data-inset="true"
+                data-filter="true" data-filter-placeholder="Cerca Materiale...">
+                    <li>List Item</li>
+                    <li>List Item</li>
+                    <li>List Item</li>
+                </ol>
+            </div>
+        </div>
+    </body>
+
+</html>

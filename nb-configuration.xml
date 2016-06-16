@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-shared-configuration>
+    <!--
+This file contains additional configuration written by modules in the NetBeans IDE.
+The configuration is intended to be shared among all the users of project and
+therefore it is assumed to be part of version control checkout.
+Without this configuration present, some functionality in the IDE may be limited or fail altogether.
+-->
+    <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
+        <!--
+Properties that influence various parts of the IDE, especially code formatting and the like. 
+You can copy and paste the single properties, into the pom.xml file and the IDE will pick them up.
+That way multiple projects can share the same settings (useful for formatting rules for example).
+Any value defined here will override the pom.xml file value but is only applicable to the current project.
+-->
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.7-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>gfv3ee6</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/less:/css</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_enabled>false</org-netbeans-modules-css-prep.less_2e_enabled>
+        <org-netbeans-modules-css-prep.sass_2e_enabled>false</org-netbeans-modules-css-prep.sass_2e_enabled>
+        <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
+        <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
+        <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
+        <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
+        <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>js/libs</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
+        <org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>ide</org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>
+    </properties>
+    <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1">
+        <library name="jquery" version="1.8.3">
+            <file localPath="src/main/webapp/js/libs/jquery/jquery.js" path="jquery.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery/jquery.min.js" path="jquery.min.js"/>
+        </library>
+        <library name="jquery-mobile" version="1.4.5">
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/ajax-loader.gif" path="images/ajax-loader.gif"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/action-black.png" path="images/icons-png/action-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/action-white.png" path="images/icons-png/action-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/alert-black.png" path="images/icons-png/alert-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/alert-white.png" path="images/icons-png/alert-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-black.png" path="images/icons-png/arrow-d-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-l-black.png" path="images/icons-png/arrow-d-l-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-l-white.png" path="images/icons-png/arrow-d-l-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-r-black.png" path="images/icons-png/arrow-d-r-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-r-white.png" path="images/icons-png/arrow-d-r-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-d-white.png" path="images/icons-png/arrow-d-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-l-black.png" path="images/icons-png/arrow-l-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-l-white.png" path="images/icons-png/arrow-l-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-r-black.png" path="images/icons-png/arrow-r-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-r-white.png" path="images/icons-png/arrow-r-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-black.png" path="images/icons-png/arrow-u-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-l-black.png" path="images/icons-png/arrow-u-l-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-l-white.png" path="images/icons-png/arrow-u-l-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-r-black.png" path="images/icons-png/arrow-u-r-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-r-white.png" path="images/icons-png/arrow-u-r-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/arrow-u-white.png" path="images/icons-png/arrow-u-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/audio-black.png" path="images/icons-png/audio-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/audio-white.png" path="images/icons-png/audio-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/back-black.png" path="images/icons-png/back-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/back-white.png" path="images/icons-png/back-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/bars-black.png" path="images/icons-png/bars-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/bars-white.png" path="images/icons-png/bars-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/bullets-black.png" path="images/icons-png/bullets-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/bullets-white.png" path="images/icons-png/bullets-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/calendar-black.png" path="images/icons-png/calendar-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/calendar-white.png" path="images/icons-png/calendar-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/camera-black.png" path="images/icons-png/camera-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/camera-white.png" path="images/icons-png/camera-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-d-black.png" path="images/icons-png/carat-d-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-d-white.png" path="images/icons-png/carat-d-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-l-black.png" path="images/icons-png/carat-l-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-l-white.png" path="images/icons-png/carat-l-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-r-black.png" path="images/icons-png/carat-r-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-r-white.png" path="images/icons-png/carat-r-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-u-black.png" path="images/icons-png/carat-u-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/carat-u-white.png" path="images/icons-png/carat-u-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/check-black.png" path="images/icons-png/check-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/check-white.png" path="images/icons-png/check-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/clock-black.png" path="images/icons-png/clock-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/clock-white.png" path="images/icons-png/clock-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/cloud-black.png" path="images/icons-png/cloud-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/cloud-white.png" path="images/icons-png/cloud-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/comment-black.png" path="images/icons-png/comment-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/comment-white.png" path="images/icons-png/comment-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/delete-black.png" path="images/icons-png/delete-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/delete-white.png" path="images/icons-png/delete-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/edit-black.png" path="images/icons-png/edit-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/edit-white.png" path="images/icons-png/edit-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/eye-black.png" path="images/icons-png/eye-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/eye-white.png" path="images/icons-png/eye-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/forbidden-black.png" path="images/icons-png/forbidden-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/forbidden-white.png" path="images/icons-png/forbidden-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/forward-black.png" path="images/icons-png/forward-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/forward-white.png" path="images/icons-png/forward-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/gear-black.png" path="images/icons-png/gear-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/gear-white.png" path="images/icons-png/gear-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/grid-black.png" path="images/icons-png/grid-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/grid-white.png" path="images/icons-png/grid-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/heart-black.png" path="images/icons-png/heart-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/heart-white.png" path="images/icons-png/heart-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/home-black.png" path="images/icons-png/home-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/home-white.png" path="images/icons-png/home-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/info-black.png" path="images/icons-png/info-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/info-white.png" path="images/icons-png/info-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/location-black.png" path="images/icons-png/location-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/location-white.png" path="images/icons-png/location-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/lock-black.png" path="images/icons-png/lock-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/lock-white.png" path="images/icons-png/lock-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/mail-black.png" path="images/icons-png/mail-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/mail-white.png" path="images/icons-png/mail-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/minus-black.png" path="images/icons-png/minus-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/minus-white.png" path="images/icons-png/minus-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/navigation-black.png" path="images/icons-png/navigation-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/navigation-white.png" path="images/icons-png/navigation-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/phone-black.png" path="images/icons-png/phone-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/phone-white.png" path="images/icons-png/phone-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/plus-black.png" path="images/icons-png/plus-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/plus-white.png" path="images/icons-png/plus-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/power-black.png" path="images/icons-png/power-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/power-white.png" path="images/icons-png/power-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/recycle-black.png" path="images/icons-png/recycle-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/recycle-white.png" path="images/icons-png/recycle-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/refresh-black.png" path="images/icons-png/refresh-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/refresh-white.png" path="images/icons-png/refresh-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/search-black.png" path="images/icons-png/search-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/search-white.png" path="images/icons-png/search-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/shop-black.png" path="images/icons-png/shop-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/shop-white.png" path="images/icons-png/shop-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/star-black.png" path="images/icons-png/star-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/star-white.png" path="images/icons-png/star-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/tag-black.png" path="images/icons-png/tag-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/tag-white.png" path="images/icons-png/tag-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/user-black.png" path="images/icons-png/user-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/user-white.png" path="images/icons-png/user-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/video-black.png" path="images/icons-png/video-black.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-png/video-white.png" path="images/icons-png/video-white.png"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/action-black.svg" path="images/icons-svg/action-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/action-white.svg" path="images/icons-svg/action-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/alert-black.svg" path="images/icons-svg/alert-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/alert-white.svg" path="images/icons-svg/alert-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-black.svg" path="images/icons-svg/arrow-d-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-l-black.svg" path="images/icons-svg/arrow-d-l-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-l-white.svg" path="images/icons-svg/arrow-d-l-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-r-black.svg" path="images/icons-svg/arrow-d-r-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-r-white.svg" path="images/icons-svg/arrow-d-r-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-d-white.svg" path="images/icons-svg/arrow-d-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-l-black.svg" path="images/icons-svg/arrow-l-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-l-white.svg" path="images/icons-svg/arrow-l-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-r-black.svg" path="images/icons-svg/arrow-r-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-r-white.svg" path="images/icons-svg/arrow-r-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-black.svg" path="images/icons-svg/arrow-u-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-l-black.svg" path="images/icons-svg/arrow-u-l-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-l-white.svg" path="images/icons-svg/arrow-u-l-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-r-black.svg" path="images/icons-svg/arrow-u-r-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-r-white.svg" path="images/icons-svg/arrow-u-r-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/arrow-u-white.svg" path="images/icons-svg/arrow-u-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/audio-black.svg" path="images/icons-svg/audio-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/audio-white.svg" path="images/icons-svg/audio-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/back-black.svg" path="images/icons-svg/back-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/back-white.svg" path="images/icons-svg/back-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/bars-black.svg" path="images/icons-svg/bars-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/bars-white.svg" path="images/icons-svg/bars-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/bullets-black.svg" path="images/icons-svg/bullets-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/bullets-white.svg" path="images/icons-svg/bullets-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/calendar-black.svg" path="images/icons-svg/calendar-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/calendar-white.svg" path="images/icons-svg/calendar-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/camera-black.svg" path="images/icons-svg/camera-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/camera-white.svg" path="images/icons-svg/camera-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-d-black.svg" path="images/icons-svg/carat-d-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-d-white.svg" path="images/icons-svg/carat-d-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-l-black.svg" path="images/icons-svg/carat-l-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-l-white.svg" path="images/icons-svg/carat-l-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-r-black.svg" path="images/icons-svg/carat-r-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-r-white.svg" path="images/icons-svg/carat-r-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-u-black.svg" path="images/icons-svg/carat-u-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/carat-u-white.svg" path="images/icons-svg/carat-u-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/check-black.svg" path="images/icons-svg/check-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/check-white.svg" path="images/icons-svg/check-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/clock-black.svg" path="images/icons-svg/clock-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/clock-white.svg" path="images/icons-svg/clock-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/cloud-black.svg" path="images/icons-svg/cloud-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/cloud-white.svg" path="images/icons-svg/cloud-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/comment-black.svg" path="images/icons-svg/comment-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/comment-white.svg" path="images/icons-svg/comment-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/delete-black.svg" path="images/icons-svg/delete-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/delete-white.svg" path="images/icons-svg/delete-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/edit-black.svg" path="images/icons-svg/edit-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/edit-white.svg" path="images/icons-svg/edit-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/eye-black.svg" path="images/icons-svg/eye-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/eye-white.svg" path="images/icons-svg/eye-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/forbidden-black.svg" path="images/icons-svg/forbidden-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/forbidden-white.svg" path="images/icons-svg/forbidden-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/forward-black.svg" path="images/icons-svg/forward-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/forward-white.svg" path="images/icons-svg/forward-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/gear-black.svg" path="images/icons-svg/gear-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/gear-white.svg" path="images/icons-svg/gear-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/grid-black.svg" path="images/icons-svg/grid-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/grid-white.svg" path="images/icons-svg/grid-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/heart-black.svg" path="images/icons-svg/heart-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/heart-white.svg" path="images/icons-svg/heart-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/home-black.svg" path="images/icons-svg/home-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/home-white.svg" path="images/icons-svg/home-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/info-black.svg" path="images/icons-svg/info-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/info-white.svg" path="images/icons-svg/info-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/location-black.svg" path="images/icons-svg/location-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/location-white.svg" path="images/icons-svg/location-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/lock-black.svg" path="images/icons-svg/lock-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/lock-white.svg" path="images/icons-svg/lock-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/mail-black.svg" path="images/icons-svg/mail-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/mail-white.svg" path="images/icons-svg/mail-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/minus-black.svg" path="images/icons-svg/minus-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/minus-white.svg" path="images/icons-svg/minus-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/navigation-black.svg" path="images/icons-svg/navigation-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/navigation-white.svg" path="images/icons-svg/navigation-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/phone-black.svg" path="images/icons-svg/phone-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/phone-white.svg" path="images/icons-svg/phone-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/plus-black.svg" path="images/icons-svg/plus-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/plus-white.svg" path="images/icons-svg/plus-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/power-black.svg" path="images/icons-svg/power-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/power-white.svg" path="images/icons-svg/power-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/recycle-black.svg" path="images/icons-svg/recycle-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/recycle-white.svg" path="images/icons-svg/recycle-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/refresh-black.svg" path="images/icons-svg/refresh-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/refresh-white.svg" path="images/icons-svg/refresh-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/search-black.svg" path="images/icons-svg/search-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/search-white.svg" path="images/icons-svg/search-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/shop-black.svg" path="images/icons-svg/shop-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/shop-white.svg" path="images/icons-svg/shop-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/star-black.svg" path="images/icons-svg/star-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/star-white.svg" path="images/icons-svg/star-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/tag-black.svg" path="images/icons-svg/tag-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/tag-white.svg" path="images/icons-svg/tag-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/user-black.svg" path="images/icons-svg/user-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/user-white.svg" path="images/icons-svg/user-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/video-black.svg" path="images/icons-svg/video-black.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/images/icons-svg/video-white.svg" path="images/icons-svg/video-white.svg"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.css" path="jquery.mobile.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.external-png.css" path="jquery.mobile.external-png.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.external-png.min.css" path="jquery.mobile.external-png.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.icons.css" path="jquery.mobile.icons.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.icons.min.css" path="jquery.mobile.icons.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.inline-png.css" path="jquery.mobile.inline-png.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.inline-png.min.css" path="jquery.mobile.inline-png.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.inline-svg.css" path="jquery.mobile.inline-svg.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.inline-svg.min.css" path="jquery.mobile.inline-svg.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.js" path="jquery.mobile.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.min.css" path="jquery.mobile.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.min.js" path="jquery.mobile.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.min.map" path="jquery.mobile.min.map"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.structure.css" path="jquery.mobile.structure.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.structure.min.css" path="jquery.mobile.structure.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.theme.css" path="jquery.mobile.theme.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.theme.min.css" path="jquery.mobile.theme.min.css"/>
+        </library>
+    </libraries>
+</project-shared-configuration>
