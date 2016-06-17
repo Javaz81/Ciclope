@@ -20,6 +20,7 @@
             var praticaName, pratica_corrente, praticaJson, materialeJson;
             var listaMateriali = null;
             var materialeAggiornato = null;
+            var approvvigionamentoAggiornato = null;
             function MaterialeMagazzino(codice, description, qty) {
                 this._codice = codice;
                 this._description = description;
@@ -42,10 +43,21 @@
                 praticaJson = JSON.stringify(pratica);
                 pratica_corrente = id.toString();
             }
-            function updateMaterialName(idMateriale, qty) {
+
+            function updateApprovvigionamentoName(idMateriale, qty) {
                 materialeAggiornato = $("#" + idMateriale).text();
                 var pos = materialeAggiornato.lastIndexOf(" ");
                 var dlgTitolo = materialeAggiornato.slice(0, pos);
+                $("#titleApprovvigionamenti").text(dlgTitolo);
+                $('input[name="codiceMateriale"]').val(idMateriale.toString());
+                $('input[name="approvvigionamento_corrente"]').val(qty.toString());
+                $('input[name="quantita_da_approvvigionare"]').val("0".toString());
+                $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale:  " + qty.toString());
+            }
+            function updateMaterialName(idMateriale, qty) {
+                approvvigionamentoAggiornato = $("#" + idMateriale).text();
+                var pos = approvvigionamentoAggiornato.lastIndexOf(" ");
+                var dlgTitolo = approvvigionamentoAggiornato.slice(0, pos);
                 $("#titleAggiornamento").text(dlgTitolo);
                 $('input[name="praticaId"]').val(pratica_corrente);
                 $('input[name="materialeId"]').val(idMateriale.toString());
@@ -55,8 +67,69 @@
             }
             function cleanUpdateLoader(qty) {
                 $.mobile.loading("hide");
-                $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty);
+                $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + qty);
                 $('input[name="quantita_corrente"]').val(qty);
+            }
+            function cleanUpdateApprovvigionamentoLoader(data) {
+                $.mobile.loading("hide");
+                $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + data.qty);
+            }
+            function AggiornaApprovvigionamentoDlg() {
+                var _p1 = $('input[name="codiceMateriale"]').val();
+                var _p2 = $('input[name="quantita_da_approvvigionare"]').val();
+                var _p3 = $('input[name="approvvigionamento_corrente"]').val();
+                var approvvigionamento = {"materialeId": _p1, "quantita_da_approvvigionare": _p2, "quantita_corrente": _p3};
+                approvvigionamentoJson = JSON.stringify(approvvigionamento);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "UpdateQuantitaApprovvigionamento",
+                    cache: false,
+                    data: approvvigionamentoJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(cleanUpdateApprovvigionamentoLoader, 1000, data);
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
             }
             function AggiornaQuantitaMaterialeDlg() {
                 var _p1 = $('input[name="praticaId"]').val();
@@ -234,7 +307,7 @@
                     }
                 });
             }
-            function reloadRiparazioni(){
+            function reload() {
                 location.reload(true);
             }
             //events...
@@ -281,9 +354,11 @@
             });
             // Initialize/deinitialize BARCODE SCANNING
             $(document).on('pagecontainerhide', '#pgMaterialeUtilizzato', function (event, ui) {
+                $("#lista_materiale").empty();
                 $(document).scannerDetection(false);
             });
-             $(document).on('pagecontainerhide', '#pgApprovvigionamenti', function (event, ui) {
+            $(document).on('pagecontainerhide', '#pgApprovvigionamenti', function (event, ui) {
+                $("#lista_approvvigionamenti").empty();
                 $(document).scannerDetection(false);
             });
 
@@ -412,6 +487,85 @@
                             $.mobile.loading("hide");
                         }
                     });
+                } else if (ui.toPage[0].id === 'pgApprovvigionamenti') {
+                    //Initialize BARCODE
+                    $(document).scannerDetection({
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+                        startChar: [], // Prefix character for the cabled scanner (OPL6845R)
+                        endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+                        minLength: 4,
+                        onComplete: function (barcode, qty) {
+                            console.log('Barcode: ' + barcode);
+                            var element = $("#" + barcode);
+                            if (this.getElementById(barcode) === null) {
+                                $.mobile.loading('show', {
+                                    text: 'Nessun materiale con questo codice trovato...',
+                                    textVisible: true,
+                                    theme: 'z',
+                                    html: ""
+                                });
+                                setTimeout(function () {
+                                    $.mobile.loading("hide");
+                                }, 1500);
+                            } else {
+                                ciclope = $("#" + idMateriale).text();
+                                var pos = materialeAggiornato.lastIndexOf(" ");
+                                var dlgTitolo = materialeAggiornato.slice(0, pos);
+                                $("#filterApprovvigionamenti").val(barcode);
+                                $("#lista_approvvigionamenti").listview("refresh");
+                            }
+                        },
+                        onError: function (string) {
+                            console.log('Errore: ' + string);
+                        }
+                    });
+                    $("#lista_approvvigionamenti").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetApprovvigionamenti",
+                        cache: false,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li><a href="#dlgAggiornaApprovvigionamento" \n\
+                     onClick="updateApprovvigionamentoName(this.id,' + data[i].approvvigionamento + ')" id="' + data[i].codice + '">'
+                                        + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
+                            }
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $("#lista_approvvigionamenti").empty();
+                            $("#lista_approvvigionamenti").html(items);
+                            $("#lista_approvvigionamenti").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
                 }
             });
             $('.ui-btn').css('font-size', '30px !important');
@@ -441,7 +595,7 @@
                 <h1>Seleziona Veicolo/Piattaforma</h1>
                 <a data-role="button" href="#pgMagazzino" data-rel="page"
                    data-icon="back">Indietro</a>
-                <a data-role="button" class="ui-btn-right" onClick="reloadRiparazioni()" data-icon="refresh">Aggiorna</a>
+                <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
             </div>
             <div data-role="content">
                 <div class="div-widget">
@@ -475,16 +629,35 @@
                 <h1>Ciclope - Lista Approvvigionamenti</h1>
                 <a data-role="button" href="#pgMagazzino"
                    data-rel="page" data-icon="home">Home</a>
-                <a data-role="button" class="ui-btn-right" data-icon="refresh"  href="#pgApprovvigionamenti">Aggiorna</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh"  onClick="reload()" href="#pgApprovvigionamenti">Aggiorna</a>
             </div>
             <div data-role="content">
-                <ul data-role="listview" id="lista_materiale_approvvigionamento" data-inset="true"
-                    data-filter="true" data-filter-placeholder="Cerca Materiale...">
+                <form class="ui-filterable">
+                    <input id="filterApprovvigionamenti" data-type="search">
+                </form>
+
+                <ul data-role="listview" id="lista_approvvigionamenti" data-inset="true"
+                    data-input="#filterApprovvigionamenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
 
                 </ul>
             </div>
         </div>
-
+        <!-- DIALOG Aggiornamento Approvvigionamenti -->
+        <div data-role="dialog" id="dlgAggiornaApprovvigionamento" data-title="Ciclope - Aggiornamento quantità materiale">
+            <div data-role="header" data-position="fixed">
+                <h1 id="titleApprovvigionamenti">Ciclope - Inserisci approvvigionamento materiale</h1>
+                <a data-role="button" href="#pgApprovvigionamenti" data-rel="back" data-icon="back">Annulla</a>
+            </div>
+            <div data-role="content">
+                <form>
+                    <label for="quantita_da_approvvigionare" id="title_approvvigionamento_corrente">Approvvigionamento attuale: </label>
+                    <input type="hidden" name="codiceMateriale" id="codiceMateriale" value="">
+                    <input type="hidden" name="approvvigionamento_corrente" id="approvvigionamento_corrente" value="">
+                    <input type="number" id="quantita_da_approvvigionare" name="quantita_da_approvvigionare" value="">
+                    <input type="button" onClick="AggiornaApprovvigionamentoDlg()" value="Aggiorna" data-icon="check">
+                </form>
+            </div>
+        </div>
         <!-- DIALOG Aggiornamento quantita -->
         <div data-role="dialog" id="dlgAggiornaQuantita" data-title="Ciclope - Aggiornamento quantità materiale">
             <div data-role="header" data-position="fixed">
