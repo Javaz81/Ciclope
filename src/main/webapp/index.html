@@ -67,12 +67,13 @@
             }
             function cleanUpdateLoader(qty) {
                 $.mobile.loading("hide");
-                $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + qty);
+                $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty.toString());
                 $('input[name="quantita_corrente"]').val(qty);
             }
             function cleanUpdateApprovvigionamentoLoader(data) {
                 $.mobile.loading("hide");
                 $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + data.qty);
+                $('input[name="approvvigionamento_corrente"]').val(qty);
             }
             function AggiornaApprovvigionamentoDlg() {
                 var _p1 = $('input[name="codiceMateriale"]').val();
