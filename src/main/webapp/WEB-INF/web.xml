@@ -12,6 +12,14 @@
         <servlet-name>UpdateQuantitaMateriale</servlet-name>
         <servlet-class>org.javasoft.ciclope.servlets.UpdateQuantitaMateriale</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetUltimeRiparazioni</servlet-name>
+        <servlet-class>org.javasoft.ciclope.servlets.GetUltimeRiparazioni</servlet-class>
+        <init-param>
+            <param-name>limiteUltimeRiparazioni</param-name>
+            <param-value>30</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GetRifornimentiDaFare</servlet-name>
         <url-pattern>/GetRifornimentiDaFare</url-pattern>
@@ -23,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>UpdateQuantitaMateriale</servlet-name>
         <url-pattern>/UpdateQuantitaMateriale</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetUltimeRiparazioni</servlet-name>
+        <url-pattern>/GetUltimeRiparazioni</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

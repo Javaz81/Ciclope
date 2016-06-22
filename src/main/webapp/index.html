@@ -414,6 +414,55 @@
                             $.mobile.loading("hide");
                         }
                     });
+                } else if (ui.toPage[0].id === 'pgOreLavorate') {
+                    $("#lstPratiche").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetUltimeRiparazioni",
+                        cache: false,
+                        dataType: 'json',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessuna pratica presente...</li>');
+                            } else {
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li><a href="#dlgOreLavorate" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id)">'
+                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                }
+
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                            }
+                            $("#lstPratiche").empty();
+                            $("#lstPratiche").html(items);
+                            $("#lstPratiche").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
                 } else if (ui.toPage[0].id === 'pgMaterialeUtilizzato') {
                     //Initialize BARCODE
                     $(document).scannerDetection({
@@ -579,15 +628,33 @@
                 <h1>Ciclope - Magazzino</h1>
             </div>
             <div data-role="content">
-                <div class="div-widget" id="main_content">
-                    <div id="type_selection" class="ui-grid-a">
+                <div id="main_content">
+                    <div id="type_selection" class="ui-grid-b">
                         <div class="ui-block-a">
                             <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Magazzino</a>
                         </div>
-                        <div class="ui-block-b">
+                         <div class="ui-block-b">
+                            <a data-role="button" href="#pgOreLavorate">Segna-Ore</a>
+                        </div>
+                        <div class="ui-block-c">
                             <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div data-role="page" id="pgOreLavorate" data-title="Magazzino - Selezione Pratica">
+            <div data-role="header" data-position="fixed">
+                <h1>Seleziona Veicolo/Piattaforma</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                   data-icon="back">Indietro</a>
+                <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <div>
+                    <ul data-role="listview" id="lstPratiche" data-inset="true" data-filter="true"
+                        data-filter-placeholder="Seleziona la pratica..." data-autodividers="true">
+                    </ul>
                 </div>
             </div>
         </div>
@@ -599,7 +666,7 @@
                 <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
             </div>
             <div data-role="content">
-                <div class="div-widget">
+                <div>
                     <ul data-role="listview" id="lstRiparazioni" data-inset="true" data-filter="true"
                         data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
                     </ul>
