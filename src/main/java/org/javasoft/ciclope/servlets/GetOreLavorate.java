@@ -67,22 +67,27 @@ public class GetOreLavorate extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            SimpleDateFormat sdfext = new SimpleDateFormat("dd/MM/yyyy"); 
+            SimpleDateFormat sdfext = new SimpleDateFormat("dd/MM/yyyy");
             SimpleDateFormat sdfsql = new SimpleDateFormat("yyyy-MM-dd");
-            Date giornata_selezionata ;
+            Date giornata_selezionata;
+            String praticaId, personaleId;
             try {
-                giornata_selezionata = sdfsql.parse((String) ((JSONObject)obj).get("giornata"));
+                giornata_selezionata = sdfext.parse((String) ((JSONObject) obj).get("giornata"));
             } catch (java.text.ParseException ex) {
                 Logger.getLogger(GetOreLavorate.class.getName()).log(Level.SEVERE, null, ex);
                 giornata_selezionata = Calendar.getInstance().getTime();
             }
-            Query q = s.createSQLQuery("select personale.Cognome, orelavorate.giornata, veicolo.matricola, veicolo.marca, veicolo.modello, ore\n" +
-"from orelavorate\n" +
-"inner join ciclope.pratica on orelavorate.pratica = pratica.idPratica\n" +
-"inner join ciclope.veicolo on ciclope.pratica.Veicolo = veicolo.idVeicolo\n" +
-"inner join ciclope.personale on personale.idPersonale = orelavorate.personale\n" +
-"where pratica.idPratica = 2 AND orelavorate.personale = 1\n" +
-"order by pratica.data_arrivo asc");
+            personaleId = ((JSONObject) obj).get("personaleId").toString();
+
+            Query q = s.createSQLQuery("select personale.Nome, personale.Cognome, orelavorate.giornata,"
+                    + " veicolo.matricola, veicolo.marca, veicolo.modello, ore\n"
+                    + "from orelavorate\n"
+                    + "inner join ciclope.pratica on orelavorate.pratica = pratica.idPratica\n"
+                    + "inner join ciclope.veicolo on ciclope.pratica.Veicolo = veicolo.idVeicolo\n"
+                    + "inner join ciclope.personale on personale.idPersonale = orelavorate.personale\n"
+                    + "where orelavorate.personale = " + personaleId + "\n"
+                    + "AND orelavorate.giornata =" + sdfsql.format(giornata_selezionata) + "\n"
+                    + "order by pratica.data_arrivo asc");
             List<Object[]> aicrecs = q.list();
             t.commit();
             JSONObject jo;
@@ -91,17 +96,13 @@ public class GetOreLavorate extends HttpServlet {
             String[] sq;
             for (Object[] ob : aicrecs) {
                 jo = new JSONObject();
-                jo.put("codice", ob[0].toString());
-                jo.put("descrizione", ob[1].toString());
-                sq = ((String) ob[2].toString()).split("\\.");
-                jo.put("quantita_consumata",
-                        ob[4].toString().equalsIgnoreCase("pz")
-                        ? sq[0]
-                        : ob[2].toString()
-                );
-                jo.put("rimanenza", ob[3].toString());
-                jo.put("unita_misura", ob[4].toString());
-                jo.put("praticaHeader",((JSONObject) obj).get("praticaHeader"));
+                jo.put("nome", ob[0].toString());
+                jo.put("cognome", ob[1].toString());
+                jo.put("giornata", ob[2].toString());
+                jo.put("matricola", ob[3].toString());
+                jo.put("marca", ob[4].toString());
+                jo.put("modello", ob[5].toString());
+                jo.put("ore", ob[6].toString());
                 array.add(jo);
             }
             out.println(array.toJSONString());

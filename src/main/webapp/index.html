@@ -22,7 +22,8 @@
         <script src="js/jquery.mobile.datepicker.js"></script>
         <script>
             //delarations...
-            var praticaName, pratica_corrente, praticaJson, materialeJson;
+            var praticaName, personaleName, personale_corrente, giornata_corrente,
+                    pratica_corrente, praticaJson, materialeJson, orelavorateJson;
             var listaMateriali = null;
             var materialeAggiornato = null;
             var approvvigionamentoAggiornato = null;
@@ -67,6 +68,10 @@
                 $('input[name="quantita_corrente"]').val(qty.toString());
                 $('input[name="quantita_da_aggiornare"]').val("0".toString());
                 $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty.toString());
+            }
+            function updatePersonaleName(idPersonale) {
+                personale_corrente = idPersonale;
+                personaleName = $("#" + idPersonale).text();
             }
             function cleanUpdateLoader(qty) {
                 $.mobile.loading("hide");
@@ -253,6 +258,60 @@
                     }
                 });
             }
+            function AggiornaOreLavorate() {
+                $("#lstPratiche").empty();
+                var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
+                orelavorateJson = JSON.stringify(orelavorate);
+                $.mobile.loading('show', {
+                    text: 'Caricamento dati, attendere...',
+                    textVisible: true,
+                    theme: 'z',
+                    html: ""
+                });
+                $.ajax({
+                    url: "GetOreLavorate",
+                    cache: false,
+                    data: orelavorateJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        var items2 = [];
+                        var items = [];
+                        if (data.length === 0) {
+                            items.push('<li>Nessuna pratica presente...</li>');
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li><a href="#pgOreLavorate-selezione" id="' + data[i].operatoreId + '" onClick="updatePersonaleName(this.id)">'
+                                        + data[i].nome_cognome + '</a></li>');
+                            }
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                        }
+                        $("#lstPratiche").empty();
+                        $("#lstPratiche").html(items);
+                        $("#lstPratiche").listview("refresh");
+                        $.mobile.loading("hide");
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                        $.mobile.loading("hide");
+                    }
+                });
+            }
             function addMaterialePratica(mId) {
                 $("#lista_materiale").empty();
                 $.mobile.loading('show', {
@@ -282,7 +341,7 @@
                         }
                         for (var i = 0; i < data.length; i++) {
                             items2.push('<li><a href="#dlgAggiornaQuantita" \n\
-                     onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
+                onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
                                     + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
                         }
 
@@ -438,7 +497,7 @@
                                 items.push('<li>Nessuna pratica presente...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
-                                    items2.push('<li><a href="#pgOreLavorate-selezione" id="' + data[i].opertaoreId + '" onClick="updateOperatoreId(this.id)">'
+                                    items2.push('<li><a href="#pgOreLavorate-selezione" id="' + data[i].operatoreId + '" onClick="updatePersonaleName(this.id)">'
                                             + data[i].nome_cognome + '</a></li>');
                                 }
 
@@ -468,7 +527,28 @@
                         }
                     });
                 } else if (ui.toPage[0].id === 'pgOreLavorate-selezione') {
+
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    giornata_corrente = dd + '/' + mm + '/' + yyyy;
+                    var dp = $('input[name="giornata"]');
+                    dp.val(giornata_corrente);
+                    dp.date("option","onSelect", function (dateText, inst) {
+                        giornata_corrente = dateString;
+                        AggiornaOreLavorate();
+                    });
                     $("#lstPratiche").empty();
+                    var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
+                    orelavorateJson = JSON.stringify(orelavorate);
                     $.mobile.loading('show', {
                         text: 'Caricamento dati, attendere...',
                         textVisible: true,
@@ -476,9 +556,11 @@
                         html: ""
                     });
                     $.ajax({
-                        url: "GetUltimeRiparazioni",
+                        url: "GetOreLavorate",
                         cache: false,
+                        data: orelavorateJson,
                         dataType: 'json',
+                        type: 'POST',
                         async: true,
                         success: function (data) {
                             var items2 = [];
@@ -487,7 +569,7 @@
                                 items.push('<li>Nessuna pratica presente...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
-                                    items2.push('<li><a href="#dlgOreLavorate" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id)">'
+                                    items2.push('<li><a href="#dlgOreLavorate" id="' + data[i].praticaId + '" onClick="updateOreLavorateParam()">'
                                             + data[i].marca + ' - ' + data[i].modello + '</a></li>');
                                 }
 
@@ -721,7 +803,7 @@
                 <div class="ui-grid-b">
                     <div class="ui-block-a">
                         <h1>Seleziona il giorno:</h1>
-                        <input type="text" data-role="date"> 
+                        <input name="giornata" class="date-input" type="text" data-role="date"> 
                         <div id="giorno_corrente">Giorno corrente:</div>
                     </div>
                     <ul  class="ui-block-c" data-role="listview" id="lstPratiche" data-inset="true" data-autodividers="true">
