@@ -15,15 +15,15 @@
         <script src="js/libs/jquery-mobile/jquery.mobile.min.js"></script>
         <!-- others scripting stuff -->
         <script type="text/javascript" src="js/jquery.scannerdetection.js"></script>
-
-        <link rel="stylesheet" href="js/jquery.mobile.datepicker.css" />
-        <link rel="stylesheet" href="js/jquery.mobile.datepicker.theme.css" />
-        <script src="js/external/jquery-ui/datepicker.js"></script>
-        <script src="js/jquery.mobile.datepicker.js"></script>
+        <!-- datebox jstage -->
+        <link href="js/libs/jquery-mobile-datebox/jqm-datebox.css" rel="stylesheet" type="text/css">
+        <script src="js/libs/jquery-mobile-datebox/jqm-datebox.comp.calbox.js" type="text/javascript"></script>
+        <script src="js/libs/jquery-mobile-datebox/jqm-datebox.i18n.it.utf8.js" type="text/javascript"></script>
         <script>
             //delarations...
             var praticaName, personaleName, personale_corrente, giornata_corrente,
                     pratica_corrente, praticaJson, materialeJson, orelavorateJson;
+            var praticaOreLavorate = null;
             var listaMateriali = null;
             var materialeAggiornato = null;
             var approvvigionamentoAggiornato = null;
@@ -68,6 +68,10 @@
                 $('input[name="quantita_corrente"]').val(qty.toString());
                 $('input[name="quantita_da_aggiornare"]').val("0".toString());
                 $("#title_qty_corrente").text("Quantita attualmente utilizzata: " + qty.toString());
+            }
+            function updatePraticaOreLavorate(idPraticaOrelavorate, ore) {
+                praticaOreLavorate = idPraticaOrelavorate;
+                $("#ore_da_aggiornare").val(ore);
             }
             function updatePersonaleName(idPersonale) {
                 personale_corrente = idPersonale;
@@ -258,8 +262,100 @@
                     }
                 });
             }
-            function AggiornaOreLavorate() {
+            function CancellaOreLavoratePratica(idOreLavorate) {
+                var ol = null;
+                if (idOreLavorate !== undefined)
+                    ol = {"ore": idOreLavorate.toString()};
+                else
+                    ol = {"ore": praticaOreLavorate.toString()};
+                var oreJson = JSON.stringify(ol);
+                $.mobile.loading('show', {
+                    text: 'Caricamento dati, attendere...',
+                    textVisible: true,
+                    theme: 'z',
+                    html: ""
+                });
+                $.ajax({
+                    url: "DeleteOreLavorate",
+                    cache: false,
+                    data: oreJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        console.log("success");
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        console.log("error");
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                        $.mobile.loading("hide");
+                        AggiornaOreLavorate($("#giornata").datebox('getTheDate'));
+                    }
+                });
+
+            }
+            function AggiornaOreLavoratePratica(){
+                var orelavorate = {"idOreLavorate":praticaOreLavorate, "ore":$("#ore_da_aggiornare").val()};
+                orelavorateJson = JSON.stringify(orelavorate);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento dati, attendere...',
+                    textVisible: true,
+                    theme: 'z',
+                    html: ""
+                });
+               $.ajax({
+                    url: "AggiornaOreLavorate",
+                    cache: false,
+                    data: orelavorateJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                              setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                        AggiornaOreLavorate($("#giornata").datebox('getTheDate'));
+                    }
+                });
+                
+            }
+            function AggiornaOreLavorate(date) {
                 $("#lstPratiche").empty();
+                giornata_corrente = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
                 var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
                 orelavorateJson = JSON.stringify(orelavorate);
                 $.mobile.loading('show', {
@@ -282,10 +378,12 @@
                             items.push('<li>Nessuna pratica presente...</li>');
                         } else {
                             for (var i = 0; i < data.length; i++) {
-                                items2.push('<li><a href="#pgOreLavorate-selezione" id="' + data[i].operatoreId + '" onClick="updatePersonaleName(this.id)">'
-                                        + data[i].nome_cognome + '</a></li>');
+                                items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
+                data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
+                                        + data[i].marca + " " + data[i].modello + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
+onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                             }
-
                             items = items.concat(items2);
                             items.sort(function (a, b) {
                                 var valA = $(a).text(),
@@ -299,9 +397,9 @@
                                 return 0;
                             });
                         }
-                        $("#lstPratiche").empty();
-                        $("#lstPratiche").html(items);
-                        $("#lstPratiche").listview("refresh");
+                        $("#lstUltimePratiche").empty();
+                        $("#lstUltimePratiche").html(items);
+                        $("#lstUltimePratiche").listview("refresh");
                         $.mobile.loading("hide");
                     },
                     error: function (xhttpjqr, err, data) {
@@ -542,11 +640,7 @@
                     giornata_corrente = dd + '/' + mm + '/' + yyyy;
                     var dp = $('input[name="giornata"]');
                     dp.val(giornata_corrente);
-                    dp.date("option","onSelect", function (dateText, inst) {
-                        giornata_corrente = dateString;
-                        AggiornaOreLavorate();
-                    });
-                    $("#lstPratiche").empty();
+                    $("#lstUltimePratiche").empty();
                     var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
                     orelavorateJson = JSON.stringify(orelavorate);
                     $.mobile.loading('show', {
@@ -586,9 +680,9 @@
                                     return 0;
                                 });
                             }
-                            $("#lstPratiche").empty();
-                            $("#lstPratiche").html(items);
-                            $("#lstPratiche").listview("refresh");
+                            $("#lstUltimePratiche").empty();
+                            $("#lstUltimePratiche").html(items);
+                            $("#lstUltimePratiche").listview("refresh");
                             $.mobile.loading("hide");
                         },
                         error: function (xhttpjqr, err, data) {
@@ -755,6 +849,11 @@
             });
             $('.ui-btn').css('font-size', '30px !important');
         </script>
+        <style>
+            .seleziona-ore{
+                padding-right:20px !important;
+            }
+        </style>
     </head>
 
     <body>
@@ -800,14 +899,43 @@
                 <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
             </div>
             <div data-role="content">
-                <div class="ui-grid-b">
-                    <div class="ui-block-a">
-                        <h1>Seleziona il giorno:</h1>
-                        <input name="giornata" class="date-input" type="text" data-role="date"> 
-                        <div id="giorno_corrente">Giorno corrente:</div>
+                <div class="ui-grid-a ">
+                    <div class="ui-block-a seleziona-ore">
+                        <label for="giornata">Seleziona giornata:</label>
+                        <input name="giornata"  id="giornata" type="text" data-role="datebox"
+                               data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
                     </div>
-                    <ul  class="ui-block-c" data-role="listview" id="lstPratiche" data-inset="true" data-autodividers="true">
-                    </ul>
+                    <div class="ui-block-b">
+                        <p>Lista delle pratiche seguite in questo giorno:</p>
+                        <ul id="lstUltimePratiche" 
+                            data-role="listview" data-split-icon="delete" 
+                            data-split-theme="a" data-inset="true"
+                            data-autodividers="true">
+                        </ul>
+                        <div data-role="popup" id="popupEliminaPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                            <div data-role="header" data-theme="a">
+                                <h1>Eliminazione ore su pratica.</h1>
+                            </div>
+                            <div class="ui-content" role="main">
+                                <h3 class="ui-title">Eliminare le ore lavorate OGGI su questa pratica?</h3>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                   onclick="CancellaOreLavoratePratica()" data-rel="back">Elimina!</a>
+                            </div>
+                        </div>
+                        <div data-role="popup" id="popupAggiornaOreLavoratePratica" data-theme="a" data-overlay-theme="b" class="ui-content">
+                            <div data-role="header" data-theme="a">
+                                <h1>Aggiorna ore lavorate sulla pratica.</h1>
+                            </div>
+                            <div class="ui-content" role="main">
+                                <h3 class="ui-title">Aggiornare le ore lavorate OGGI su questa pratica?</h3>
+                                <input type="number" id="ore_da_aggiornare" name="ore_da_aggiornare" value="">
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                   onclick="AggiornaOreLavoratePratica()" data-rel="back">Aggiorna!</a>
+                            </div>
+                        </div> 
+                    </div>
                 </div>
             </div>
         </div>

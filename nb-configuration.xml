@@ -26,9 +26,10 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>ide</org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>
     </properties>
     <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1">
-        <library name="jquery" version="1.8.3">
+        <library name="jquery" version="1.11.1">
             <file localPath="src/main/webapp/js/libs/jquery/jquery.js" path="jquery.js"/>
             <file localPath="src/main/webapp/js/libs/jquery/jquery.min.js" path="jquery.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery/jquery.min.map" path="jquery.min.map"/>
         </library>
         <library name="jquery-mobile" version="1.4.5">
             <file localPath="src/main/webapp/js/libs/jquery-mobile/images/ajax-loader.gif" path="images/ajax-loader.gif"/>
@@ -249,6 +250,44 @@ Any value defined here will override the pom.xml file value but is only applicab
             <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.structure.min.css" path="jquery.mobile.structure.min.css"/>
             <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.theme.css" path="jquery.mobile.theme.css"/>
             <file localPath="src/main/webapp/js/libs/jquery-mobile/jquery.mobile.theme.min.css" path="jquery.mobile.theme.min.css"/>
+        </library>
+        <library name="jquery-mobile-datebox" version="1.1.1">
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.calbox.js" path="jqm-datebox.comp.calbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.calbox.min.js" path="jqm-datebox.comp.calbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.custombox.js" path="jqm-datebox.comp.custombox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.custombox.min.js" path="jqm-datebox.comp.custombox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.customflip.js" path="jqm-datebox.comp.customflip.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.customflip.min.js" path="jqm-datebox.comp.customflip.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.datebox.js" path="jqm-datebox.comp.datebox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.datebox.min.js" path="jqm-datebox.comp.datebox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.durationbox.js" path="jqm-datebox.comp.durationbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.durationbox.min.js" path="jqm-datebox.comp.durationbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.durationflipbox.js" path="jqm-datebox.comp.durationflipbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.durationflipbox.min.js" path="jqm-datebox.comp.durationflipbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.flipbox.js" path="jqm-datebox.comp.flipbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.flipbox.min.js" path="jqm-datebox.comp.flipbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.slidebox.js" path="jqm-datebox.comp.slidebox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.comp.slidebox.min.js" path="jqm-datebox.comp.slidebox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.core.js" path="jqm-datebox.core.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.core.min.js" path="jqm-datebox.core.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.css" path="jqm-datebox.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.min.css" path="jqm-datebox.min.css"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.calbox.js" path="jqm-datebox.mode.calbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.calbox.min.js" path="jqm-datebox.mode.calbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.custombox.js" path="jqm-datebox.mode.custombox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.custombox.min.js" path="jqm-datebox.mode.custombox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.customflip.js" path="jqm-datebox.mode.customflip.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.customflip.min.js" path="jqm-datebox.mode.customflip.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.datebox.js" path="jqm-datebox.mode.datebox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.datebox.min.js" path="jqm-datebox.mode.datebox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.durationbox.js" path="jqm-datebox.mode.durationbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.durationbox.min.js" path="jqm-datebox.mode.durationbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.durationflipbox.js" path="jqm-datebox.mode.durationflipbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.durationflipbox.min.js" path="jqm-datebox.mode.durationflipbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.flipbox.js" path="jqm-datebox.mode.flipbox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.flipbox.min.js" path="jqm-datebox.mode.flipbox.min.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.slidebox.js" path="jqm-datebox.mode.slidebox.js"/>
+            <file localPath="src/main/webapp/js/libs/jquery-mobile-datebox/jqm-datebox.mode.slidebox.min.js" path="jqm-datebox.mode.slidebox.min.js"/>
         </library>
     </libraries>
 </project-shared-configuration>

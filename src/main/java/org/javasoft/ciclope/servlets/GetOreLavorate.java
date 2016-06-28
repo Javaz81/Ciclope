@@ -80,13 +80,13 @@ public class GetOreLavorate extends HttpServlet {
             personaleId = ((JSONObject) obj).get("personaleId").toString();
 
             Query q = s.createSQLQuery("select personale.Nome, personale.Cognome, orelavorate.giornata,"
-                    + " veicolo.matricola, veicolo.marca, veicolo.modello, ore\n"
+                    + " veicolo.matricola, veicolo.marca, veicolo.modello, ore, pratica.idPratica, orelavorate.IdOreLavorate \n"
                     + "from orelavorate\n"
                     + "inner join ciclope.pratica on orelavorate.pratica = pratica.idPratica\n"
                     + "inner join ciclope.veicolo on ciclope.pratica.Veicolo = veicolo.idVeicolo\n"
                     + "inner join ciclope.personale on personale.idPersonale = orelavorate.personale\n"
                     + "where orelavorate.personale = " + personaleId + "\n"
-                    + "AND orelavorate.giornata =" + sdfsql.format(giornata_selezionata) + "\n"
+                    + "AND orelavorate.giornata = '" + sdfsql.format(giornata_selezionata) + "'\n"
                     + "order by pratica.data_arrivo asc");
             List<Object[]> aicrecs = q.list();
             t.commit();
@@ -103,6 +103,8 @@ public class GetOreLavorate extends HttpServlet {
                 jo.put("marca", ob[4].toString());
                 jo.put("modello", ob[5].toString());
                 jo.put("ore", ob[6].toString());
+                jo.put("praticaId",ob[7].toString());
+                jo.put("IdOreLavorate", ob[8].toString());
                 array.add(jo);
             }
             out.println(array.toJSONString());

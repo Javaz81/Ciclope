@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -22,7 +21,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -31,8 +29,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "GetRiparazioniCorrenti", urlPatterns = {"/GetRiparazioniCorrenti"})
-public class GetRiparazioniCorrenti extends HttpServlet {
+@WebServlet(name = "AggiornaOreLavorate", urlPatterns = {"/AggiornaOreLavorate"})
+public class AggiornaOreLavorate extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,50 +43,70 @@ public class GetRiparazioniCorrenti extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
-            Transaction t = s.getTransaction();
-            t.begin();
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String json;
-            json = br.readLine();
-            Object obj;
-            JSONParser p = new JSONParser();
-            if (json != null) {
-                try {
-                    obj = p.parse(json);
-                } catch (ParseException ex) {
-                    Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            Query q = s.createSQLQuery("select "
-                    + " ciclope.pratica.idPratica as praticaId,\n"
-                    + " ciclope.pratica.arrivo as arrivo,\n"
-                    + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.modello as modello,\n"
-                    + " ciclope.veicolo.targa as targa,\n"
-                    + " ciclope.veicolo.tipo as tipo\n"
-                    + " from ciclope.pratica\n"
-                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where ciclope.pratica.uscita is null");
-            List<Object[]> aicrecs = q.list();
-            t.commit();
-            JSONObject jo;
-            JSONArray array = new JSONArray();
+        response.setContentType("application/json;charset=UTF-8");
+        boolean exception = false;
+        String oreLavorateId;
+        String materialeId;
+        Integer qty_upd;
+        Integer qty_cur = null;
+        Transaction t = null;
 
-            for (Object[] ob : aicrecs) {
-                jo = new JSONObject();
-                jo.put("praticaId", ob[0].toString());
-                jo.put("arrivo", ob[1].toString());
-                jo.put("marca", ob[2].toString());
-                jo.put("modello", ob[3].toString());
-                jo.put("targa", ob[4]==null?"Speciale":ob[4].toString());
-                jo.put("tipo", ob[5].toString());
-                array.add(jo);
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session s = sf.openSession();
+        t = s.getTransaction();
+        t.begin();
+        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        String json;
+        json = br.readLine();
+        Object obj = null;
+        JSONParser p = new JSONParser();
+        if (json != null) {
+            try {
+                obj = p.parse(json);
+            } catch (ParseException ex) {
+                Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
             }
-            out.println(array.toJSONString());
+        } else {
+            t.rollback();
+            JSONObject jo = new JSONObject();
+            jo.put("qty", Integer.toString(0));
+            jo.put("result", "ko");
+            try (PrintWriter out = response.getWriter()) {
+                out.println(jo.toJSONString());
+            }
+            return;
+        }
+        oreLavorateId = (String) ((JSONObject) obj).get("idOreLavorate");
+        qty_upd = Integer.parseInt((String) ((JSONObject) obj).get("ore"));
+        Query q = s.createSQLQuery("UPDATE ciclope.orelavorate SET ore='" + qty_upd + "' WHERE idOreLavorate='" + oreLavorateId + "'");
+        try {
+            int n_row = q.executeUpdate();
+            if (n_row != 1) {
+                t.rollback();
+                JSONObject jo = new JSONObject();
+                jo.put("qty", Integer.toString(qty_cur));
+                jo.put("result", "ko");
+                try (PrintWriter out = response.getWriter()) {
+                    out.println(jo.toJSONString());
+                }
+                return;
+            }
+            t.commit();
+            JSONObject jo = new JSONObject();
+            jo.put("qty", Integer.toString(qty_upd));
+            jo.put("result", "ok");
+            try (PrintWriter out = response.getWriter()) {
+                out.println(jo.toJSONString());
+            }
+        } catch (Exception ex) {
+            t.rollback();
+            JSONObject jo = new JSONObject();
+            jo.put("qty", Integer.toString(qty_cur));
+            jo.put("result", "ko");
+            jo.put("message", ex.getMessage());
+            try (PrintWriter out = response.getWriter()) {
+                out.println(jo.toJSONString());
+            }
         }
     }
 

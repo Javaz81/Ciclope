@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,8 +34,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "GetRiparazioniCorrenti", urlPatterns = {"/GetRiparazioniCorrenti"})
-public class GetRiparazioniCorrenti extends HttpServlet {
+@WebServlet(name = "DeleteOreLavorate", urlPatterns = {"/DeleteOreLavorate"})
+public class DeleteOreLavorate extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -54,7 +57,7 @@ public class GetRiparazioniCorrenti extends HttpServlet {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
-            Object obj;
+            Object obj = null;
             JSONParser p = new JSONParser();
             if (json != null) {
                 try {
@@ -63,32 +66,17 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            Query q = s.createSQLQuery("select "
-                    + " ciclope.pratica.idPratica as praticaId,\n"
-                    + " ciclope.pratica.arrivo as arrivo,\n"
-                    + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.modello as modello,\n"
-                    + " ciclope.veicolo.targa as targa,\n"
-                    + " ciclope.veicolo.tipo as tipo\n"
-                    + " from ciclope.pratica\n"
-                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where ciclope.pratica.uscita is null");
-            List<Object[]> aicrecs = q.list();
+            String oreLavorateId;
+
+            oreLavorateId = ((JSONObject) obj).get("ore").toString();
+
+            Query q = s.createSQLQuery("DELETE FROM `ciclope`.`orelavorate` WHERE `idOreLavorate`='" + oreLavorateId + "'");
+            q.executeUpdate();
             t.commit();
             JSONObject jo;
-            JSONArray array = new JSONArray();
-
-            for (Object[] ob : aicrecs) {
-                jo = new JSONObject();
-                jo.put("praticaId", ob[0].toString());
-                jo.put("arrivo", ob[1].toString());
-                jo.put("marca", ob[2].toString());
-                jo.put("modello", ob[3].toString());
-                jo.put("targa", ob[4]==null?"Speciale":ob[4].toString());
-                jo.put("tipo", ob[5].toString());
-                array.add(jo);
-            }
-            out.println(array.toJSONString());
+            jo = new JSONObject();
+            jo.put("result", "ok");
+            out.println(jo.toJSONString());
         }
     }
 
