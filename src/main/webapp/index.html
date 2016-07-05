@@ -295,8 +295,8 @@
                 });
 
             }
-            function AggiornaOreLavoratePratica(){
-                var orelavorate = {"idOreLavorate":praticaOreLavorate, "ore":$("#ore_da_aggiornare").val()};
+            function AggiornaOreLavoratePratica() {
+                var orelavorate = {"idOreLavorate": praticaOreLavorate, "ore": $("#ore_da_aggiornare").val()};
                 orelavorateJson = JSON.stringify(orelavorate);
                 $.mobile.loading('show', {
                     text: 'Aggiornamento dati, attendere...',
@@ -304,7 +304,7 @@
                     theme: 'z',
                     html: ""
                 });
-               $.ajax({
+                $.ajax({
                     url: "AggiornaOreLavorate",
                     cache: false,
                     data: orelavorateJson,
@@ -320,7 +320,7 @@
                                 theme: 'b',
                                 html: ""
                             });
-                              setTimeout(function () {
+                            setTimeout(function () {
                                 $.mobile.loading("hide");
                             }, 1000);
                         } else {
@@ -351,10 +351,9 @@
                         AggiornaOreLavorate($("#giornata").datebox('getTheDate'));
                     }
                 });
-                
+
             }
             function AggiornaOreLavorate(date) {
-                $("#lstPratiche").empty();
                 giornata_corrente = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
                 var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
                 orelavorateJson = JSON.stringify(orelavorate);
@@ -663,10 +662,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 items.push('<li>Nessuna pratica presente...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
-                                    items2.push('<li><a href="#dlgOreLavorate" id="' + data[i].praticaId + '" onClick="updateOreLavorateParam()">'
-                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                    items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
+                data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
+                                            + data[i].marca + " " + data[i].modello + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
+onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                                 }
-
                                 items = items.concat(items2);
                                 items.sort(function (a, b) {
                                     var valA = $(a).text(),
@@ -894,9 +895,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
         <div data-role="page" id="pgOreLavorate-selezione" data-title="Magazzino - Selezione Pratica">
             <div data-role="header" data-position="fixed">
                 <h1>Seleziona Veicolo/Piattaforma</h1>
-                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                <a data-role="button" data-rel="back"
                    data-icon="back">Indietro</a>
-                <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
             </div>
             <div data-role="content">
                 <div class="ui-grid-a ">
