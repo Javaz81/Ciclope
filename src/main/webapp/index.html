@@ -21,7 +21,7 @@
         <script src="js/libs/jquery-mobile-datebox/jqm-datebox.i18n.it.utf8.js" type="text/javascript"></script>
         <script>
             //delarations...
-            var praticaName, personaleName, personale_corrente, giornata_corrente,
+            var praticaName, personaleName, praticaHeaderName, personale_corrente, giornata_corrente,
                     pratica_corrente, praticaJson, materialeJson, orelavorateJson;
             var praticaOreLavorate = null;
             var listaMateriali = null;
@@ -42,9 +42,63 @@
             function currentMaterial(idMateriale) {
                 var itemMateriale = $("#lista_materiale.div");
             }
-            function updatePraticaId(id) {
-                var pratica = {"praticaId": id.toString(), "praticaHeader": $("#".concat(id)).text()};
+            $( "#popupAggiungiPraticaOreLavorate" ).on( "popupafteropen", function( event, ui ) {
+                GetPraticheOreLavorateDlg();
+            } );
+            function GetPraticheOreLavorateDlg() {
+                var request = {"personaleId": personale_corrente, "data": giornata_corrente};
+                requestJson = JSON.stringify(request);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "GetRiparazioniOreLavorate",
+                    cache: false,
+                    data: requestJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    }
+                });
+            }
+            function updatePraticaId(id, header) {
+                var pratica = {"praticaId": id.toString(), "praticaHeader": header};
                 praticaName = $("#".concat(id)).text();
+                praticaHeaderName = header;
                 praticaJson = JSON.stringify(pratica);
                 pratica_corrente = id.toString();
             }
@@ -545,7 +599,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 items.push('<li>Nessun materiale utilizzato al momento...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
-                                    items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id)">'
+                                    items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
                                             + data[i].marca + ' - ' + data[i].modello + '</a></li>');
                                 }
 
@@ -736,12 +790,17 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             if (data.length > 0) {
                                 $("#nome_riparazione").empty();
                                 $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
-                            }
-                            for (var i = 0; i < data.length; i++) {
-                                items2.push('<li><a href="#dlgAggiornaQuantita" \n\
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li><a href="#dlgAggiornaQuantita" \n\
                      onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
-                                        + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
+                                            + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
+                                }
+                            } else {
+                                $("#nome_riparazione").html("<h1>" + praticaHeaderName + "</h1>");
+                                $("#lista_materiale").html("<li>Nessuna materiale utilizzato per la riparazione</li>");
+                                return;
                             }
+
 
                             items = items.concat(items2);
                             items.sort(function (a, b) {
@@ -905,7 +964,26 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         <input name="giornata"  id="giornata" type="text" data-role="datebox"
                                data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
                     </div>
-                    <div class="ui-block-b">
+                    <div class="ui-block-b">  
+                        
+                            <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
+                                href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
+                                data-transition="pop">Aggiungi pratica lavorata</a>
+                            <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                                <div data-role="header" data-theme="a">
+                                    <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
+                                </div>
+                                <div class="ui-content" role="main">
+                                    <h3 class="ui-title">Seleziona pratica:</h3>
+                                    <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
+                                        data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                                    </ul>
+                                    <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                    <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                       onclick="AggiungiPraticaOreLavorate()" data-rel="back">Elimina!</a>
+                                </div>
+                            </div>
+                        
                         <p>Lista delle pratiche seguite in questo giorno:</p>
                         <ul id="lstUltimePratiche" 
                             data-role="listview" data-split-icon="delete" 
