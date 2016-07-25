@@ -42,12 +42,10 @@
             function currentMaterial(idMateriale) {
                 var itemMateriale = $("#lista_materiale.div");
             }
-            $( "#popupAggiungiPraticaOreLavorate" ).on( "popupafteropen", function( event, ui ) {
-                GetPraticheOreLavorateDlg();
-            } );
-            function GetPraticheOreLavorateDlg() {
-                var request = {"personaleId": personale_corrente, "data": giornata_corrente};
-                requestJson = JSON.stringify(request);
+            
+            function AddPraticaLavorataOdierna(pratica, nome_pratica){
+                var p = {"praticaId": pratica, "giornata": giornata_corrente, "personale": personale_corrente};
+                requestJson = JSON.stringify(p);
                 $.mobile.loading('show', {
                     text: 'Aggiornamento in corso, attendere...',
                     textVisible: true,
@@ -55,7 +53,7 @@
                     html: ""
                 });
                 $.ajax({
-                    url: "GetRiparazioniOreLavorate",
+                    url: "AddPraticaLavorataOdierna",
                     cache: false,
                     data: requestJson,
                     dataType: 'json',
@@ -70,6 +68,7 @@
                                 theme: 'b',
                                 html: ""
                             });
+                            setTimeout(reload, 1000, data.qty);
                         } else {
                             $.mobile.loading('show', {
                                 text: data.message,
@@ -77,6 +76,9 @@
                                 theme: 'b',
                                 html: ""
                             });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
                         }
                     },
                     error: function (xhttpjqr, err, data) {
@@ -87,9 +89,75 @@
                             theme: 'b',
                             html: ""
                         });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
                     },
                     complete: function (xhttpjqr, evtobj, data) {
-                        setTimeout(function () {
+                    }
+                });
+            }
+            function GetPraticheOreLavorateDlg() {
+                var request = {"personaleId": personale_corrente, "data": giornata_corrente};
+                requestJson = JSON.stringify(request);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "GetPraticheOdierneLavorabili",
+                    cache: false,
+                    data: requestJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Fatto!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessun materiale utilizzato al momento...</li>');
+                            } else {
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                }
+
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                            }
+                            $("#lstPraticheLavorate").empty();
+                            $("#lstPraticheLavorate").html(items);
+                            $("#lstPraticheLavorate").listview("refresh");
+                            $.mobile.loading("hide");
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                         setTimeout(function () {
                             $.mobile.loading("hide");
                         }, 1000);
                     }
@@ -525,6 +593,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 location.reload(true);
             }
             //events...
+            $(document).on("popupafteropen", "#popupAggiungiPraticaOreLavorate", function (event, ui) {
+                GetPraticheOreLavorateDlg();
+            });
             $(document).on("mobileinit", function () {
                 $.mobile.loader.prototype.options.text = "Caricamento dati, attendere...";
                 $.mobile.loader.prototype.options.textVisible = true;
@@ -965,25 +1036,25 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
                     </div>
                     <div class="ui-block-b">  
-                        
-                            <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
-                                href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
-                                data-transition="pop">Aggiungi pratica lavorata</a>
-                            <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
-                                <div data-role="header" data-theme="a">
-                                    <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
-                                </div>
-                                <div class="ui-content" role="main">
-                                    <h3 class="ui-title">Seleziona pratica:</h3>
-                                    <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
-                                        data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
-                                    </ul>
-                                    <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
-                                    <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
-                                       onclick="AggiungiPraticaOreLavorate()" data-rel="back">Elimina!</a>
-                                </div>
+
+                        <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
+                           href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
+                           data-transition="pop">Aggiungi pratica lavorata</a>
+                        <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                            <div data-role="header" data-theme="a">
+                                <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
                             </div>
-                        
+                            <div class="ui-content" role="main">
+                                <h3 class="ui-title">Seleziona pratica:</h3>
+                                <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
+                                    data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                                </ul>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                   onclick="AggiungiPraticaOreLavorate()" data-rel="back">Aggiungi</a>
+                            </div>
+                        </div>
+
                         <p>Lista delle pratiche seguite in questo giorno:</p>
                         <ul id="lstUltimePratiche" 
                             data-role="listview" data-split-icon="delete" 
