@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,14 +55,27 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
-            Object obj;
+            Object obj = null;
             JSONParser p = new JSONParser();
             if (json != null) {
                 try {
                     obj = p.parse(json);
                 } catch (ParseException ex) {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
+                    return;
                 }
+            }
+            String giornataJs = (String) ((JSONObject) obj).get("data");
+            String personaleId = (String) ((JSONObject) obj).get("personaleId");
+            String giornata ="";
+             try {
+                giornata = new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("dd/MM/yyyy").parse(giornataJs));
+            } catch (java.text.ParseException ex) {
+                t.rollback();
+                JSONObject jo = new JSONObject();
+                jo.put("result", "ko");
+                out.println(jo.toJSONString());
+                return;
             }
             Query q = s.createSQLQuery("select ciclope.pratica.idPratica as praticaId,\n"
                     + "ciclope.pratica.arrivo as arrivo,\n"
@@ -76,8 +90,8 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
                     + "(\n"
                     + "select orelavorate.pratica\n"
                     + "from orelavorate\n"
-                    + "where orelavorate.giornata = '2016-3-26'\n"
-                    + "and orelavorate.personale = 1\n"
+                    + "where orelavorate.giornata = '"+giornata+"'\n"
+                    + "and orelavorate.personale = "+personaleId+"\n"
                     + ")");
             List<Object[]> aicrecs = q.list();
             t.commit();

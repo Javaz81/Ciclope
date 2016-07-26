@@ -68,7 +68,7 @@
                                 theme: 'b',
                                 html: ""
                             });
-                            setTimeout(reload, 1000, data.qty);
+                             $.mobile.loading("hide");
                         } else {
                             $.mobile.loading('show', {
                                 text: data.message,
@@ -94,6 +94,7 @@
                         }, 1000);
                     },
                     complete: function (xhttpjqr, evtobj, data) {
+                        AggiornaOreLavorate($("#giornata").datebox('getTheDate'));
                     }
                 });
             }
@@ -124,13 +125,12 @@
                         var items2 = [];
                             var items = [];
                             if (data.length === 0) {
-                                items.push('<li>Nessun materiale utilizzato al momento...</li>');
+                                items.push('<li>Stai gia seguendo tutte le pratiche possibili odierne...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
                                             + data[i].marca + ' - ' + data[i].modello + '</a></li>');
                                 }
-
                                 items = items.concat(items2);
                                 items.sort(function (a, b) {
                                     var valA = $(a).text(),
@@ -1049,9 +1049,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
                                     data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
                                 </ul>
-                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
-                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
-                                   onclick="AggiungiPraticaOreLavorate()" data-rel="back">Aggiungi</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Indietro</a>
                             </div>
                         </div>
 
