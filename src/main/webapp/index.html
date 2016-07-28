@@ -38,12 +38,49 @@
                     this._qty -= qty;
                 };
             }
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+
+            var data = {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [
+                    {
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.2)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: [65, 59, 80, 81, 56, 55, 40]
+                    },
+                    {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 19, 86, 27, 90]
+                    }
+                ]
+            };
+
+
+            var myNewChart = new Chart(ctx, {
+                type: "line",
+                data: data,
+            });
+
             //codes...
+
+
             function currentMaterial(idMateriale) {
                 var itemMateriale = $("#lista_materiale.div");
             }
-            
-            function AddPraticaLavorataOdierna(pratica, nome_pratica){
+
+            function AddPraticaLavorataOdierna(pratica, nome_pratica) {
                 var p = {"praticaId": pratica, "giornata": giornata_corrente, "personale": personale_corrente};
                 requestJson = JSON.stringify(p);
                 $.mobile.loading('show', {
@@ -68,7 +105,7 @@
                                 theme: 'b',
                                 html: ""
                             });
-                             $.mobile.loading("hide");
+                            $.mobile.loading("hide");
                         } else {
                             $.mobile.loading('show', {
                                 text: data.message,
@@ -123,31 +160,31 @@
                             html: ""
                         });
                         var items2 = [];
-                            var items = [];
-                            if (data.length === 0) {
-                                items.push('<li>Stai gia seguendo tutte le pratiche possibili odierne...</li>');
-                            } else {
-                                for (var i = 0; i < data.length; i++) {
-                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
-                                }
-                                items = items.concat(items2);
-                                items.sort(function (a, b) {
-                                    var valA = $(a).text(),
-                                            valB = $(b).text();
-                                    if (valA < valB) {
-                                        return -1;
-                                    }
-                                    if (valA > valB) {
-                                        return 1;
-                                    }
-                                    return 0;
-                                });
+                        var items = [];
+                        if (data.length === 0) {
+                            items.push('<li>Stai gia seguendo tutte le pratiche possibili odierne...</li>');
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                        + data[i].marca + ' - ' + data[i].modello + '</a></li>');
                             }
-                            $("#lstPraticheLavorate").empty();
-                            $("#lstPraticheLavorate").html(items);
-                            $("#lstPraticheLavorate").listview("refresh");
-                            $.mobile.loading("hide");
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                        }
+                        $("#lstPraticheLavorate").empty();
+                        $("#lstPraticheLavorate").html(items);
+                        $("#lstPraticheLavorate").listview("refresh");
+                        $.mobile.loading("hide");
                     },
                     error: function (xhttpjqr, err, data) {
                         $.mobile.loading("hide");
@@ -157,7 +194,7 @@
                             theme: 'b',
                             html: ""
                         });
-                         setTimeout(function () {
+                        setTimeout(function () {
                             $.mobile.loading("hide");
                         }, 1000);
                     }
@@ -1003,6 +1040,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         </div>
                         <div class="ui-block-c">
                             <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
+                            <canvas id="myCanvas" height="100" width="100"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1192,7 +1230,6 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 <h1>Footer Text In Dialog</h1>
             </div>
         </div> 
-
     </body>
 
 </html>
