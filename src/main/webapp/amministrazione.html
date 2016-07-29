@@ -9,85 +9,157 @@ and open the template in the editor.
         <title>SuperAssistenza - Ciclope Amministrazione</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <link href="js/libs/bootstrap-core/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="js/libs/metisMenu/metisMenu.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="js/libs/startbootstrap-sb-admin-2/css/timeline.min.css"/>
         <link rel="stylesheet" href="js/libs/startbootstrap-sb-admin-2/css/sb-admin-2.min.css"/>
         <link href="js/libs/morris.js/morris.css" rel="stylesheet" type="text/css"/>
         <link href="js/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-        
-        <script src="js/libs/jquery/jquery.min.js"></script>
-        <script src="js/libs/bootstrap-core/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="js/libs/metisMenu/metisMenu.min.js" type="text/javascript"></script>
-        
-        <script src="js/libs/raphael/raphael.min.js" type="text/javascript"></script>
-        <script src="js/libs/morris.js/morris.min.js" type="text/javascript"></script>
+
+        <!-- jQuery -->
+        <script src="js/libs/jquery/jquery.js"></script>
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/libs/bootstrap-core/js/bootstrap.js" type="text/javascript"></script>
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="js/libs/metisMenu/metisMenu.js" type="text/javascript"></script>
+        <!-- Morris js -->
+        <script src="js/libs/morris.js/morris.js" type="text/javascript"></script>
+        <script src="js/libs/raphael/raphael.js" type="text/javascript"></script>        
         <script src="js/data/morris-data.js"></script>
-        
-        <script src="js/libs/startbootstrap-sb-admin-2/js/sb-admin-2.min.js"></script>
-        
+        <!-- Custom theme JS -->
+        <script src="js/libs/startbootstrap-sb-admin-2/js/sb-admin-2.js"></script>
+        <script>
+            //declarations
+
+            //functions
+            function loadPratiche(){
+                $("#lista_pratiche").empty();
+                var request = { "order": "asc", "last_element_number": "2"};
+                requestJson = JSON.stringify(request);
+                $.ajax({
+                    url: "GetRiparazioniCorrenti",
+                    cache: false,
+                    data: requestJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        var items2 = [];
+                        var items = [];
+                        if (data.length === 0) {
+                            items.push('<li>Nessun materiale utilizzato al momento...</li>');
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<a href="#" class="list-group-item" id="' + data[i].praticaId + '" >\n\
+                    <i class="fa fa-folder fa-fw"></i> ' + data[i].marca + ' - ' + data[i].modello +
+                                        '<span style="margin-left:2em;" class="text-primary">' + data[i].targa + '</span>\n\
+                                    <span class="pull-right text-muted small">\n\
+                                    <em>4 minutes ago</em></span>\n\
+                            </a>');
+                            }
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                        }
+                        $("#lista_pratiche").empty();
+                        $("#lista_pratiche").html(items);
+                    },
+                    error: function (xhttpjqr, err, data) {
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            //events
+            $(document).ready(function () {
+                
+                loadPratiche();
+            });
+
+        </script>
     </head>
     <body>
         <div id="wrapper">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="index.html"> Ciclope - SuperAssistenza</a>
-            </div>
-            <!-- /.navbar-top-links -->
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-                        <li>
-                            <a href="amministrazione.html"><i class="fa fa-archive fa-fw"></i> Pratiche</a>
-                        </li>
-                        <li>
-                            <a href="amministrazione.html"><i class="fa fa-clock-o fa-fw"></i> Ore lavorate</a>
-                        </li>
-                    </ul>
+            <!-- Navigation -->
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html"> Ciclope - SuperAssistenza</a>
                 </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
-        <!--  Pages area -->
-        <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Pratiche</h1>
+                <!-- /.navbar-top-links -->
+                <div class="navbar-default sidebar" role="navigation">
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+                            <li>
+                                <a href="amministrazione.html"><i class="fa fa-archive fa-fw"></i> Pratiche</a>
+                            </li>
+                            <li>
+                                <a href="amministrazione.html"><i class="fa fa-clock-o fa-fw"></i> Ore lavorate</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.sidebar-collapse -->
                 </div>
-            </div>
-            <!-- /.row -->
-            <div class="row">
-                <!-- /.col-lg-8 -->
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bell fa-fw"></i> Lista delle pratiche correnti
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <a class="btn btn-default btn-primary" style="margin-bottom:1em;">
-                                <i class="fa fa-plus"></i> Nuova pratica
-                            </a>
-                            <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-folder fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                                    </span>
-                                </a>
+                <!-- /.navbar-static-side -->
+            </nav>
+            <!--  Pages area -->
+            <div id="page-wrapper">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">Pratiche</h1>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <!-- /.col-lg-8 -->
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <i class="fa fa-bell fa-fw"></i> Lista delle pratiche correnti
                             </div>
-                            <!-- /.list-group -->
-                            
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <a class="btn btn-default btn-primary" style="margin-bottom:1em;">
+                                    <i class="fa fa-plus"></i> Nuova pratica
+                                </a>
+                                <!-- LISTA DELLE PRATICA -->
+                                <div class="list-group" id="lista_pratiche"></div>
+                                <!-- /.list-group -->
+
+                            </div>
+                            <!-- /.panel-body -->
                         </div>
-                        <!-- /.panel-body -->
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <!-- /.col-lg-8 -->
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div id="morris-area-chart"></div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- /#page-wrapper -->
         </div>
-        <!-- /#page-wrapper -->
-    </div>
+
     </body>
 </html>

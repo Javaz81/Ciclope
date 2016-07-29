@@ -54,25 +54,56 @@ public class GetRiparazioniCorrenti extends HttpServlet {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
-            Object obj;
+            JSONObject obj = null;
             JSONParser p = new JSONParser();
+            Query q = null;
             if (json != null) {
                 try {
-                    obj = p.parse(json);
+                    obj = (JSONObject) p.parse(json);
+                    q = s.createSQLQuery("select "
+                            + " ciclope.pratica.idPratica as praticaId,\n"
+                            + " ciclope.pratica.arrivo as arrivo,\n"
+                            + " ciclope.veicolo.marca as marca,\n"
+                            + " ciclope.veicolo.modello as modello,\n"
+                            + " ciclope.veicolo.targa as targa,\n"
+                            + " ciclope.veicolo.tipo as tipo,\n"
+                            + " ciclope.pratica.data_arrivo as data_pratica\n"
+                            + " from ciclope.pratica\n"
+                            + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                            + " where ciclope.pratica.uscita is null"
+                            + " ORDER BY data_pratica " + (obj.get("order").equals("asc") ? "ASC" : "DESC") + "\n"
+                            + " LIMIT " + obj.get("last_element_number")
+                    );
                 } catch (ParseException ex) {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
+                    q = s.createSQLQuery("select "
+                            + " ciclope.pratica.idPratica as praticaId,\n"
+                            + " ciclope.pratica.arrivo as arrivo,\n"
+                            + " ciclope.veicolo.marca as marca,\n"
+                            + " ciclope.veicolo.modello as modello,\n"
+                            + " ciclope.veicolo.targa as targa,\n"
+                            + " ciclope.veicolo.tipo as tipo,\n"
+                            + " ciclope.pratica.data_arrivo as data_pratica\n"
+                            + " from ciclope.pratica\n"
+                            + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                            + " where ciclope.pratica.uscita is null"
+                    );
                 }
+            } else {
+                q = s.createSQLQuery("select "
+                        + " ciclope.pratica.idPratica as praticaId,\n"
+                        + " ciclope.pratica.arrivo as arrivo,\n"
+                        + " ciclope.veicolo.marca as marca,\n"
+                        + " ciclope.veicolo.modello as modello,\n"
+                        + " ciclope.veicolo.targa as targa,\n"
+                        + " ciclope.veicolo.tipo as tipo,\n"
+                        + " ciclope.pratica.data_arrivo as data_pratica\n"
+                        + " from ciclope.pratica\n"
+                        + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                        + " where ciclope.pratica.uscita is null"
+                );
             }
-            Query q = s.createSQLQuery("select "
-                    + " ciclope.pratica.idPratica as praticaId,\n"
-                    + " ciclope.pratica.arrivo as arrivo,\n"
-                    + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.modello as modello,\n"
-                    + " ciclope.veicolo.targa as targa,\n"
-                    + " ciclope.veicolo.tipo as tipo\n"
-                    + " from ciclope.pratica\n"
-                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where ciclope.pratica.uscita is null");
+
             List<Object[]> aicrecs = q.list();
             t.commit();
             JSONObject jo;
@@ -84,7 +115,7 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                 jo.put("arrivo", ob[1].toString());
                 jo.put("marca", ob[2].toString());
                 jo.put("modello", ob[3].toString());
-                jo.put("targa", ob[4]==null?"Speciale":ob[4].toString());
+                jo.put("targa", ob[4] == null ? "Speciale" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
                 array.add(jo);
             }
