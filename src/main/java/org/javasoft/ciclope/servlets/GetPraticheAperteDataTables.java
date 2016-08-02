@@ -9,9 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -34,8 +37,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "GetRiparazioniCorrenti", urlPatterns = {"/GetRiparazioniCorrenti"})
-public class GetRiparazioniCorrenti extends HttpServlet {
+@WebServlet(name = "GetPraticheAperteDataTables", urlPatterns = {"/GetPraticheAperteDataTables"})
+public class GetPraticheAperteDataTables extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,50 +51,40 @@ public class GetRiparazioniCorrenti extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session s = sf.openSession();
             Transaction t = s.getTransaction();
+            Map<String, String[]> maps = null;
             t.begin();
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String json;
-            json = br.readLine();
+            if (request.getParameterMap().size() > 0) {
+                maps = request.getParameterMap();
+            }
+            //TODO:we have to see if user has choosed a column sorting
+            // or text searching... and update the MYSQL DB query String 
+            // according to.
+            
+            String json = null;
             JSONObject obj = null;
-            JSONParser p = new JSONParser();
             Query q = null;
+
             if (json != null) {
-                try {
-                    obj = (JSONObject) p.parse(json);
-                    q = s.createSQLQuery("select "
-                            + " ciclope.pratica.idPratica as praticaId,\n"
-                            + " ciclope.pratica.arrivo as arrivo,\n"
-                            + " ciclope.veicolo.marca as marca,\n"
-                            + " ciclope.veicolo.modello as modello,\n"
-                            + " ciclope.veicolo.targa as targa,\n"
-                            + " ciclope.veicolo.tipo as tipo,\n"
-                            + " ciclope.pratica.data_arrivo as data_pratica\n"
-                            + " from ciclope.pratica\n"
-                            + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                            + " where ciclope.pratica.uscita is null"
-                            + " ORDER BY data_pratica " + (obj.get("order").equals("asc") ? "ASC" : "DESC") + "\n"
-                            + " LIMIT " + obj.get("last_element_number")
-                    );
-                } catch (ParseException ex) {
-                    Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
-                    q = s.createSQLQuery("select "
-                            + " ciclope.pratica.idPratica as praticaId,\n"
-                            + " ciclope.pratica.arrivo as arrivo,\n"
-                            + " ciclope.veicolo.marca as marca,\n"
-                            + " ciclope.veicolo.modello as modello,\n"
-                            + " ciclope.veicolo.targa as targa,\n"
-                            + " ciclope.veicolo.tipo as tipo,\n"
-                            + " ciclope.pratica.data_arrivo as data_pratica\n"
-                            + " from ciclope.pratica\n"
-                            + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                            + " where ciclope.pratica.uscita is null"
-                    );
-                }
+                obj = null;
+                q = s.createSQLQuery("select "
+                        + " ciclope.pratica.idPratica as praticaId,\n"
+                        + " ciclope.pratica.arrivo as arrivo,\n"
+                        + " ciclope.veicolo.marca as marca,\n"
+                        + " ciclope.veicolo.modello as modello,\n"
+                        + " ciclope.veicolo.targa as targa,\n"
+                        + " ciclope.veicolo.tipo as tipo,\n"
+                        + " ciclope.pratica.data_arrivo as data_pratica\n"
+                        + " from ciclope.pratica\n"
+                        + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                        + " where ciclope.pratica.uscita is null"
+                        + " ORDER BY data_pratica " + (obj.get("order").equals("asc") ? "ASC" : "DESC") + "\n"
+                        + " LIMIT " + obj.get("last_element_number")
+                );
             } else {
                 q = s.createSQLQuery("select "
                         + " ciclope.pratica.idPratica as praticaId,\n"
@@ -109,25 +102,40 @@ public class GetRiparazioniCorrenti extends HttpServlet {
 
             List<Object[]> aicrecs = q.list();
             t.commit();
-            JSONObject jo;
-            JSONArray array = new JSONArray();
-
-            for (Object[] ob : aicrecs) {
-                jo = new JSONObject();
-                jo.put("praticaId", ob[0].toString());
-                jo.put("arrivo", ob[1].toString());
-                jo.put("marca", ob[2].toString());
-                jo.put("modello", ob[3].toString());
-                jo.put("targa", ob[4] == null ? "Speciale" : ob[4].toString());
-                jo.put("tipo", ob[5].toString());
-                jo.put("data_arrivo", DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
-                array.add(jo);
+            JSONObject jo = null;
+            JSONObject jo1 = new JSONObject();
+            JSONArray row = null;
+            JSONArray arraytop = new JSONArray();
+            // Changing "draw" variable let the jquery datatables redraw itself 
+            // after click on column to resorting rows, avoiding the 
+            // "processing" string to stuck on html tables.
+            String draw = "1";
+            if(maps!=null && !maps.isEmpty()){
+                int dw = Integer.parseInt(maps.get("draw")[0]);
+                dw+=1;
+                draw = String.valueOf(dw);
             }
-            out.println(array.toJSONString());
+            //Finally we build the datatables format response.
+            jo1.put("draw", draw);
+            jo1.put("recordsTotal", Integer.toString(aicrecs.size()));
+            jo1.put("recordsFiltered", Integer.toString(aicrecs.size()));
+            for (Object[] ob : aicrecs) {
+                row = new JSONArray();
+                row.add(ob[0].toString());
+                row.add(ob[1].toString());
+                row.add(ob[2].toString());
+                row.add(ob[3].toString());
+                row.add(ob[4] == null ? "Speciale" : ob[4].toString());
+                row.add(ob[5].toString());
+                row.add(DateUtils.isToday((Date) ob[6]) ? "Oggi" : DateUtils.formatDate((Date) ob[6], Locale.ITALY));
+                arraytop.add(row);
+            }
+            jo1.put("data", arraytop);
+            out.println(jo1.toJSONString());
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

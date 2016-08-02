@@ -26,6 +26,53 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>ide</org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>
     </properties>
     <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1">
+        <library name="canvasjs" version="1.7.0">
+            <file localPath="src/main/webapp/js/libs/canvasjs/canvasjs.js" path="canvasjs.js"/>
+            <file localPath="src/main/webapp/js/libs/canvasjs/canvasjs.min.js" path="canvasjs.min.js"/>
+            <file localPath="src/main/webapp/js/libs/canvasjs/excanvas.js" path="excanvas.js"/>
+            <file localPath="src/main/webapp/js/libs/canvasjs/jquery.canvasjs.js" path="jquery.canvasjs.js"/>
+            <file localPath="src/main/webapp/js/libs/canvasjs/jquery.canvasjs.min.js" path="jquery.canvasjs.min.js"/>
+        </library>
+        <library name="datatables" version="1.10.12">
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.bootstrap.css" path="css/dataTables.bootstrap.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.bootstrap.min.css" path="css/dataTables.bootstrap.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.bootstrap4.css" path="css/dataTables.bootstrap4.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.bootstrap4.min.css" path="css/dataTables.bootstrap4.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.foundation.css" path="css/dataTables.foundation.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.foundation.min.css" path="css/dataTables.foundation.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.jqueryui.css" path="css/dataTables.jqueryui.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.jqueryui.min.css" path="css/dataTables.jqueryui.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.material.css" path="css/dataTables.material.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.material.min.css" path="css/dataTables.material.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.semanticui.css" path="css/dataTables.semanticui.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.semanticui.min.css" path="css/dataTables.semanticui.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.uikit.css" path="css/dataTables.uikit.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/dataTables.uikit.min.css" path="css/dataTables.uikit.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/jquery.dataTables_themeroller.css" path="css/jquery.dataTables_themeroller.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/jquery.dataTables.css" path="css/jquery.dataTables.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/css/jquery.dataTables.min.css" path="css/jquery.dataTables.min.css"/>
+            <file localPath="src/main/webapp/js/libs/datatables/images/sort_asc_disabled.png" path="images/sort_asc_disabled.png"/>
+            <file localPath="src/main/webapp/js/libs/datatables/images/sort_asc.png" path="images/sort_asc.png"/>
+            <file localPath="src/main/webapp/js/libs/datatables/images/sort_both.png" path="images/sort_both.png"/>
+            <file localPath="src/main/webapp/js/libs/datatables/images/sort_desc_disabled.png" path="images/sort_desc_disabled.png"/>
+            <file localPath="src/main/webapp/js/libs/datatables/images/sort_desc.png" path="images/sort_desc.png"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.bootstrap.js" path="js/dataTables.bootstrap.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.bootstrap.min.js" path="js/dataTables.bootstrap.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.bootstrap4.js" path="js/dataTables.bootstrap4.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.bootstrap4.min.js" path="js/dataTables.bootstrap4.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.foundation.js" path="js/dataTables.foundation.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.foundation.min.js" path="js/dataTables.foundation.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.jqueryui.js" path="js/dataTables.jqueryui.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.jqueryui.min.js" path="js/dataTables.jqueryui.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.material.js" path="js/dataTables.material.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.material.min.js" path="js/dataTables.material.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.semanticui.js" path="js/dataTables.semanticui.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.semanticui.min.js" path="js/dataTables.semanticui.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.uikit.js" path="js/dataTables.uikit.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/dataTables.uikit.min.js" path="js/dataTables.uikit.min.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/jquery.dataTables.js" path="js/jquery.dataTables.js"/>
+            <file localPath="src/main/webapp/js/libs/datatables/js/jquery.dataTables.min.js" path="js/jquery.dataTables.min.js"/>
+        </library>
         <library name="font-awesome" version="4.6.3">
             <file localPath="src/main/webapp/js/libs/font-awesome/css/font-awesome.css" path="css/font-awesome.css"/>
             <file localPath="src/main/webapp/js/libs/font-awesome/css/font-awesome.css.map" path="css/font-awesome.css.map"/>
@@ -37,7 +84,7 @@ Any value defined here will override the pom.xml file value but is only applicab
             <file localPath="src/main/webapp/js/libs/font-awesome/fonts/fontawesome-webfont.woff2" path="fonts/fontawesome-webfont.woff2"/>
             <file localPath="src/main/webapp/js/libs/font-awesome/fonts/FontAwesome.otf" path="fonts/FontAwesome.otf"/>
         </library>
-        <library name="jquery" version="1.11.1">
+        <library name="jquery" version="1.12.4">
             <file localPath="src/main/webapp/js/libs/jquery/jquery.js" path="jquery.js"/>
             <file localPath="src/main/webapp/js/libs/jquery/jquery.min.js" path="jquery.min.js"/>
             <file localPath="src/main/webapp/js/libs/jquery/jquery.min.map" path="jquery.min.map"/>
