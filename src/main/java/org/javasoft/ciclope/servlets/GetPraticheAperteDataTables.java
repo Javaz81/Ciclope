@@ -64,41 +64,56 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             //TODO:we have to see if user has choosed a column sorting
             // or text searching... and update the MYSQL DB query String 
             // according to.
-            
+
+            String[] columnNames = new String[]{
+                "idPratica",
+                "arrivo",
+                "marca",
+                "modello",
+                "targa",
+                "tipo",
+                "data_pratica"
+            };
+            String orderColumn = columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
+            String orderDir = maps.get("order[0][dir]")[0];
+            StringBuilder extSearch = new StringBuilder(2000);
+            extSearch.append("");
+            int i = 0;
+            String colNameVal = "";
+            for(String name: columnNames){
+                if(!maps.get("columns["+i+"][search][value]")[0].equals("")){
+                    if(maps.get("columns["+i+"][search][value]")[0].equals("null")){
+                        colNameVal = " IS NULL";
+                    }else{
+                        if(name.equalsIgnoreCase(columnNames[6])){                            
+                            colNameVal = " = '"+DateUtils.formatDateMySQL(maps.get("columns["+i+"][search][value]")[0], Locale.ITALY)+"'";
+                        }else{
+                            colNameVal = " = '"+maps.get("columns["+i+"][search][value]")[0]+"'";
+                        }
+                    }
+                    extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"data_arrivo":columnNames[i]).append(colNameVal);
+                }
+                i++;
+            }
             String json = null;
             JSONObject obj = null;
             Query q = null;
 
-            if (json != null) {
-                obj = null;
-                q = s.createSQLQuery("select "
-                        + " ciclope.pratica.idPratica as praticaId,\n"
-                        + " ciclope.pratica.arrivo as arrivo,\n"
-                        + " ciclope.veicolo.marca as marca,\n"
-                        + " ciclope.veicolo.modello as modello,\n"
-                        + " ciclope.veicolo.targa as targa,\n"
-                        + " ciclope.veicolo.tipo as tipo,\n"
-                        + " ciclope.pratica.data_arrivo as data_pratica\n"
-                        + " from ciclope.pratica\n"
-                        + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                        + " where ciclope.pratica.uscita is null"
-                        + " ORDER BY data_pratica " + (obj.get("order").equals("asc") ? "ASC" : "DESC") + "\n"
-                        + " LIMIT " + obj.get("last_element_number")
-                );
-            } else {
-                q = s.createSQLQuery("select "
-                        + " ciclope.pratica.idPratica as praticaId,\n"
-                        + " ciclope.pratica.arrivo as arrivo,\n"
-                        + " ciclope.veicolo.marca as marca,\n"
-                        + " ciclope.veicolo.modello as modello,\n"
-                        + " ciclope.veicolo.targa as targa,\n"
-                        + " ciclope.veicolo.tipo as tipo,\n"
-                        + " ciclope.pratica.data_arrivo as data_pratica\n"
-                        + " from ciclope.pratica\n"
-                        + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                        + " where ciclope.pratica.uscita is null"
-                );
-            }
+            q = s.createSQLQuery("select "
+                    + " ciclope.pratica.idPratica as praticaId,\n"
+                    + " ciclope.pratica.arrivo as arrivo,\n"
+                    + " ciclope.veicolo.marca as marca,\n"
+                    + " ciclope.veicolo.modello as modello,\n"
+                    + " ciclope.veicolo.targa as targa,\n"
+                    + " ciclope.veicolo.tipo as tipo,\n"
+                    + " ciclope.pratica.data_arrivo as data_pratica\n"
+                    + " from ciclope.pratica\n"
+                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                    + " where ciclope.pratica.uscita is null"
+                    + extSearch.toString()
+                    + " ORDER BY " + orderColumn + " " + orderDir + "\n"
+                    + " LIMIT 100"
+            );
 
             List<Object[]> aicrecs = q.list();
             t.commit();
@@ -110,9 +125,9 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             // after click on column to resorting rows, avoiding the 
             // "processing" string to stuck on html tables.
             String draw = "1";
-            if(maps!=null && !maps.isEmpty()){
+            if (!maps.isEmpty()) {
                 int dw = Integer.parseInt(maps.get("draw")[0]);
-                dw+=1;
+                dw += 1;
                 draw = String.valueOf(dw);
             }
             //Finally we build the datatables format response.
@@ -125,7 +140,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 row.add(ob[1].toString());
                 row.add(ob[2].toString());
                 row.add(ob[3].toString());
-                row.add(ob[4] == null ? "Speciale" : ob[4].toString());
+                row.add(ob[4] == null ? "null" : ob[4].toString());
                 row.add(ob[5].toString());
                 row.add(DateUtils.isToday((Date) ob[6]) ? "Oggi" : DateUtils.formatDate((Date) ob[6], Locale.ITALY));
                 arraytop.add(row);

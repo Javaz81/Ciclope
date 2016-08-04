@@ -5,6 +5,7 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,8 +21,25 @@ public class DateUtils {
     public static String formatDate(Date date, Locale locale){
         if(date == null || locale == null)
             throw new IllegalArgumentException("The date or locale must not be null");
-        SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEE - dd - MMMMMMM - yyyy",locale);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMMMMM - yyyy",locale);
         return sdf.format(date);
+    }
+    
+    public static String formatDateMySQL(String date, Locale locale){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMMMMM - yyyy", locale);
+        String data;
+        try {
+            data = new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
+        } catch (ParseException ex) {
+            try {
+                sdf =new SimpleDateFormat("dd \\- MMMMMMM \\- yyyy", locale);
+                data = new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
+            } catch (ParseException ex1) {
+                ex.printStackTrace();
+                return "null";
+            }
+        }
+        return data;
     }
     
     /**
