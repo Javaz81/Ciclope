@@ -80,7 +80,7 @@ public class GetOreLavorate extends HttpServlet {
             personaleId = ((JSONObject) obj).get("personaleId").toString();
 
             Query q = s.createSQLQuery("select personale.Nome, personale.Cognome, orelavorate.giornata,"
-                    + " veicolo.matricola, veicolo.marca, veicolo.modello, ore, pratica.idPratica, orelavorate.IdOreLavorate \n"
+                    + " veicolo.matricola, veicolo.marca, veicolo.modello, orelavorate.ore, pratica.idPratica, orelavorate.IdOreLavorate \n"
                     + "from orelavorate\n"
                     + "inner join ciclope.pratica on orelavorate.pratica = pratica.idPratica\n"
                     + "inner join ciclope.veicolo on ciclope.pratica.Veicolo = veicolo.idVeicolo\n"
