@@ -111,7 +111,8 @@ and open the template in the editor.
                 });
                 $('#dataTables-pratiche tbody').on('click', 'tr', function () {
                     var data = table.row(this).data();
-                    location.replace("nuova_pratica.html");
+                    var loc = 'nuova_pratica.jsp?userid='+(data[0].toString());
+                    location.assign(loc);
                 });
             });
             
@@ -131,7 +132,7 @@ and open the template in the editor.
                         <ul class="nav" id="side-menu">
                             <li>
                                 <a href="amministrazione.html">
-                                    <i class="fa fa-archive fa-fw"></i>
+                                    <i class="fa fa-dashcube fa-fw"></i>
                                     Pratiche
                                     <span class="fa arrow"></span>
                                 </a>

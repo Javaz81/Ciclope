@@ -29,8 +29,8 @@ import org.json.simple.JSONObject;
  *
  * @author andrea
  */
-@WebServlet(name = "GetPraticheAperteDataTables", urlPatterns = {"/GetPraticheAperteDataTables"})
-public class GetPraticheAperteDataTables extends HttpServlet {
+@WebServlet(name = "GetStandardJobsDataTable", urlPatterns = {"/GetStandardJobsDataTable"})
+public class GetStandardJobsDataTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -58,14 +58,9 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             // according to.
 
             String[] columnNames = new String[]{
-                "idPratica",
-                "arrivo",
-                "marca",
-                "modello",
-                "targa",
-                "tipo",
-                "data_pratica"
-            };
+                "Categoria",
+                "Codice",
+                "Descrizione",};
             String orderColumn = columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
             String orderDir = maps.get("order[0][dir]")[0];
             StringBuilder extSearch = new StringBuilder(2000);
@@ -73,24 +68,39 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             extSearch.append("");
             int i = 0;
             String colNameVal = "";
-            for(String name: columnNames){
-                if(!maps.get("columns["+i+"][search][value]")[0].equals("")){
-                    if(maps.get("columns["+i+"][search][value]")[0].equals("null")){
+            for (String name : columnNames) {
+                if (!maps.get("columns[" + i + "][search][value]")[0].equals("")) {
+                    if (maps.get("columns[" + i + "][search][value]")[0].equals("null")) {
                         colNameVal = " IS NULL";
-                    }else{
-                        if(name.equalsIgnoreCase(columnNames[6])){                            
-                            colNameVal = " = '"+DateUtils.formatDateMySQL(maps.get("columns["+i+"][search][value]")[0], Locale.ITALY)+"'";
-                        }else{
-                            colNameVal = " = '"+maps.get("columns["+i+"][search][value]")[0]+"'";
-                        }
+                    } else if (name.equalsIgnoreCase(columnNames[6])) {
+                        colNameVal = " = '" + DateUtils.formatDateMySQL(maps.get("columns[" + i + "][search][value]")[0], Locale.ITALY) + "'";
+                    } else {
+                        colNameVal = " = '" + maps.get("columns[" + i + "][search][value]")[0] + "'";
                     }
-                    extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"data_arrivo":columnNames[i]).append(colNameVal);
+                    extSearch.append(" AND ").append(columnNames[i].equals("data_pratica") ? "data_arrivo" : columnNames[i]).append(colNameVal);
                 }
                 i++;
             }
             String json = null;
             JSONObject obj = null;
             Query q = null;
+
+            q = s.createSQLQuery("Select ciclope.categoriatipolavoro.nome as Categoria,\n"
+                    + "ciclope.tipolavoro.codice as Codice,\n"
+                    + "ciclope.tipolavoro. descrizione as Descrizione\n"
+                    + "from\n"
+                    + "ciclope.tipolavoro join ciclope.categoriatipolavoro\n"
+                    + "on ciclope.tipolavoro.categoria = ciclope.categoriatipolavoro.idCategoriaTipoLavoro\n"
+                    + "where ciclope.tipolavoro.idTipoLavoro\n"
+                    + "not in \n"
+                    + "(\n"
+                    + "Select distinct\n"
+                    + "ciclope.tipolavoro.idTipoLavoro\n"
+                    + "from ciclope.tipolavoro join ciclope.lavoripratichestandard\n"
+                    + "on  ciclope.tipolavoro.idTipoLavoro = ciclope.lavoripratichestandard.tipolavoro \n"
+                    + "where\n"
+                    + "ciclope.lavoripratichestandard.pratica = 1\n"
+                    + ") ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit );
 
             q = s.createSQLQuery("select "
                     + " ciclope.pratica.idPratica as praticaId,\n"
@@ -105,15 +115,12 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                     + " where ciclope.pratica.uscita is null"
                     + extSearch.toString()
                     + " ORDER BY " + orderColumn + " " + orderDir + "\n"
-                    + " LIMIT "+extSearchLimit
+                    + " LIMIT " + extSearchLimit
             );
 
             List<Object[]> aicrecs = q.list();
             t.commit();
-            JSONObject jo = null;
-            JSONObject jo1 = new JSONObject();
-            JSONArray row = null;
-            JSONArray arraytop = new JSONArray();
+
             // Changing "draw" variable let the jquery datatables redraw itself 
             // after click on column to resorting rows, avoiding the 
             // "processing" string to stuck on html tables.
@@ -123,7 +130,12 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 dw += 1;
                 draw = String.valueOf(dw);
             }
+
             //Finally we build the datatables format response.
+            JSONObject jo = null;
+            JSONObject jo1 = new JSONObject();
+            JSONArray row;
+            JSONArray arraytop = new JSONArray();
             jo1.put("draw", draw);
             jo1.put("recordsTotal", Integer.toString(aicrecs.size()));
             jo1.put("recordsFiltered", Integer.toString(aicrecs.size()));
@@ -143,7 +155,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
         }
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

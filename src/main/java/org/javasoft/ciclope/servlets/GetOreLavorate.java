@@ -25,7 +25,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.javasoft.ciclope.persistence.Orelavorate;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
