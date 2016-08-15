@@ -60,7 +60,7 @@
         <script>
             // declarations
             var STANDARD_JOBS_DATATABLE;
-            var PRATICA_SELEZIONATA = {praticaID:"-1"};
+            var PRATICA_SELEZIONATA = {praticaID: "-1"};
             var LAVORO_SELEZIONATO;
             // functions
 
@@ -73,13 +73,18 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
+                $("#addStandardJobAction").click(function () {
+                    STANDARD_JOBS_DATATABLE.clear();
+                    STANDARD_JOBS_DATATABLE.draw();
+                    $("#add_standard_job").modal('show');
+                });
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
                     responsive: true,
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url:"GetStandardJobsDataTable",
-                        type:"POST",
+                        url: "GetStandardJobsDataTable",
+                        type: "POST",
                         data: PRATICA_SELEZIONATA
                     },
                     sDom: 'lrtip', //to hide global search input box.
@@ -407,7 +412,11 @@
                                                                 <span class="caret"></span>
                                                             </button>
                                                             <ul class="dropdown-menu pull-right" role="menu">
-                                                                <li><a href="#">Aggingi lavoro</a>
+                                                                <li>
+                                                                     <a href="#" id="addStandardJobAction">Aggingi lavoro standard</a>
+                                                                     <!--<a href="#" data-toggle="modal" id="addStandardJobAction" data-target="#add_standard_job">Aggingi lavoro standard</a>-->
+                                                                </li>
+                                                                <li><a href="#">Aggingi lavoro personalizzato</a>
                                                                 </li>
                                                                 <li class="divider"></li>
                                                                 <li><a href="#">Elimina tutto</a>
@@ -532,16 +541,17 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
+
         <!-- /.modal -->
-        <div class="modal fade" id="add_standard_job" tabindex="-1" role="dialog" aria-labelledby="addStandardJobLabel" aria-hidden="true">
+        <div class="modal modal-lg fade" id="add_standard_job" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="addStandardJobLabel">Inserimento nuovo lavoro standard</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Inserimento nuovo lavoro standard</h4>
                     </div>
                     <div class="modal-body">
-                        <table id="standardJobTableSelection" class="display" cellspacing="0" width="100%">
+                        <table id="standardJobTableSelection" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Categoria</th>
@@ -549,6 +559,9 @@
                                     <th>Descrizione</th>
                                 </tr>
                             </thead>
+                            <tbody>
+
+                            </tbody>
                             <tfoot>
                                 <tr>
                                     <th>Categoria</th>

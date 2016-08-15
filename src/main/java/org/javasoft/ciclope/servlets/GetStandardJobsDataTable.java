@@ -65,6 +65,7 @@ public class GetStandardJobsDataTable extends HttpServlet {
             String orderDir = maps.get("order[0][dir]")[0];
             StringBuilder extSearch = new StringBuilder(2000);
             String extSearchLimit = maps.get("length")[0];
+            String startSearchLimit = maps.get("start")[0];
             extSearch.append("");
             int i = 0;
             String colNameVal = "";
@@ -85,7 +86,8 @@ public class GetStandardJobsDataTable extends HttpServlet {
             JSONObject obj = null;
             Query q = null;
 
-            q = s.createSQLQuery("Select ciclope.categoriatipolavoro.nome as Categoria,\n"
+            q = s.createSQLQuery("Select "
+                    + "ciclope.categoriatipolavoro.nome as Categoria,\n"
                     + "ciclope.tipolavoro.codice as Codice,\n"
                     + "ciclope.tipolavoro. descrizione as Descrizione\n"
                     + "from\n"
@@ -100,22 +102,7 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     + "on  ciclope.tipolavoro.idTipoLavoro = ciclope.lavoripratichestandard.tipolavoro \n"
                     + "where\n"
                     + "ciclope.lavoripratichestandard.pratica = 1\n"
-                    + ") ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit );
-
-            q = s.createSQLQuery("select "
-                    + " ciclope.pratica.idPratica as praticaId,\n"
-                    + " ciclope.pratica.arrivo as arrivo,\n"
-                    + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.modello as modello,\n"
-                    + " ciclope.veicolo.targa as targa,\n"
-                    + " ciclope.veicolo.tipo as tipo,\n"
-                    + " ciclope.pratica.data_arrivo as data_pratica\n"
-                    + " from ciclope.pratica\n"
-                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where ciclope.pratica.uscita is null"
-                    + extSearch.toString()
-                    + " ORDER BY " + orderColumn + " " + orderDir + "\n"
-                    + " LIMIT " + extSearchLimit
+                    + ") ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit + " OFFSET " + startSearchLimit 
             );
 
             List<Object[]> aicrecs = q.list();
@@ -144,10 +131,6 @@ public class GetStandardJobsDataTable extends HttpServlet {
                 row.add(ob[0].toString());
                 row.add(ob[1].toString());
                 row.add(ob[2].toString());
-                row.add(ob[3].toString());
-                row.add(ob[4] == null ? "null" : ob[4].toString());
-                row.add(ob[5].toString());
-                row.add(DateUtils.isToday((Date) ob[6]) ? "Oggi" : DateUtils.formatDate((Date) ob[6], Locale.ITALY));
                 arraytop.add(row);
             }
             jo1.put("data", arraytop);
