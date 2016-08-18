@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,26 +67,29 @@ public class GetStandardJobsDataTable extends HttpServlet {
             StringBuilder extSearch = new StringBuilder(2000);
             String extSearchLimit = maps.get("length")[0];
             String startSearchLimit = maps.get("start")[0];
+            String praticaId = maps.get("praticaId")[0];
+            String categoriaId = maps.get("categoriaId")[0];
             extSearch.append("");
             int i = 0;
             String colNameVal = "";
-            for (String name : columnNames) {
-                if (!maps.get("columns[" + i + "][search][value]")[0].equals("")) {
-                    if (maps.get("columns[" + i + "][search][value]")[0].equals("null")) {
-                        colNameVal = " IS NULL";
-                    } else if (name.equalsIgnoreCase(columnNames[6])) {
-                        colNameVal = " = '" + DateUtils.formatDateMySQL(maps.get("columns[" + i + "][search][value]")[0], Locale.ITALY) + "'";
-                    } else {
-                        colNameVal = " = '" + maps.get("columns[" + i + "][search][value]")[0] + "'";
-                    }
-                    extSearch.append(" AND ").append(columnNames[i].equals("data_pratica") ? "data_arrivo" : columnNames[i]).append(colNameVal);
-                }
-                i++;
-            }
             String json = null;
             JSONObject obj = null;
             Query q = null;
-
+            for(Entry<String,String[]> e : maps.entrySet()){
+                if(e.getKey().contains("columns["+i+"][search][value]")){
+                    if(e.getValue()[0].equalsIgnoreCase("") || e.getValue()[0].equalsIgnoreCase("null"))
+                        extSearch.append("");
+                    else{                        
+                        extSearch.append(" and ").
+                                append(i!=0?columnNames[i]:"nome").
+                                append(" = ").
+                                append("\"").
+                                append(e.getValue()[0]).
+                                append("\"");
+                    }
+                    i++;
+                }
+            }
             q = s.createSQLQuery("Select "
                     + "ciclope.categoriatipolavoro.nome as Categoria,\n"
                     + "ciclope.tipolavoro.codice as Codice,\n"
@@ -93,7 +97,8 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     + "from\n"
                     + "ciclope.tipolavoro join ciclope.categoriatipolavoro\n"
                     + "on ciclope.tipolavoro.categoria = ciclope.categoriatipolavoro.idCategoriaTipoLavoro\n"
-                    + "where ciclope.tipolavoro.idTipoLavoro\n"
+                    + "where ciclope.tipolavoro.categoria = "+categoriaId+" and \n"
+                    + "ciclope.tipolavoro.idTipoLavoro\n"
                     + "not in \n"
                     + "(\n"
                     + "Select distinct\n"
@@ -101,8 +106,10 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     + "from ciclope.tipolavoro join ciclope.lavoripratichestandard\n"
                     + "on  ciclope.tipolavoro.idTipoLavoro = ciclope.lavoripratichestandard.tipolavoro \n"
                     + "where\n"
-                    + "ciclope.lavoripratichestandard.pratica = 1\n"
-                    + ") ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit + " OFFSET " + startSearchLimit 
+                    + "ciclope.lavoripratichestandard.pratica = "+ praticaId+"\n"
+                    + ")\n"
+                    + extSearch
+                    + " ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit + " OFFSET " + startSearchLimit 
             );
 
             List<Object[]> aicrecs = q.list();

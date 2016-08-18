@@ -60,10 +60,24 @@
         <script>
             // declarations
             var STANDARD_JOBS_DATATABLE;
-            var PRATICA_SELEZIONATA = {praticaID: "-1"};
-            var LAVORO_SELEZIONATO;
+            var CATEGORIA_SELEZIONATA = "-1";
+            var PRATICA_SELEZIONATA = "-1";
+            var LAVORO_SELEZIONATO = "-1";
+            var DATATABLE_DATA = {};
             // functions
-
+            function getParameterByName(name, url) {
+                if (!url)
+                    url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                if (!results)
+                    return null;
+                if (!results[2])
+                    return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+            PRATICA_SELEZIONATA = getParameterByName("praticaId");
             // events
             $(document).ready(function () {
                 $.datepicker.setDefaults({
@@ -73,9 +87,10 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
+
                 $("#addStandardJobAction").click(function () {
                     STANDARD_JOBS_DATATABLE.clear();
-                    STANDARD_JOBS_DATATABLE.draw();
+                    STANDARD_JOBS_DATATABLE.ajax.reload();
                     $("#add_standard_job").modal('show');
                 });
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
@@ -85,7 +100,7 @@
                     ajax: {
                         url: "GetStandardJobsDataTable",
                         type: "POST",
-                        data: PRATICA_SELEZIONATA
+                        data: {praticaId: PRATICA_SELEZIONATA, categoriaId: CATEGORIA_SELEZIONATA}
                     },
                     sDom: 'lrtip', //to hide global search input box.
                     initComplete: function () {
@@ -107,7 +122,21 @@
                         });
                     }
                 });
-
+                $('#standardJobTableSelection')
+                        .on('preXhr.dt', function (e, settings, data) {
+                            data.praticaId = PRATICA_SELEZIONATA;
+                            data.categoriaId = CATEGORIA_SELEZIONATA;
+                        });
+                $(".categoria *").on("click", function () {
+                    var categoryParent = $(this).parents(".categoria");
+                    var classList = categoryParent.attr('class').split(/\s+/);
+                    $.each(classList, function (index, item) {
+                        if (item.startsWith("categoria_")) {
+                            var sp = item.split("_");
+                            CATEGORIA_SELEZIONATA = sp[1];
+                        }
+                    });
+                });
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
                 });
@@ -399,12 +428,12 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div id="lavoriDaEffettuare" class="panel-collapse collapse in">
-                                    <div class="panel-body">
+                                    <div class="panel-body categoria categoria_1">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <div class="panel-title">
-                                                    <a style="margin-left:1em"data-toggle="collapse"
-                                                       href="#Categoria1">Categoria1</a>
+                                                    <a style="margin-left:1em" data-toggle="collapse"
+                                                       href="#categoria_1">CONTROLLI ARRIVO</a>
                                                     <div class="pull-right">
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -413,8 +442,8 @@
                                                             </button>
                                                             <ul class="dropdown-menu pull-right" role="menu">
                                                                 <li>
-                                                                     <a href="#" id="addStandardJobAction">Aggingi lavoro standard</a>
-                                                                     <!--<a href="#" data-toggle="modal" id="addStandardJobAction" data-target="#add_standard_job">Aggingi lavoro standard</a>-->
+                                                                    <a href="#" id="addStandardJobAction">Aggingi lavoro standard</a>
+                                                                    <!--<a href="#" data-toggle="modal" id="addStandardJobAction" data-target="#add_standard_job">Aggingi lavoro standard</a>-->
                                                                 </li>
                                                                 <li><a href="#">Aggingi lavoro personalizzato</a>
                                                                 </li>
@@ -426,7 +455,7 @@
                                                     </div>
                                                 </div>                                               
                                             </div>
-                                            <div id="Categoria1" class="panel-collapse collapse in">
+                                            <div id="categoria_1" class="panel-collapse collapse in">
                                                 <div class="panel-body">
                                                     <div class="list-group">
                                                         <a href="#" class="list-group-item">
@@ -543,15 +572,15 @@
         </div>
 
         <!-- /.modal -->
-        <div class="modal modal-lg fade" id="add_standard_job" role="dialog">
-            <div class="modal-dialog">
+        <div class="modal fade" id="add_standard_job" role="dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Inserimento nuovo lavoro standard</h4>
                     </div>
                     <div class="modal-body">
-                        <table id="standardJobTableSelection" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <table id="standardJobTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
                             <thead>
                                 <tr>
                                     <th>Categoria</th>
