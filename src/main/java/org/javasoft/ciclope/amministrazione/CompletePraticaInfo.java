@@ -9,7 +9,7 @@ package org.javasoft.ciclope.amministrazione;
  *
  * @author andrea
  */
-class CompletePraticaInfo {
+public class CompletePraticaInfo {
 
     /* pratica */
     private String idPratica;

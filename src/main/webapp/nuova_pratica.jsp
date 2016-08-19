@@ -4,8 +4,11 @@
     Author     : andrea
 --%>
 
+<%@page import="java.util.List"%>
+<%@page import="org.javasoft.ciclope.amministrazione.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%!
+    public List<CompletePraticaInfo> praticaInfos;
     public void jspInit() {
         System.out.println("jspInit");
     }
@@ -144,6 +147,10 @@
         </script>
     </head>
     <body>
+        <% 
+             praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
+             //categoriaInfos = AmministrazioneUtils.GetAllCategoryInformation(Integer.parseInt(request.getParameter("praticaId")));
+        %>
         <div id="wrapper">
 
             <!-- Navigation -->
@@ -190,8 +197,15 @@
                             <div class="btn-group" style="margin-bottom:1em">
                                 <button type="submit" class="btn btn-primary">Salva modifiche</button>
                                 <button type="submit" class="btn btn-primary">Esporta pratica</button>
-                                <button type="submit" class="btn btn-primary">Stampa pratica</button>                            
-                                <button type="submit" class="btn btn-primary" disabled>Elimina pratica</button>
+                                <button type="submit" class="btn btn-primary">Stampa pratica</button>
+                                <%
+                                    if(request.getParameter("newPratice").equalsIgnoreCase("true")){
+                                        out.println("<button type=\"submit\" class=\"btn btn-primary\" disabled>Elimina pratica</button>");
+                                    }else{
+                                        out.println("<button type=\"submit\" class=\"btn btn-primary\">Elimina pratica</button>");
+                                    }
+                                %>
+                                
                             </div>
                         </div>
                     </div>
@@ -215,12 +229,12 @@
                                                 <div class="col-lg-6">
                                                     <input type="hidden" id="idPratica" name="idPratica" value=""/>
                                                     <label>Codice Arrivo</label>
-                                                    <input class="form-control" id="arrivo">
+                                                    <input class="form-control" id="arrivo" <% out.print("value=\""+praticaInfos.get(0).getArrivo()+"\""); %> >
                                                 </div>
                                                 <!-- /.col-lg-5 -->
                                                 <div class="col-lg-6">
                                                     <label>Data Arrivo</label>
-                                                    <input class="form-control" id="data_arrivo">
+                                                    <input class="form-control" id="data_arrivo"  <% out.print("value=\""+praticaInfos.get(0).getData_arrivo()+"\""); %> >
                                                     <script>
                                                         $("#data_arrivo").datepicker();
                                                     </script>
@@ -249,17 +263,17 @@
                                     <div class="panel-body">
 
                                         <div class="form-group">
-                                            <input type="hidden" id="idVeicolo" value="">
+                                            <input type="hidden" id="idVeicolo"  <% out.print("value=\""+praticaInfos.get(0).getIdVeicolo()+"\""); %>>
                                             <label>Marca</label>
-                                            <input class="form-control" id="marca">
+                                            <input class="form-control" id="marca"  <% out.print("value=\""+praticaInfos.get(0).getMarcaVeicolo()+"\""); %> >
                                             <label>Modello</label>
-                                            <input class="form-control" id="modello">
+                                            <input class="form-control" id="modello"  <% out.print("value=\""+praticaInfos.get(0).getModelloVeicolo()+"\""); %> >
                                             <label>Targa</label>
-                                            <input class="form-control" id="targa">
+                                            <input class="form-control" id="targa"  <% out.print("value=\""+praticaInfos.get(0).getTargaVeicolo() +"\""); %> >
                                             <label>Kilometraggio</label>
-                                            <input class="form-control" id="kilometraggio">
+                                            <input class="form-control" id="kilometraggio"  <% out.print("value=\""+praticaInfos.get(0).getKilometraggioVeicolo()+"\""); %> >
                                             <label>Anno</label>
-                                            <input class="form-control" id="anno">
+                                            <input class="form-control" id="anno"  <% out.print("value=\""+praticaInfos.get(0).getAnnoVeicolo()+"\""); %> >
                                             <script>
                                                 $("#anno").datepicker({
                                                     changeYear: true,
@@ -270,19 +284,19 @@
                                             <div class="form-group" style="margin-top:1em; margin-bottom: 1em">
                                                 <label>Tipo:</label>
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_ple" value="PLE" checked>PLE
+                                                    <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE")?"checked":"")); %> >PLE
                                                 </label>
                                                 <label class="radio-inline">
-                                                    <input type="radio"  name="tipo" id="tipo_pv" value="PV">PV
+                                                    <input type="radio"  name="tipo" id="tipo_pv" value="PV" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PV")?"checked":"")); %>>PV
                                                 </label>
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU">AUTOGRU
+                                                    <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU")?"checked":"")); %> >AUTOGRU
                                                 </label>
                                             </div>
                                             <label>Matricola</label>
-                                            <input class="form-control" id="matricola">
+                                            <input class="form-control" id="matricola" <% out.print("value=\""+praticaInfos.get(0).getMatricolaVeicolo()+"\""); %> >
                                             <label>Ore</label>
-                                            <input class="form-control" id="ore">
+                                            <input class="form-control" id="ore" <% out.print("value=\""+praticaInfos.get(0).getOreVeicolo()+"\""); %> >
                                         </div>
                                         <!-- /.row -->
                                     </div> 

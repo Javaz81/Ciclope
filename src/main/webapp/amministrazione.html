@@ -111,7 +111,7 @@ and open the template in the editor.
                 });
                 $('#dataTables-pratiche tbody').on('click', 'tr', function () {
                     var data = table.row(this).data();
-                    var loc = 'nuova_pratica.jsp?praticaId='+(data[0].toString());
+                    var loc = 'nuova_pratica.jsp?newPratice=false&praticaId='+(data[0].toString());
                     location.assign(loc);
                 });
             });

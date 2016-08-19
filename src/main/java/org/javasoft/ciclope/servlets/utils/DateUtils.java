@@ -24,7 +24,18 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMMMMM - yyyy",locale);
         return sdf.format(date);
     }
-    
+    public static String formatDateForAdministration(Date date, Locale locale){
+        if(date == null || locale == null)
+            throw new IllegalArgumentException("The date or locale must not be null");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEEEEE dd-MM-yyyy",locale);
+        return sdf.format(date);
+    }
+    public static String formatDateYearForAdministration(Date date, Locale locale){
+        if(date == null || locale == null)
+            throw new IllegalArgumentException("The date or locale must not be null");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy",locale);
+        return sdf.format(date);
+    }
     public static String formatDateMySQL(String date, Locale locale){
         SimpleDateFormat sdf = new SimpleDateFormat("dd - MMMMMMM - yyyy", locale);
         String data;
