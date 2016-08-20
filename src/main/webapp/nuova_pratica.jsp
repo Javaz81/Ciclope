@@ -9,6 +9,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%!
     public List<CompletePraticaInfo> praticaInfos;
+
     public void jspInit() {
         System.out.println("jspInit");
     }
@@ -91,7 +92,7 @@
                     showAnim: "slide"
                 });
 
-                $("#addStandardJobAction").click(function () {
+                $(".addStandardJobAction").click(function () {
                     STANDARD_JOBS_DATATABLE.clear();
                     STANDARD_JOBS_DATATABLE.ajax.reload();
                     $("#add_standard_job").modal('show');
@@ -147,9 +148,9 @@
         </script>
     </head>
     <body>
-        <% 
-             praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
-             //categoriaInfos = AmministrazioneUtils.GetAllCategoryInformation(Integer.parseInt(request.getParameter("praticaId")));
+        <%
+            praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
+            //categoriaInfos = AmministrazioneUtils.GetAllCategoryInformation(Integer.parseInt(request.getParameter("praticaId")));
         %>
         <div id="wrapper">
 
@@ -199,13 +200,13 @@
                                 <button type="submit" class="btn btn-primary">Esporta pratica</button>
                                 <button type="submit" class="btn btn-primary">Stampa pratica</button>
                                 <%
-                                    if(request.getParameter("newPratice").equalsIgnoreCase("true")){
+                                    if (request.getParameter("newPratice").equalsIgnoreCase("true")) {
                                         out.println("<button type=\"submit\" class=\"btn btn-primary\" disabled>Elimina pratica</button>");
-                                    }else{
+                                    } else {
                                         out.println("<button type=\"submit\" class=\"btn btn-primary\">Elimina pratica</button>");
                                     }
                                 %>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -229,12 +230,12 @@
                                                 <div class="col-lg-6">
                                                     <input type="hidden" id="idPratica" name="idPratica" value=""/>
                                                     <label>Codice Arrivo</label>
-                                                    <input class="form-control" id="arrivo" <% out.print("value=\""+praticaInfos.get(0).getArrivo()+"\""); %> >
+                                                    <input class="form-control" id="arrivo" <% out.print("value=\"" + praticaInfos.get(0).getArrivo() + "\""); %> >
                                                 </div>
                                                 <!-- /.col-lg-5 -->
                                                 <div class="col-lg-6">
                                                     <label>Data Arrivo</label>
-                                                    <input class="form-control" id="data_arrivo"  <% out.print("value=\""+praticaInfos.get(0).getData_arrivo()+"\""); %> >
+                                                    <input class="form-control" id="data_arrivo"  <% out.print("value=\"" + praticaInfos.get(0).getData_arrivo() + "\""); %> >
                                                     <script>
                                                         $("#data_arrivo").datepicker();
                                                     </script>
@@ -263,17 +264,17 @@
                                     <div class="panel-body">
 
                                         <div class="form-group">
-                                            <input type="hidden" id="idVeicolo"  <% out.print("value=\""+praticaInfos.get(0).getIdVeicolo()+"\""); %>>
+                                            <input type="hidden" id="idVeicolo"  <% out.print("value=\"" + praticaInfos.get(0).getIdVeicolo() + "\""); %>>
                                             <label>Marca</label>
-                                            <input class="form-control" id="marca"  <% out.print("value=\""+praticaInfos.get(0).getMarcaVeicolo()+"\""); %> >
+                                            <input class="form-control" id="marca"  <% out.print("value=\"" + praticaInfos.get(0).getMarcaVeicolo() + "\""); %> >
                                             <label>Modello</label>
-                                            <input class="form-control" id="modello"  <% out.print("value=\""+praticaInfos.get(0).getModelloVeicolo()+"\""); %> >
+                                            <input class="form-control" id="modello"  <% out.print("value=\"" + praticaInfos.get(0).getModelloVeicolo() + "\""); %> >
                                             <label>Targa</label>
-                                            <input class="form-control" id="targa"  <% out.print("value=\""+praticaInfos.get(0).getTargaVeicolo() +"\""); %> >
+                                            <input class="form-control" id="targa"  <% out.print("value=\"" + praticaInfos.get(0).getTargaVeicolo() + "\""); %> >
                                             <label>Kilometraggio</label>
-                                            <input class="form-control" id="kilometraggio"  <% out.print("value=\""+praticaInfos.get(0).getKilometraggioVeicolo()+"\""); %> >
+                                            <input class="form-control" id="kilometraggio"  <% out.print("value=\"" + praticaInfos.get(0).getKilometraggioVeicolo() + "\""); %> >
                                             <label>Anno</label>
-                                            <input class="form-control" id="anno"  <% out.print("value=\""+praticaInfos.get(0).getAnnoVeicolo()+"\""); %> >
+                                            <input class="form-control" id="anno"  <% out.print("value=\"" + praticaInfos.get(0).getAnnoVeicolo() + "\""); %> >
                                             <script>
                                                 $("#anno").datepicker({
                                                     changeYear: true,
@@ -284,19 +285,19 @@
                                             <div class="form-group" style="margin-top:1em; margin-bottom: 1em">
                                                 <label>Tipo:</label>
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE")?"checked":"")); %> >PLE
+                                                    <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE") ? "checked" : "")); %> >PLE
                                                 </label>
                                                 <label class="radio-inline">
-                                                    <input type="radio"  name="tipo" id="tipo_pv" value="PV" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PV")?"checked":"")); %>>PV
+                                                    <input type="radio"  name="tipo" id="tipo_pv" value="PV" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PV") ? "checked" : "")); %>>PV
                                                 </label>
                                                 <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU")?"checked":"")); %> >AUTOGRU
+                                                    <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU") ? "checked" : "")); %> >AUTOGRU
                                                 </label>
                                             </div>
                                             <label>Matricola</label>
-                                            <input class="form-control" id="matricola" <% out.print("value=\""+praticaInfos.get(0).getMatricolaVeicolo()+"\""); %> >
+                                            <input class="form-control" id="matricola" <% out.print("value=\"" + praticaInfos.get(0).getMatricolaVeicolo() + "\""); %> >
                                             <label>Ore</label>
-                                            <input class="form-control" id="ore" <% out.print("value=\""+praticaInfos.get(0).getOreVeicolo()+"\""); %> >
+                                            <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
                                         </div>
                                         <!-- /.row -->
                                     </div> 
@@ -316,15 +317,15 @@
                                 <div id="collapseCliente" class="panel-collapse collapse out">
                                     <div class="panel-body">
                                         <div class="form-group">
-                                            <input type="hidden" name="idCliente" id="idCliente" value="">
+                                            <input type="hidden" name="idCliente" id="idCliente" <% out.print("value=\"" + praticaInfos.get(0).getIdCliente() + "\""); %>>
                                             <label>Nome</label>
-                                            <input class="form-control" id="nome">
+                                            <input class="form-control" id="nome" <% out.print("value=\"" + praticaInfos.get(0).getNomeCliente() + "\""); %> >
                                             <label>Cognome</label>
-                                            <input class="form-control" id="cognome">
+                                            <input class="form-control" id="cognome" <% out.print("value=\"" + praticaInfos.get(0).getCognomeCliente() + "\""); %> >
                                             <label>Celluare</label>
-                                            <input class="form-control" id="cellulare">
+                                            <input class="form-control" id="cellulare" <% out.print("value=\"" + praticaInfos.get(0).getCellulareCliente() + "\""); %> >
                                             <label>Localita</label>
-                                            <input class="form-control" id="localita">
+                                            <input class="form-control" id="localita" <% out.print("value=\"" + praticaInfos.get(0).getLocalitaCliente() + "\""); %> >
                                         </div>
                                         <!-- /.row -->
                                     </div>
@@ -350,14 +351,21 @@
                                             <div class='row'>
                                                 <div class='col-lg-6'>
                                                     <label>Preventivo Lavori</label>
-                                                    <select class="form-control" id='preventivo_lavori' value="">
-                                                        <option>Si</option>
-                                                        <option>No</option>
+                                                    <select class="form-control" id='preventivo_lavori'>
+                                                        <%
+                                                            if (praticaInfos.get(0).getPreventivo_lavori().equalsIgnoreCase("si")) {
+                                                                out.println("<option selected>Si</option>");
+                                                                out.println("<option>No</option>");
+                                                            } else {
+                                                                out.println("<option>Si</option>");
+                                                                out.println("<option selected>No</option>");
+                                                            }
+                                                        %>
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
                                                     <label>del</label>
-                                                    <input class="form-control" id="preventivo_lavori_data">
+                                                    <input class="form-control" id="preventivo_lavori_data"  <% out.print("value=\"" + praticaInfos.get(0).getPreventivo_lavori_data() + "\""); %>>
                                                     <script>
                                                         $("#preventivo_lavori_data").datepicker();
                                                     </script>
@@ -367,13 +375,20 @@
                                                 <div class='col-lg-6'>
                                                     <label>Revisione MCTC</label>
                                                     <select class="form-control" id='revisione_mctc' value="">
-                                                        <option>Si</option>
-                                                        <option>No</option>
+                                                        <%
+                                                            if (praticaInfos.get(0).getRevisione_mctc().equalsIgnoreCase("si")) {
+                                                                out.println("<option selected>Si</option>");
+                                                                out.println("<option>No</option>");
+                                                            } else {
+                                                                out.println("<option>Si</option>");
+                                                                out.println("<option selected>No</option>");
+                                                            }
+                                                        %>
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
                                                     <label>del</label>
-                                                    <input class="form-control" id="revisione_mctc_data">
+                                                    <input class="form-control" id="revisione_mctc_data" <% out.print("value=\"" + praticaInfos.get(0).getRevisione_mctc_data() + "\""); %>>
                                                     <script>
                                                         $("#revisione_mctc_data").datepicker();
                                                     </script>
@@ -383,13 +398,20 @@
                                                 <div class='col-lg-6'>
                                                     <label>Collaudo USL</label>
                                                     <select class="form-control" id='collaudo_usl' value="">
-                                                        <option>Si</option>
-                                                        <option>No</option>
+                                                        <%
+                                                            if (praticaInfos.get(0).getCollaudo_usl().equalsIgnoreCase("si")) {
+                                                                out.println("<option selected>Si</option>");
+                                                                out.println("<option>No</option>");
+                                                            } else {
+                                                                out.println("<option>Si</option>");
+                                                                out.println("<option selected>No</option>");
+                                                            }
+                                                        %>
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
                                                     <label>del</label>
-                                                    <input class="form-control" id="collaudo_usl_data">
+                                                    <input class="form-control" id="collaudo_usl_data"  <% out.print("value=\"" + praticaInfos.get(0).getCollaudo_usl_data() + "\""); %> >
                                                     <script>
                                                         $("#collaudo_usl_data").datepicker();
                                                     </script>
@@ -398,20 +420,27 @@
                                             <div class='row'>
                                                 <div class='col-lg-6'>
                                                     <label>Registro di Controllo</label>
-                                                    <select class="form-control" id='registro_di_controllo' value="">
-                                                        <option>Si</option>
-                                                        <option>No</option>
+                                                    <select class="form-control" id='registro_di_controllo'>
+                                                        <%
+                                                            if (praticaInfos.get(0).getRegistro_di_controllo().equalsIgnoreCase("si")) {
+                                                                out.println("<option selected>Si</option>");
+                                                                out.println("<option>No</option>");
+                                                            } else {
+                                                                out.println("<option>Si</option>");
+                                                                out.println("<option selected>No</option>");
+                                                            }
+                                                        %>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class='row'>
                                                 <div class='col-lg-6'>
                                                     <label>Fattura N:</label>
-                                                    <input class="form-control" id='fattura' value="">
+                                                    <input class="form-control" id='fattura' <% out.print("value=\"" + praticaInfos.get(0).getNumero_fattura() + "\""); %>>
                                                 </div>
                                                 <div class='col-lg-6'>
                                                     <label>del</label>
-                                                    <input class="form-control" id="fattura_data">
+                                                    <input class="form-control" id="fattura_data" <% out.print("value=\"" + praticaInfos.get(0).getData_fattura() + "\""); %>>
                                                     <script>
                                                         $("#fattura_data").datepicker();
                                                     </script>
@@ -420,7 +449,22 @@
                                             <div class='row'>
                                                 <div class='col-lg-12'>
                                                     <label>Lavori segnalati all'avvio:</label>
-                                                    <textarea class="form-control" rows="6"></textarea>
+                                                    <textarea id="lavori_segnalati" class="form-control" rows="6">
+                                                        <% out.println(praticaInfos.get(0).getLavori_segnalati());%>
+                                                    </textarea>
+                                                    <!-- 
+                                                    Questo pezzetto di javascript è un trim sulla stringa dei lavori segnalati,
+                                                    poichè schioccandola con l'out.println il jspengine mi da degli spazi prima e 
+                                                    dopo che mi danno fastidio. Mi tocca farla quindi quando il DOM è ready, ma mettendola
+                                                    qui nel <body> direttamente anzichè tra le funzioni dell'<head> essendo un workaround
+                                                    -->
+                                                    <script>
+                                                        (function () {
+                                                            var txt = $("#lavori_segnalati").text();
+                                                            var txt2 = $.trim(txt);
+                                                            $("#lavori_segnalati").text(txt2);
+                                                        })();
+                                                    </script>
                                                 </div>
                                             </div>
                                         </div>
@@ -442,57 +486,125 @@
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div id="lavoriDaEffettuare" class="panel-collapse collapse in">
-                                    <div class="panel-body categoria categoria_1">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <a style="margin-left:1em" data-toggle="collapse"
-                                                       href="#categoria_1">CONTROLLI ARRIVO</a>
-                                                    <div class="pull-right">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+
+                                    <div class="panel-body">
+                                        <%
+                                            for (CompleteCategoriaInfo cci : AmministrazioneUtils.GetAllCategoriaLavori()) {
+                                                out.println("<div class='panel panel-default categoria categoria_" + cci.getIdCategoria() + "'>");
+                                                out.println("   <div class='panel-heading'>");
+                                                out.println("       <div class='panel-title'>");
+                                                out.println("           <a style='margin-left:1em' data-toggle='collapse' href='#categoria_" + cci.getIdCategoria() + "'>" + cci.getNome() + "</a>");
+                                                out.println("               <div class='pull-right'>");
+                                                out.println("                   <div class='btn-group'>");
+                                                out.println("                       <button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>");
+                                                out.println("                           Azioni");
+                                                out.println("                           <span class='caret'></span>");
+                                                out.println("                       </button>");
+                                                out.println("                       <ul class='dropdown-menu pull-right' role='menu'>");
+                                                out.println("                           <li>");
+                                                out.println("                               <a href='#' class='addStandardJobAction'>Aggingi lavoro standard</a>");
+                                                out.println("                           </li>");
+                                                out.println("                           <li>");
+                                                out.println("                               <a href='#'>Aggingi lavoro personalizzato</a>");
+                                                out.println("                           </li>");
+                                                out.println("                           <li class='divider'></li>");
+                                                out.println("                           <li>");
+                                                out.println("                               <a href='#'>Elimina tutto</a>");
+                                                out.println("                           </li>");
+                                                out.println("                       </ul>");
+                                                out.println("                   </div>");
+                                                out.println("               </div>");
+                                                out.println("           </div>");
+                                                out.println("       </div>");
+                                                out.println("       <div id='categoria_" + cci.getIdCategoria() + "' class='panel-collapse collapse in'>");
+                                                out.println("           <div class='panel-body'>");
+                                                out.println("               <div class='list-group'>");
+                                                for (TipoLavoroPratica tlp
+                                                        : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {                                                    
+                                                    if(tlp.getTipo().equalsIgnoreCase("S")){
+                                                        //item standard template
+                                                        out.println("<a href='#' class='list-group-item'>");
+                                                        out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
+                                                        out.println(        tlp.getDescrizione());
+                                                        out.println("   <span class='pull-right'>");
+                                                        out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
+                                                        out.println("           <i class='fa fa-times-circle fa-fw'></i>");
+                                                        out.println("       </button>");
+                                                        out.println("   </span>");
+                                                        out.println("</a>");
+                                                    }else{
+                                                        //item custom template
+                                                        out.println("<a href='#' class='list-group-item'>");
+                                                        out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
+                                                        out.println("   "+tlp.getDescrizione());
+                                                        out.println("   <span class='pull-right'>");
+                                                        out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_"+tlp.getIdLavoro()+"' data-target='#edit_job'>");
+                                                        out.println("           <i class='fa fa-edit fa-fw'></i>");
+                                                        out.println("       </button>");
+                                                        out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_"+tlp.getIdLavoro()+"' data-target='#delete_job'>");
+                                                        out.println("           <i class='fa fa-times-circle fa-fw'></i>");
+                                                        out.println("       </button>");
+                                                        out.println("   </span>");
+                                                        out.println("</a>");
+                                                    }
+                                                }
+                                                //end category panel
+                                                out.println("</div>"
+                                                        + "</div>"
+                                                        + "</div>"
+                                                );
+                                                out.println("</div>");
+                                            }
+                                        %>
+                                        <!-- <div class='panel panel-default categoria categoria_1'>
+                                            <div class='panel-heading'>                                                
+                                                <div class='panel-title'>
+                                                    <a style='margin-left:1em' data-toggle='collapse'
+                                                       href='#categoria_1'>CONTROLLI ARRIVO</a>
+                                                    <div class='pull-right'>
+                                                        <div class='btn-group'>
+                                                            <button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>
                                                                 Azioni
-                                                                <span class="caret"></span>
+                                                                <span class='caret'></span>
                                                             </button>
-                                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                            <ul class='dropdown-menu pull-right' role='menu'>
                                                                 <li>
-                                                                    <a href="#" id="addStandardJobAction">Aggingi lavoro standard</a>
-                                                                    <!--<a href="#" data-toggle="modal" id="addStandardJobAction" data-target="#add_standard_job">Aggingi lavoro standard</a>-->
+                                                                    <a href='#' id='addStandardJobAction'>Aggingi lavoro standard</a>                                                                   
                                                                 </li>
-                                                                <li><a href="#">Aggingi lavoro personalizzato</a>
+                                                                <li><a href='#'>Aggingi lavoro personalizzato</a>
                                                                 </li>
-                                                                <li class="divider"></li>
-                                                                <li><a href="#">Elimina tutto</a>
+                                                                <li class='divider'></li>
+                                                                <li><a href='#'>Elimina tutto</a>
                                                                 </li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>                                               
                                             </div>
-                                            <div id="categoria_1" class="panel-collapse collapse in">
-                                                <div class="panel-body">
-                                                    <div class="list-group">
-                                                        <a href="#" class="list-group-item">
-                                                            <i class="fa fa-comment fa-fw"></i> New Comment
-                                                            <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                                            <div id='categoria_1' class='panel-collapse collapse in'>
+                                                <div class='panel-body'>
+                                                    <div class='list-group'>
+                                                        <a href='#' class='list-group-item'>
+                                                            <i class='fa fa-comment fa-fw'></i> New Comment
+                                                            <span class='pull-right text-muted small'><em>4 minutes ago</em>
                                                             </span>
                                                         </a>
-                                                        <a href="#" class="list-group-item">
-                                                            <i class="fa fa-twitter fa-fw"></i>
+                                                        <a href='#' class='list-group-item'>
+                                                            <i class='fa fa-twitter fa-fw'></i>
                                                             3 New Followers
-                                                            <span class="pull-right">
-                                                                <button type="button" class="btn-xs btn-danger" data-toggle="modal" id="standard_1" data-target="#delete_job">
-                                                                    <i class="fa fa-times-circle fa-fw"></i></button>
+                                                            <span class='pull-right'>
+                                                                <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_1' data-target='#delete_job'>
+                                                                    <i class='fa fa-times-circle fa-fw'></i></button>
                                                             </span>
                                                         </a>
-                                                        <a href="#" class="list-group-item">
-                                                            <i class="fa fa-twitter fa-fw"></i>
+                                                        <a href='#' class='list-group-item'>
+                                                            <i class='fa fa-twitter fa-fw'></i>
                                                             Borda
-                                                            <span class="pull-right">
-                                                                <button type="button" class="btn-xs btn-primary"  data-toggle="modal" id="custom_1" data-target="#edit_job">
-                                                                    <i class="fa fa-edit fa-fw"></i></button>
-                                                                <button type="button" class="btn-xs btn-danger" data-toggle="modal" id="custom_1" data-target="#delete_job">
-                                                                    <i class="fa fa-times-circle fa-fw"></i></button>
+                                                            <span class='pull-right'>
+                                                                <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_1' data-target='#edit_job'>
+                                                                    <i class='fa fa-edit fa-fw'></i></button>
+                                                                <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_1' data-target='#delete_job'>
+                                                                    <i class='fa fa-times-circle fa-fw'></i></button>
                                                             </span>
                                                         </a>
                                                     </div>
@@ -500,7 +612,7 @@
 
                                             </div>                                            
                                         </div>
-
+                                        -->
                                     </div> 
                                 </div>                                                               
                             </div>
