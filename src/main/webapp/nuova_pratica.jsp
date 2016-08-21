@@ -141,6 +141,15 @@
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
                 });
+                
+                $("[id^='standard_']").click(function (event) {
+                   LAVORO_SELEZIONATO = event.target.id;
+                   console.log(LAVORO_SELEZIONATO);
+                });
+                $("[id^='custom_']").click(function (event) {
+                   LAVORO_SELEZIONATO = event.target.id;
+                   console.log(LAVORO_SELEZIONATO);
+                });
             });
         </script>
         <!-- 
@@ -565,26 +574,26 @@
                                                         : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {
                                                     if (tlp.getTipo().equalsIgnoreCase("S")) {
                                                         //item standard template
-                                                        out.println("<div class='list-group-item'>");
-                                                        out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
+                                                        out.println("<div class='list-group-item'id='standard_" + tlp.getIdLavoro() + "' >");
+                                                        out.println("   <i class='fa fa-toggle-right fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println(tlp.getDescrizione());
-                                                        out.println("   <span class='pull-right'>");
+                                                        out.println("   <span class='pull-right' id='standard_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
-                                                        out.println("           <i class='fa fa-times-circle fa-fw'></i>");
+                                                        out.println("           <i class='fa fa-times-circle fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("       </button>");
                                                         out.println("   </span>");
                                                         out.println("</div>");
                                                     } else {
                                                         //item custom template
-                                                        out.println("<div class='list-group-item'>");
-                                                        out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
+                                                        out.println("<div class='list-group-item' id='custom_" + tlp.getIdLavoro() + "'>");
+                                                        out.println("   <i class='fa fa-toggle-right fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("   " + tlp.getDescrizione());
-                                                        out.println("   <span class='pull-right'>");
+                                                        out.println("   <span class='pull-right' id='custom_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_job'>");
-                                                        out.println("           <i class='fa fa-edit fa-fw'></i>");
+                                                        out.println("           <i class='fa fa-edit fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("       </button>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
-                                                        out.println("           <i class='fa fa-times-circle fa-fw'></i>");
+                                                        out.println("           <i class='fa fa-times-circle fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("       </button>");
                                                         out.println("   </span>");
                                                         out.println("</div>");
