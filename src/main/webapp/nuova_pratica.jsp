@@ -91,11 +91,9 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
-
-                $(".addStandardJobAction").click(function () {
+                $("#add_standard_job").on('shown.bs.modal', function () {
                     STANDARD_JOBS_DATATABLE.clear();
                     STANDARD_JOBS_DATATABLE.ajax.reload();
-                    $("#add_standard_job").modal('show');
                 });
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
                     responsive: true,
@@ -126,11 +124,10 @@
                         });
                     }
                 });
-                $('#standardJobTableSelection')
-                        .on('preXhr.dt', function (e, settings, data) {
-                            data.praticaId = PRATICA_SELEZIONATA;
-                            data.categoriaId = CATEGORIA_SELEZIONATA;
-                        });
+                $('#standardJobTableSelection').on('preXhr.dt', function (e, settings, data) {
+                    data.praticaId = PRATICA_SELEZIONATA;
+                    data.categoriaId = CATEGORIA_SELEZIONATA;
+                });
                 $(".categoria *").on("click", function () {
                     var categoryParent = $(this).parents(".categoria");
                     var classList = categoryParent.attr('class').split(/\s+/);
@@ -146,6 +143,16 @@
                 });
             });
         </script>
+        <!-- 
+        It needs to let the page scroll down after the BS modal has been
+        opened.    
+        -->
+        <style>
+
+            body.modal-open {
+                overflow: visible;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -211,8 +218,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-12">
-                            <div class="panel panel-default">
+                        <div class="col-lg-6">
+                            <div class="panel panel-primary">
                                 <div class="panel-heading">
                                     <div class="panel-title">
                                         <i class="fa fa-file fw"></i>
@@ -240,6 +247,42 @@
                                                         $("#data_arrivo").datepicker();
                                                     </script>
                                                 </div>                                            
+                                            </div>
+                                            <!-- /.row -->
+                                        </div>                                 
+                                    </div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div> 
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <i class="fa fa-file fw"></i>
+                                        <a style="margin-left:1em"data-toggle="collapse"
+                                           href="#collapseDatiChiusuraPratica">Dati di chiusura pratica</a>
+                                    </div>                                    
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-collapse collapse in" id="collapseDatiChiusuraPratica">
+                                    <div class="panel-body">
+                                        <div class="row">
+
+                                            <div class="form-group">
+                                                <div class="col-lg-6">
+                                                    <input type="hidden" id="idChiusuraPratica" name="idChiusuraPratica" value=""/>
+                                                    <label>Codice Uscita</label>
+                                                    <input class="form-control" id="uscita" <% out.print("value=\"" + praticaInfos.get(0).getUscita() + "\""); %> >
+                                                </div>
+                                                <!-- /.col-lg-5 -->
+                                                <div class="col-lg-6">
+                                                    <label>Data Uscita</label>
+                                                    <input class="form-control" id="data_uscita"  <% out.print("value=\"" + praticaInfos.get(0).getData_uscita() + "\""); %> >
+                                                    <script>
+                                                        $("#data_uscita").datepicker();
+                                                    </script>
+                                                </div>                  
                                             </div>
                                             <!-- /.row -->
                                         </div>                                 
@@ -339,7 +382,7 @@
                                 <div class="panel-heading">
                                     <div class="panel-title">
                                         <i class="fa fa-check fw"></i>
-                                        <a style="margin-left:1em"data-toggle="collapse"                                            
+                                        <a style="margin-left:1em" data-toggle="collapse"                                            
                                            href="#collapseControlliAccettazione">Controlli ed Accettazione</a>
                                     </div>
                                 </div>
@@ -480,13 +523,12 @@
                                 <div class="panel-heading">
                                     <div class="panel-title">
                                         <i class="fa fa-check-square fw"></i>
-                                        <a style="margin-left:1em"data-toggle="collapse"
+                                        <a style="margin-left:1em" data-toggle="collapse"
                                            href="#lavoriDaEffettuare">Lavori da Effettuare</a>
                                     </div>
                                 </div>
                                 <!-- /.panel-heading -->
                                 <div id="lavoriDaEffettuare" class="panel-collapse collapse in">
-
                                     <div class="panel-body">
                                         <%
                                             for (CompleteCategoriaInfo cci : AmministrazioneUtils.GetAllCategoriaLavori()) {
@@ -502,14 +544,14 @@
                                                 out.println("                       </button>");
                                                 out.println("                       <ul class='dropdown-menu pull-right' role='menu'>");
                                                 out.println("                           <li>");
-                                                out.println("                               <a href='#' class='addStandardJobAction'>Aggingi lavoro standard</a>");
+                                                out.println("                               <a href='' data-toggle='modal' data-target='#add_standard_job' >Aggingi lavoro standard</a>");
                                                 out.println("                           </li>");
                                                 out.println("                           <li>");
-                                                out.println("                               <a href='#'>Aggingi lavoro personalizzato</a>");
+                                                out.println("                               <a href=''>Aggingi lavoro personalizzato</a>");
                                                 out.println("                           </li>");
                                                 out.println("                           <li class='divider'></li>");
                                                 out.println("                           <li>");
-                                                out.println("                               <a href='#'>Elimina tutto</a>");
+                                                out.println("                               <a href=''>Elimina tutto</a>");
                                                 out.println("                           </li>");
                                                 out.println("                       </ul>");
                                                 out.println("                   </div>");
@@ -520,32 +562,32 @@
                                                 out.println("           <div class='panel-body'>");
                                                 out.println("               <div class='list-group'>");
                                                 for (TipoLavoroPratica tlp
-                                                        : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {                                                    
-                                                    if(tlp.getTipo().equalsIgnoreCase("S")){
+                                                        : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {
+                                                    if (tlp.getTipo().equalsIgnoreCase("S")) {
                                                         //item standard template
-                                                        out.println("<a href='#' class='list-group-item'>");
+                                                        out.println("<div class='list-group-item'>");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
-                                                        out.println(        tlp.getDescrizione());
+                                                        out.println(tlp.getDescrizione());
                                                         out.println("   <span class='pull-right'>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw'></i>");
                                                         out.println("       </button>");
                                                         out.println("   </span>");
-                                                        out.println("</a>");
-                                                    }else{
+                                                        out.println("</div>");
+                                                    } else {
                                                         //item custom template
-                                                        out.println("<a href='#' class='list-group-item'>");
+                                                        out.println("<div class='list-group-item'>");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw'></i>");
-                                                        out.println("   "+tlp.getDescrizione());
+                                                        out.println("   " + tlp.getDescrizione());
                                                         out.println("   <span class='pull-right'>");
-                                                        out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_"+tlp.getIdLavoro()+"' data-target='#edit_job'>");
+                                                        out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_job'>");
                                                         out.println("           <i class='fa fa-edit fa-fw'></i>");
                                                         out.println("       </button>");
-                                                        out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_"+tlp.getIdLavoro()+"' data-target='#delete_job'>");
+                                                        out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw'></i>");
                                                         out.println("       </button>");
                                                         out.println("   </span>");
-                                                        out.println("</a>");
+                                                        out.println("</div>");
                                                     }
                                                 }
                                                 //end category panel
@@ -556,63 +598,6 @@
                                                 out.println("</div>");
                                             }
                                         %>
-                                        <!-- <div class='panel panel-default categoria categoria_1'>
-                                            <div class='panel-heading'>                                                
-                                                <div class='panel-title'>
-                                                    <a style='margin-left:1em' data-toggle='collapse'
-                                                       href='#categoria_1'>CONTROLLI ARRIVO</a>
-                                                    <div class='pull-right'>
-                                                        <div class='btn-group'>
-                                                            <button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>
-                                                                Azioni
-                                                                <span class='caret'></span>
-                                                            </button>
-                                                            <ul class='dropdown-menu pull-right' role='menu'>
-                                                                <li>
-                                                                    <a href='#' id='addStandardJobAction'>Aggingi lavoro standard</a>                                                                   
-                                                                </li>
-                                                                <li><a href='#'>Aggingi lavoro personalizzato</a>
-                                                                </li>
-                                                                <li class='divider'></li>
-                                                                <li><a href='#'>Elimina tutto</a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>                                               
-                                            </div>
-                                            <div id='categoria_1' class='panel-collapse collapse in'>
-                                                <div class='panel-body'>
-                                                    <div class='list-group'>
-                                                        <a href='#' class='list-group-item'>
-                                                            <i class='fa fa-comment fa-fw'></i> New Comment
-                                                            <span class='pull-right text-muted small'><em>4 minutes ago</em>
-                                                            </span>
-                                                        </a>
-                                                        <a href='#' class='list-group-item'>
-                                                            <i class='fa fa-twitter fa-fw'></i>
-                                                            3 New Followers
-                                                            <span class='pull-right'>
-                                                                <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_1' data-target='#delete_job'>
-                                                                    <i class='fa fa-times-circle fa-fw'></i></button>
-                                                            </span>
-                                                        </a>
-                                                        <a href='#' class='list-group-item'>
-                                                            <i class='fa fa-twitter fa-fw'></i>
-                                                            Borda
-                                                            <span class='pull-right'>
-                                                                <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_1' data-target='#edit_job'>
-                                                                    <i class='fa fa-edit fa-fw'></i></button>
-                                                                <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_1' data-target='#delete_job'>
-                                                                    <i class='fa fa-times-circle fa-fw'></i></button>
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-
-                                            </div>                                            
-                                        </div>
-                                        -->
                                     </div> 
                                 </div>                                                               
                             </div>
@@ -698,12 +683,12 @@
         </div>
 
         <!-- /.modal -->
-        <div class="modal fade" id="add_standard_job" role="dialog">
+        <div class="modal fade" id="add_standard_job" tabindex="-1" role="dialog" aria-labelledby="addStandardJobLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Inserimento nuovo lavoro standard</h4>
+                        <h4 class="modal-title" id="addCustomJobLabel" >Inserimento nuovo lavoro standard</h4>
                     </div>
                     <div class="modal-body">
                         <table id="standardJobTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
