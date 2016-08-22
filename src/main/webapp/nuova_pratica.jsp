@@ -141,15 +141,43 @@
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
                 });
-                
                 $("[id^='standard_']").click(function (event) {
-                   LAVORO_SELEZIONATO = event.target.id;
-                   console.log(LAVORO_SELEZIONATO);
+                    LAVORO_SELEZIONATO = event.target.id;
                 });
+                //custom jobs event handler
                 $("[id^='custom_']").click(function (event) {
-                   LAVORO_SELEZIONATO = event.target.id;
-                   console.log(LAVORO_SELEZIONATO);
+                    LAVORO_SELEZIONATO = event.target.id;
+                    var text = $("#desc_" + LAVORO_SELEZIONATO).text().trim();
+                    $("#editbox_customjob").val(text);
                 });
+                $("#editCustomJobButton").click(function (event) {
+                    var eb = $.trim($("#editbox_customjob").val());
+                    var cj = $("#desc_"+LAVORO_SELEZIONATO).text().trim().toString();
+                    if( eb === cj ){
+                        return;
+                    }
+                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1] , descrizione:$("#editbox_customjob").val().trim()};
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                        url: "EditCustomJob",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if(data !== undefined){
+                                $("#desc_"+LAVORO_SELEZIONATO).text(data.descrizione);
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
+                });
+                
             });
         </script>
         <!-- 
@@ -289,7 +317,7 @@
                                                     <label>Data Uscita</label>
                                                     <input class="form-control" id="data_uscita"  <% out.print("value=\"" + praticaInfos.get(0).getData_uscita() + "\""); %> >
                                                     <script>
-                                                        $("#data_uscita").datepicker();
+                                                                $("#data_uscita").datepicker();
                                                     </script>
                                                 </div>                  
                                             </div>
@@ -556,7 +584,7 @@
                                                 out.println("                               <a href='' data-toggle='modal' data-target='#add_standard_job' >Aggingi lavoro standard</a>");
                                                 out.println("                           </li>");
                                                 out.println("                           <li>");
-                                                out.println("                               <a href=''>Aggingi lavoro personalizzato</a>");
+                                                out.println("                               <a href='' data-toggle='modal' data-target='#add_custom_job' >Aggingi lavoro personalizzato</a>");
                                                 out.println("                           </li>");
                                                 out.println("                           <li class='divider'></li>");
                                                 out.println("                           <li>");
@@ -574,9 +602,9 @@
                                                         : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {
                                                     if (tlp.getTipo().equalsIgnoreCase("S")) {
                                                         //item standard template
-                                                        out.println("<div class='list-group-item'id='standard_" + tlp.getIdLavoro() + "' >");
+                                                        out.println("<div class='list-group-item' >");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println(tlp.getDescrizione());
+                                                        out.println("<span id='desc_standard_" + tlp.getIdLavoro() + "' >"+tlp.getDescrizione()+"</span>");
                                                         out.println("   <span class='pull-right' id='standard_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
@@ -585,11 +613,11 @@
                                                         out.println("</div>");
                                                     } else {
                                                         //item custom template
-                                                        out.println("<div class='list-group-item' id='custom_" + tlp.getIdLavoro() + "'>");
+                                                        out.println("<div class='list-group-item'>");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println("   " + tlp.getDescrizione());
+                                                        out.println("<span id='desc_custom_" + tlp.getIdLavoro() + "' >"+tlp.getDescrizione()+"</span>");
                                                         out.println("   <span class='pull-right' id='custom_" + tlp.getIdLavoro() + "'>");
-                                                        out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_job'>");
+                                                        out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_custom_job'>");
                                                         out.println("           <i class='fa fa-edit fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("       </button>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
@@ -637,7 +665,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Togli pure</button>
+                        <button type="button" id="deleteJobButton" class="btn btn-primary" data-dismiss="modal">Togli pure</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -645,7 +673,7 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-        <div class="modal fade" id="edit_job" tabindex="-1" role="dialog" aria-labelledby="editJobLabel" aria-hidden="true">
+        <div class="modal fade" id="edit_custom_job" tabindex="-1" role="dialog" aria-labelledby="editJobLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -654,11 +682,11 @@
                     </div>
                     <div class="modal-body">
                         <label for="edit">Inserisci la nuova descrizione:</label>
-                        <input class="form-control" id="editbox_job" value="">
+                        <input class="form-control" id="editbox_customjob" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Salva modifica</button>
+                        <button type="button" id="editCustomJobButton" class="btn btn-primary" data-dismiss="modal">Salva modifica</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -674,16 +702,12 @@
                         <h4 class="modal-title" id="addCustomJobLabel">Inserimento nuovo lavoro personalizzato</h4>
                     </div>
                     <div class="modal-body">
-                        <label for="customJobCategory">Categoria</label>
-                        <select id="categoria_job" value="">
-                            <option>Categoria 1</option>
-                        </select>
                         <label for="edit">Modifica il testo</label>
-                        <input class="form-control" id="editbox_job" value="">
+                        <input class="form-control" id="editbox_customjob" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
+                        <button type="button" id="addCustomJobButton" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -697,9 +721,10 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" id="addCustomJobLabel" >Inserimento nuovo lavoro standard</h4>
+                        <h3 class="modal-title" id="addCustomJobLabel" >Inserimento nuovo lavoro standard</h3>
                     </div>
                     <div class="modal-body">
+                        <p style="text-align:center; margin:1em " >Seleziona i lavori da aggiungere a questa categoria</p>
                         <table id="standardJobTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
                             <thead>
                                 <tr>
@@ -722,7 +747,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
+                        <button type="button" id="addStandardJobButton" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
