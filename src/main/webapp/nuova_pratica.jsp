@@ -129,9 +129,9 @@
                     data.praticaId = PRATICA_SELEZIONATA;
                     data.categoriaId = CATEGORIA_SELEZIONATA;
                 });
-                
-                $('#deleteJobButton').click( function (event) {
-                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1] , categoria:CATEGORIA_SELEZIONATA, tipo:TIPO_LAVORO_SELEZIONATO};
+
+                $('#deleteJobButton').click(function (event) {
+                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
                     requestJson = JSON.stringify(p);
                     $.ajax({
                         url: "DeleteJob",
@@ -141,11 +141,11 @@
                         type: 'POST',
                         async: true,
                         success: function (data) {
-                            if(data !== undefined){
-                                if(data.result === "ok"){
-                                    $("#li_"+LAVORO_SELEZIONATO).remove();
-                                }else{
-                                    alert("Errore con il DB ->\n : ["+data.result+"]" );
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    $("#li_" + LAVORO_SELEZIONATO).remove();
+                                } else {
+                                    alert("Errore con il DB ->\n : [" + data.result + "]");
                                 }
                             }
                         },
@@ -153,7 +153,7 @@
                             alert(err);
                         },
                         complete: function (xhttpjqr, evtobj, data) {
-                            
+
                         }
                     });
                 });
@@ -174,6 +174,49 @@
                     LAVORO_SELEZIONATO = event.target.id;
                     TIPO_LAVORO_SELEZIONATO = "standard";
                 });
+                $("#addStandardJobsButton").click(function (event) {
+                    var jobs = [];
+                    $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
+                        // Come referenza viene usato il codice SuperAssistenza e 
+                        // non il relativo ID interno del DB.
+                        jobs.push(value.childNodes[1].innerText);
+                    });
+                    var jobsCode = {praticaId:PRATICA_SELEZIONATA, codes: jobs};
+                    requestJson = JSON.stringify(jobsCode);
+                    $.ajax({
+                        url: "AddStandardJobs",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    $.each(data.rows, function (index, value) {
+                                        var items = value.split("#");
+                                        $("#li_standard_" + CATEGORIA_SELEZIONATA).append("<div class='list-group-item' id='li_standard_" + items[0] + "' >\n\
+                                <i class='fa fa-toggle-right fa-fw' id='standard_" + items[0] + "'></i>\n\
+<span id='desc_standard_" + items[0] + "' >" + items[1] + "</span><span class='pull-right' id='standard_" + items[0] + "'>\n\
+<button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + items[0] + "' data-target='#delete_job'><i class='fa fa-times-circle fa-fw' id='standard_" + items[0] + "'></i>\n\
+\n\</button>\n\
+</span>\n\
+</div>"
+                                                );
+                                    });
+                                } else {
+                                    alert("Errore nel DB->" + data.result);
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
+
+                });
                 //custom jobs event handler
                 $("[id^='custom_']").click(function (event) {
                     LAVORO_SELEZIONATO = event.target.id;
@@ -183,11 +226,11 @@
                 });
                 $("#editCustomJobButton").click(function (event) {
                     var eb = $.trim($("#editbox_customjob").val());
-                    var cj = $("#desc_"+LAVORO_SELEZIONATO).text().trim().toString();
-                    if( eb === cj ){
+                    var cj = $("#desc_" + LAVORO_SELEZIONATO).text().trim().toString();
+                    if (eb === cj) {
                         return;
                     }
-                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1] , descrizione:$("#editbox_customjob").val().trim()};
+                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], descrizione: $("#editbox_customjob").val().trim()};
                     requestJson = JSON.stringify(p);
                     $.ajax({
                         url: "EditCustomJob",
@@ -197,8 +240,8 @@
                         type: 'POST',
                         async: true,
                         success: function (data) {
-                            if(data !== undefined){
-                                $("#desc_"+LAVORO_SELEZIONATO).text(data.descrizione);
+                            if (data !== undefined) {
+                                $("#desc_" + LAVORO_SELEZIONATO).text(data.descrizione);
                             }
                         },
                         error: function (xhttpjqr, err, data) {
@@ -208,7 +251,7 @@
                         }
                     });
                 });
-                
+
             });
         </script>
         <!-- 
@@ -348,7 +391,7 @@
                                                     <label>Data Uscita</label>
                                                     <input class="form-control" id="data_uscita"  <% out.print("value=\"" + praticaInfos.get(0).getData_uscita() + "\""); %> >
                                                     <script>
-                                                                $("#data_uscita").datepicker();
+                                                        $("#data_uscita").datepicker();
                                                     </script>
                                                 </div>                  
                                             </div>
@@ -628,14 +671,14 @@
                                                 out.println("       </div>");
                                                 out.println("       <div id='categoria_" + cci.getIdCategoria() + "' class='panel-collapse collapse in'>");
                                                 out.println("           <div class='panel-body'>");
-                                                out.println("               <div id='list_jobs' class='list-group'>");
+                                                out.println("               <div id='list_jobs' class='list-group' id='list_categoria_" + cci.getIdCategoria() + "' >");
                                                 for (TipoLavoroPratica tlp
                                                         : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {
                                                     if (tlp.getTipo().equalsIgnoreCase("S")) {
                                                         //item standard template
-                                                        out.println("<div class='list-group-item' id='li_standard_"+tlp.getIdLavoro()+"' >");
+                                                        out.println("<div class='list-group-item' id='li_standard_" + tlp.getIdLavoro() + "' >");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println("<span id='desc_standard_" + tlp.getIdLavoro() + "' >"+tlp.getDescrizione()+"</span>");
+                                                        out.println("<span id='desc_standard_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
                                                         out.println("   <span class='pull-right' id='standard_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
@@ -644,9 +687,9 @@
                                                         out.println("</div>");
                                                     } else {
                                                         //item custom template
-                                                        out.println("<div class='list-group-item' id='li_custom_"+tlp.getIdLavoro()+"' >");
+                                                        out.println("<div class='list-group-item' id='li_custom_" + tlp.getIdLavoro() + "' >");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println("<span id='desc_custom_" + tlp.getIdLavoro() + "' >"+tlp.getDescrizione()+"</span>");
+                                                        out.println("<span id='desc_custom_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
                                                         out.println("   <span class='pull-right' id='custom_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_custom_job'>");
                                                         out.println("           <i class='fa fa-edit fa-fw' id='custom_icon" + tlp.getIdLavoro() + "'></i>");
@@ -778,7 +821,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
-                        <button type="button" id="addStandardJobButton" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
+                        <button type="button" id="addStandardJobsButton" class="btn btn-primary" data-dismiss="modal">Aggiungi</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
