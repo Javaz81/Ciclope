@@ -174,6 +174,7 @@
                     LAVORO_SELEZIONATO = event.target.id;
                     TIPO_LAVORO_SELEZIONATO = "standard";
                 });
+
                 $("#addStandardJobsButton").click(function (event) {
                     var jobs = [];
                     $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
@@ -181,7 +182,7 @@
                         // non il relativo ID interno del DB.
                         jobs.push(value.childNodes[1].innerText);
                     });
-                    var jobsCode = {praticaId:PRATICA_SELEZIONATA, codes: jobs};
+                    var jobsCode = {praticaId: PRATICA_SELEZIONATA, codes: jobs};
                     requestJson = JSON.stringify(jobsCode);
                     $.ajax({
                         url: "AddStandardJobs",
@@ -195,14 +196,20 @@
                                 if (data.result === "ok") {
                                     $.each(data.rows, function (index, value) {
                                         var items = value.split("#");
-                                        $("#li_standard_" + CATEGORIA_SELEZIONATA).append("<div class='list-group-item' id='li_standard_" + items[0] + "' >\n\
-                                <i class='fa fa-toggle-right fa-fw' id='standard_" + items[0] + "'></i>\n\
-<span id='desc_standard_" + items[0] + "' >" + items[1] + "</span><span class='pull-right' id='standard_" + items[0] + "'>\n\
-<button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + items[0] + "' data-target='#delete_job'><i class='fa fa-times-circle fa-fw' id='standard_" + items[0] + "'></i>\n\
-\n\</button>\n\
-</span>\n\
-</div>"
+                                        $("#list_categoria_" + CATEGORIA_SELEZIONATA).prepend(
+                                                "<div class='list-group-item' id='li_standard_" + items[0] + "' >\n\
+                                                    <i class='fa fa-toggle-right fa-fw' id='standard_" + items[0] + "'></i>\n\
+                                                    <span id='desc_standard_" + items[0] + "' >" + items[1] + "</span><span class='pull-right' id='standard_" + items[0] + "'>\n\
+                                                        <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + items[0] + "' data-target='#delete_job'>\n\
+                                                            <i class='fa fa-times-circle fa-fw' id='standard_" + items[0] + "'></i>\n\
+                                                        </button>\n\
+                                                    </span>\n\
+                                                </div>"
                                                 );
+                                        $("button#standard_" + items[0]).click(function(event){
+                                            LAVORO_SELEZIONATO = event.target.id;
+                                            TIPO_LAVORO_SELEZIONATO = "standard";
+                                        });
                                     });
                                 } else {
                                     alert("Errore nel DB->" + data.result);
@@ -671,14 +678,14 @@
                                                 out.println("       </div>");
                                                 out.println("       <div id='categoria_" + cci.getIdCategoria() + "' class='panel-collapse collapse in'>");
                                                 out.println("           <div class='panel-body'>");
-                                                out.println("               <div id='list_jobs' class='list-group' id='list_categoria_" + cci.getIdCategoria() + "' >");
+                                                out.println("               <div class='list-group' id='list_categoria_" + cci.getIdCategoria() + "' >");
                                                 for (TipoLavoroPratica tlp
                                                         : AmministrazioneUtils.GetAllLavori(Integer.parseInt(request.getParameter("praticaId")), Integer.parseInt(cci.getIdCategoria()))) {
                                                     if (tlp.getTipo().equalsIgnoreCase("S")) {
                                                         //item standard template
                                                         out.println("<div class='list-group-item' id='li_standard_" + tlp.getIdLavoro() + "' >");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println("<span id='desc_standard_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
+                                                        out.println("   <span id='desc_standard_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
                                                         out.println("   <span class='pull-right' id='standard_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw' id='standard_" + tlp.getIdLavoro() + "'></i>");
@@ -689,7 +696,7 @@
                                                         //item custom template
                                                         out.println("<div class='list-group-item' id='li_custom_" + tlp.getIdLavoro() + "' >");
                                                         out.println("   <i class='fa fa-toggle-right fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
-                                                        out.println("<span id='desc_custom_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
+                                                        out.println("   <span id='desc_custom_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
                                                         out.println("   <span class='pull-right' id='custom_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_custom_job'>");
                                                         out.println("           <i class='fa fa-edit fa-fw' id='custom_icon" + tlp.getIdLavoro() + "'></i>");
