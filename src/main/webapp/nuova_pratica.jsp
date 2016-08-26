@@ -129,7 +129,6 @@
                     data.praticaId = PRATICA_SELEZIONATA;
                     data.categoriaId = CATEGORIA_SELEZIONATA;
                 });
-
                 $('#deleteJobButton').click(function (event) {
                     var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
                     requestJson = JSON.stringify(p);
@@ -174,7 +173,6 @@
                     LAVORO_SELEZIONATO = event.target.id;
                     TIPO_LAVORO_SELEZIONATO = "standard";
                 });
-
                 $("#addStandardJobsButton").click(function (event) {
                     var jobs = [];
                     $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
@@ -206,7 +204,7 @@
                                                     </span>\n\
                                                 </div>"
                                                 );
-                                        $("button#standard_" + items[0]).click(function(event){
+                                        $("button#standard_" + items[0]).click(function (event) {
                                             LAVORO_SELEZIONATO = event.target.id;
                                             TIPO_LAVORO_SELEZIONATO = "standard";
                                         });
@@ -222,7 +220,6 @@
                         complete: function (xhttpjqr, evtobj, data) {
                         }
                     });
-
                 });
                 //custom jobs event handler
                 $("[id^='custom_']").click(function (event) {
@@ -258,7 +255,145 @@
                         }
                     });
                 });
+                $("#addCustomJobButton").click(function (event) {
+                    var text = $("#editbox_addcustomjob").val().trim();
+                    var p = {praticaId: PRATICA_SELEZIONATA, categoriaId: CATEGORIA_SELEZIONATA, descrizione: text};
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                        url: "AddCustomJob",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    //item custom template    
+                                    $("#list_categoria_" + CATEGORIA_SELEZIONATA).prepend(
+                                            "<div class='list-group-item' id='li_custom_" + data.jobId + "' >\n\
+                                            <i class='fa fa-toggle-right fa-fw' id='custom_" + data.jobId + "'></i>\n\
+                                                <span id='desc_custom_" + data.jobId + "' >" + data.descrizione + "</span>\n\
+                                                <span class='pull-right' id='custom_" + data.jobId + "'>\n\
+                                                    <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + data.jobId + "' data-target='#edit_custom_job'>\n\
+                                                            <i class='fa fa-edit fa-fw' id='custom_" + data.jobId + "'></i>\n\
+                                                        </button>\n\
+                                                        <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_" + data.jobId + "' data-target='#delete_job'>\n\
+                                                            <i class='fa fa-times-circle fa-fw' id='custom_" + data.jobId + "'></i>\n\
+                                                        </button>\n\
+                                                    </span>\n\
+                                                </div>"
+                                            );
+                                    $("button#custom_" + data.jobId).click(function (event) {
+                                        LAVORO_SELEZIONATO = event.target.id;
+                                        TIPO_LAVORO_SELEZIONATO = "custom";
+                                        var text = $("#desc_custom_" + LAVORO_SELEZIONATO).text().trim();
+                                        $("#editbox_customjob").val(text);
+                                    });
+                                } else {
+                                    alert(data.messaggio);
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
+                });
+                $("#button_save").click(function (event) {
+                    var praticaId = $("#idPratica").val();
+                    var arrivo = $("#arrivo").val();
+                    var data_arrivo = $("#data_arrivo").val();
+                    var idChiusuraPratica = $("#idChiusuraPratica").val();
+                    var uscita = $("#uscita").val();
+                    var data_uscita = $("#data_uscita").val();
+                    var veicoloId = $("#idVeicolo").val();
+                    var marca = $("#marca").val();
+                    var modello = $("#modello").val();
+                    var targa = $("#targa").val();
+                    var kilometraggio = $("#kilometraggio").val();
+                    var anno = $("#anno").val();
+                    var tipo = $("#tipo").val();
+                    var matricola = $("#matricola").val();
+                    var ore = $("#ore").val();
+                    var idCliente = $("#idCliente").val();
+                    var nome = $("#nome").val();
+                    var cognome = $("#cognome").val();
+                    var cellulare = $("#cellulare").val();
+                    var localita = $("#localita").val();
+                    var preventivo_lavori = $("#preventivo_lavori").val();
+                    var preventivo_lavori_data = $("#preventivo_lavori_data").val();
+                    var revisione_mctc = $("#revisione_mctc").val();
+                    var revisione_mctc_data = $("#revisione_mctc_data").val();
+                    var collaudo_usl = $("#collaudo_usl").val();
+                    var collaudo_usl_data = $("#collaudo_usl_data").val();
+                    var registro_di_controllo = $("#registro_di_controllo").val();
 
+                    var p = {
+                        praticaId: praticaId,
+                        arrivo: arrivo,
+                        data_arrivo: data_arrivo,
+                        idChiusuraPratica: idChiusuraPratica,
+                        uscita: uscita,
+                        data_uscita: data_uscita,
+                        veicoloId: veicoloId,
+                        marca: marca,
+                        modello: modello,
+                        targa: targa,
+                        kilometraggio: kilometraggio,
+                        anno: anno,
+                        tipo: tipo,
+                        matricola: matricola,
+                        ore: ore,
+                        idCliente: idCliente,
+                        nome: nome,
+                        cognome: cognome,
+                        cellulare: cellulare,
+                        localita: localita,
+                        preventivo_lavori: preventivo_lavori,
+                        preventivo_lavori_data: preventivo_lavori_data,
+                        revisione_mctc: revisione_mctc,
+                        revisione_mctc_data: revisione_mctc_data,
+                        collaudo_usl: collaudo_usl,
+                        collaudo_usl_data: collaudo_usl_data,
+                        registro_di_controllo: registro_di_controllo
+                    };
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                        url: "SavePratica",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    $("#notification_area").prepend("<div class='alert alert-success alert-dismissable'>\n\
+                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
+</div>"
+                                            );
+                                } else {
+                                    $("#notification_area").prepend("<div class='alert alert-danger alert-dismissable'>\n\
+                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
+</div>"
+                                            );
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+
+                        }
+                    });
+                });
+                // end $(document).ready
             });
         </script>
         <!-- 
@@ -317,18 +452,23 @@
                         <h1 class="page-header">Dati Pratica</h1>
                     </div>
                 </div>
+                <div class="row">
+                    <div id="notification_area" class="col-lg-12">
+
+                    </div>
+                </div>
                 <form role="form" method="POST">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="btn-group" style="margin-bottom:1em">
-                                <button type="submit" class="btn btn-primary">Salva modifiche</button>
-                                <button type="submit" class="btn btn-primary">Esporta pratica</button>
-                                <button type="submit" class="btn btn-primary">Stampa pratica</button>
+                                <button type="button" id="button_save" class="btn btn-primary">Salva modifiche</button>
+                                <button type="button" id="button_export" class="btn btn-primary">Esporta pratica</button>
+                                <button type="button" id="button_print" class="btn btn-primary">Stampa pratica</button>
                                 <%
                                     if (request.getParameter("newPratice").equalsIgnoreCase("true")) {
-                                        out.println("<button type=\"submit\" class=\"btn btn-primary\" disabled>Elimina pratica</button>");
+                                        out.println("<button type=\"button\" id=\"button_delete\" class=\"btn btn-primary\" disabled>Elimina pratica</button>");
                                     } else {
-                                        out.println("<button type=\"submit\" class=\"btn btn-primary\">Elimina pratica</button>");
+                                        out.println("<button type=\"button\" id=\"button_delete\" class=\"btn btn-primary\">Elimina pratica</button>");
                                     }
                                 %>
 
@@ -699,7 +839,7 @@
                                                         out.println("   <span id='desc_custom_" + tlp.getIdLavoro() + "' >" + tlp.getDescrizione() + "</span>");
                                                         out.println("   <span class='pull-right' id='custom_" + tlp.getIdLavoro() + "'>");
                                                         out.println("       <button type='button' class='btn-xs btn-primary'  data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#edit_custom_job'>");
-                                                        out.println("           <i class='fa fa-edit fa-fw' id='custom_icon" + tlp.getIdLavoro() + "'></i>");
+                                                        out.println("           <i class='fa fa-edit fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
                                                         out.println("       </button>");
                                                         out.println("       <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='custom_" + tlp.getIdLavoro() + "' data-target='#delete_job'>");
                                                         out.println("           <i class='fa fa-times-circle fa-fw' id='custom_" + tlp.getIdLavoro() + "'></i>");
@@ -783,8 +923,8 @@
                         <h4 class="modal-title" id="addCustomJobLabel">Inserimento nuovo lavoro personalizzato</h4>
                     </div>
                     <div class="modal-body">
-                        <label for="edit">Modifica il testo</label>
-                        <input class="form-control" id="editbox_customjob" value="">
+                        <label for="edit">Inserisci la descrizione:</label>
+                        <input class="form-control" id="editbox_addcustomjob" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
