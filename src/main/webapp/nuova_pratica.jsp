@@ -306,7 +306,6 @@
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
                     var data_arrivo = $("#data_arrivo").val();
-                    var idChiusuraPratica = $("#idChiusuraPratica").val();
                     var uscita = $("#uscita").val();
                     var data_uscita = $("#data_uscita").val();
                     var veicoloId = $("#idVeicolo").val();
@@ -315,7 +314,7 @@
                     var targa = $("#targa").val();
                     var kilometraggio = $("#kilometraggio").val();
                     var anno = $("#anno").val();
-                    var tipo = $("#tipo").val();
+                    var tipo = $("#tipo input:checked").val();
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
@@ -330,12 +329,12 @@
                     var collaudo_usl = $("#collaudo_usl").val();
                     var collaudo_usl_data = $("#collaudo_usl_data").val();
                     var registro_di_controllo = $("#registro_di_controllo").val();
+                    var lavori_segnalati = $("#lavori_segnalati").val();
 
                     var p = {
                         praticaId: praticaId,
                         arrivo: arrivo,
                         data_arrivo: data_arrivo,
-                        idChiusuraPratica: idChiusuraPratica,
                         uscita: uscita,
                         data_uscita: data_uscita,
                         veicoloId: veicoloId,
@@ -358,7 +357,8 @@
                         revisione_mctc_data: revisione_mctc_data,
                         collaudo_usl: collaudo_usl,
                         collaudo_usl_data: collaudo_usl_data,
-                        registro_di_controllo: registro_di_controllo
+                        registro_di_controllo: registro_di_controllo,
+                        lavori_segnalati: lavori_segnalati
                     };
                     requestJson = JSON.stringify(p);
                     $.ajax({
@@ -493,7 +493,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
 
                                             <div class="form-group">
                                                 <div class="col-lg-6">
-                                                    <input type="hidden" id="idPratica" name="idPratica" value=""/>
+                                                    <input type="hidden" id="idPratica" name="idPratica" <% out.print("value=\"" + praticaInfos.get(0).getIdPratica()+ "\""); %> />
                                                     <label>Codice Arrivo</label>
                                                     <input class="form-control" id="arrivo" <% out.print("value=\"" + praticaInfos.get(0).getArrivo() + "\""); %> >
                                                 </div>
@@ -529,7 +529,6 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
 
                                             <div class="form-group">
                                                 <div class="col-lg-6">
-                                                    <input type="hidden" id="idChiusuraPratica" name="idChiusuraPratica" value=""/>
                                                     <label>Codice Uscita</label>
                                                     <input class="form-control" id="uscita" <% out.print("value=\"" + praticaInfos.get(0).getUscita() + "\""); %> >
                                                 </div>
@@ -583,7 +582,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
                                                     dateFormat: "yy"
                                                 });
                                             </script>
-                                            <div class="form-group" style="margin-top:1em; margin-bottom: 1em">
+                                            <div class="form-group" style="margin-top:1em; margin-bottom: 1em" id="tipo">
                                                 <label>Tipo:</label>
                                                 <label class="radio-inline">
                                                     <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE") ? "checked" : "")); %> >PLE

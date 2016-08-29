@@ -5,6 +5,7 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,7 +53,17 @@ public class DateUtils {
         }
         return data;
     }
-    
+    public static String formatAdminYearForMySQL(String date, Locale locale){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy", locale);
+        String data;
+        try {
+            data = new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
+        } catch (ParseException ex) {
+            data= null;
+            Logger.logMsg(Logger.ERROR, ex.getMessage());
+        }
+        return data;
+    }
     /**
      * <p>Checks if two dates are on the same day ignoring time.</p>
      * @param date1  the first date, not altered, not null
