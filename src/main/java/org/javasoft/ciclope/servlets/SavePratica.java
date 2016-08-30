@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import static org.javasoft.ciclope.servlets.utils.DateUtils.formatAdminYearForMySQL;
+import static org.javasoft.ciclope.servlets.utils.DateUtils.formatExtendedDateFromAdministrator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -38,8 +39,9 @@ public class SavePratica extends HttpServlet {
     private static String parseParam(String fromHtml) {
         if (fromHtml.equalsIgnoreCase("") || fromHtml.equalsIgnoreCase("-1")) {
             return "NULL";
+        }else{
+            return "'".concat(fromHtml).concat("'");
         }
-        return fromHtml;
     }
 
     /**
@@ -133,15 +135,15 @@ public class SavePratica extends HttpServlet {
                 //salva dati veicolo
                 Query q = s.createSQLQuery("UPDATE ciclope.veicolo "
                         + "SET "
-                        + "marca='" + marca + "', "
-                        + "modello='" + modello + "', "
-                        + "targa='" + targa + "', "
-                        + "kilometraggio='" + kilometraggio + "', "
-                        + "anno='" + formatAdminYearForMySQL(anno, Locale.ITALY) + "', "
-                        + "tipo='" + tipo + "', "
-                        + "matricola='" + matricola + "', "
-                        + "ore='" + ore + "' "
-                        + "WHERE idVeicolo='" + veicoloId + "'");
+                        + "marca=" + marca + ", "
+                        + "modello=" + modello + ", "
+                        + "targa=" + targa + ", "
+                        + "kilometraggio=" + kilometraggio + ", "
+                        + "anno=" + formatAdminYearForMySQL(anno, Locale.ITALY) + ", "
+                        + "tipo=" + tipo + ", "
+                        + "matricola=" + matricola + ", "
+                        + "ore=" + ore + " "
+                        + "WHERE idVeicolo=" + veicoloId);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -164,11 +166,11 @@ public class SavePratica extends HttpServlet {
                 clienteAssente = false;
                 Query q = s.createSQLQuery("UPDATE ciclope.cliente "
                         + "SET "
-                        + "nome='" + nome + "', "
-                        + "cognome='" + cognome + "', "
-                        + "cellulare='" + cellulare + "', "
-                        + "localita='" + localita + "' "
-                        + "WHERE Cliente_idCliente='" + idCliente + "'");
+                        + "nome=" + nome + ", "
+                        + "cognome=" + cognome + ", "
+                        + "cellulare=" + cellulare + ", "
+                        + "localita=" + localita + " "
+                        + "WHERE idCliente=" + idCliente);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -202,18 +204,18 @@ public class SavePratica extends HttpServlet {
                         + ")"
                         + "VALUES "
                         + "("
-                        + "'"+arrivo+"',"
-                        + "'"+data_arrivo+"',"
-                        + "'"+uscita+"',"
-                        + "'"+data_uscita+"',"
-                        + "'"+preventivo_lavori+"',"
-                        + "'"+preventivo_lavori_data+"',"
-                        + "'"+revisione_mctc+"',"
-                        + "'"+revisione_mctc_data+"',"
-                        + "'"+collaudo_usl+"',"
-                        + "'"+collaudo_usl_data+"',"
-                        + "'"+registro_di_controllo+"',"
-                        + "'"+lavori_segnalati+"'"
+                        + arrivo+","
+                        + data_arrivo+","
+                        + uscita+","
+                        + data_uscita+","
+                        + preventivo_lavori+","
+                        + preventivo_lavori_data+","
+                        + revisione_mctc+","
+                        + revisione_mctc_data+","
+                        + collaudo_usl+","
+                        + collaudo_usl_data+","
+                        + registro_di_controllo+","
+                        + lavori_segnalati
                         + ") "
                         + "WHERE ciclope.pratica.idPratica = "+praticaId);
                 int n_row = q.executeUpdate();
@@ -230,19 +232,19 @@ public class SavePratica extends HttpServlet {
                 //salva dati della pratica.
                 Query q = s.createSQLQuery("UPDATE ciclope.pratica "
                         + "SET "
-                        + "arrivo='" + arrivo + "', "
-                        + "data_arrivo='" + data_arrivo + "', "
-                        + "uscita='" + uscita + "', "
-                        + "data_uscita='" + data_uscita + "', "
-                        + "preventivo_lavori='" + preventivo_lavori + "', "
-                        + "preventivo_lavori_data='" + preventivo_lavori_data + "', "
-                        + "revisione_mctc='" + revisione_mctc + "', "
-                        + "revisione_mctc_data='" + revisione_mctc_data + "', "
-                        + "collaudo_usl='" + collaudo_usl + "', "
-                        + "collaudo_usl_data='" + collaudo_usl_data + "', "
-                        + "registro_di_controllo='" + registro_di_controllo + "', "
-                        + "lavori_segnalati='"+ lavori_segnalati+"' "
-                        + "WHERE ciclope.pratica.idPratica='" + praticaId + "' ");
+                        + "arrivo=" + arrivo + ", "
+                        + "data_arrivo=" + formatExtendedDateFromAdministrator(data_arrivo) + ", "
+                        + "uscita=" + uscita + ", "
+                        + "data_uscita=" + formatExtendedDateFromAdministrator(data_uscita) + ", "
+                        + "preventivo_lavori=" + parseBooleanParam(preventivo_lavori) + ", "
+                        + "preventivo_lavori_data=" + formatExtendedDateFromAdministrator(preventivo_lavori_data) + ", "
+                        + "revisione_mctc=" + parseBooleanParam(revisione_mctc) + ", "
+                        + "revisione_mctc_data=" + formatExtendedDateFromAdministrator(revisione_mctc_data) + ", "
+                        + "collaudo_usl=" + parseBooleanParam(collaudo_usl) + ", "
+                        + "collaudo_usl_data=" + formatExtendedDateFromAdministrator(collaudo_usl_data) + ", "
+                        + "registro_di_controllo=" + parseBooleanParam(registro_di_controllo) + ", "
+                        + "lavori_segnalati="+ lavori_segnalati+" "
+                        + "WHERE ciclope.pratica.idPratica=" + praticaId + " ");
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -256,7 +258,11 @@ public class SavePratica extends HttpServlet {
                 }
             }
             t.commit();
-            result = new JSONObject();
+            JSONObject jo = new JSONObject();
+            result.put("result", "ok");
+            result.put("messaggio", "Aggiornamento effettuato con successo!!!");
+            jo.putAll(result);
+            out.println(jo.toJSONString());
         }
     }
 
@@ -298,5 +304,16 @@ public class SavePratica extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private String parseBooleanParam(String param) {
+        if(param.equalsIgnoreCase("NULL") || param.equalsIgnoreCase("")){
+            return "'0'";
+        }else{
+            if(param.equalsIgnoreCase("SI"))
+                return "'1'";
+            else
+                return "'0'";
+        }
+    }
 
 }

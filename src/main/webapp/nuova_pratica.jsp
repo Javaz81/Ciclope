@@ -64,6 +64,7 @@
         <script>
             // declarations
             var STANDARD_JOBS_DATATABLE;
+            var VEICOLO_DATATABLE;
             var CATEGORIA_SELEZIONATA = "-1";
             var PRATICA_SELEZIONATA = "-1";
             var LAVORO_SELEZIONATO = "-1";
@@ -92,86 +93,21 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
+                
                 $("#add_standard_job").on('shown.bs.modal', function () {
                     STANDARD_JOBS_DATATABLE.clear();
                     STANDARD_JOBS_DATATABLE.ajax.reload();
-                });
-                STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
-                    responsive: true,
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: "GetStandardJobsDataTable",
-                        type: "POST",
-                        data: {praticaId: PRATICA_SELEZIONATA, categoriaId: CATEGORIA_SELEZIONATA}
-                    },
-                    sDom: 'lrtip', //to hide global search input box.
-                    initComplete: function () {
-                        this.api().columns().every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                    .appendTo($(column.footer()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                                $(this).val()
-                                                );
-                                        column
-                                                .search(val)
-                                                .draw();
-                                    });
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>');
-                            });
-                        });
-                    }
-                });
+                });   
                 $('#standardJobTableSelection').on('preXhr.dt', function (e, settings, data) {
                     data.praticaId = PRATICA_SELEZIONATA;
                     data.categoriaId = CATEGORIA_SELEZIONATA;
                 });
-                $('#deleteJobButton').click(function (event) {
-                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
-                    requestJson = JSON.stringify(p);
-                    $.ajax({
-                        url: "DeleteJob",
-                        cache: false,
-                        data: requestJson,
-                        dataType: 'json',
-                        type: 'POST',
-                        async: true,
-                        success: function (data) {
-                            if (data !== undefined) {
-                                if (data.result === "ok") {
-                                    $("#li_" + LAVORO_SELEZIONATO).remove();
-                                } else {
-                                    alert("Errore con il DB ->\n : [" + data.result + "]");
-                                }
-                            }
-                        },
-                        error: function (xhttpjqr, err, data) {
-                            alert(err);
-                        },
-                        complete: function (xhttpjqr, evtobj, data) {
-
-                        }
-                    });
-                });
-                $(".categoria *").on("click", function () {
-                    var categoryParent = $(this).parents(".categoria");
-                    var classList = categoryParent.attr('class').split(/\s+/);
-                    $.each(classList, function (index, item) {
-                        if (item.startsWith("categoria_")) {
-                            var sp = item.split("_");
-                            CATEGORIA_SELEZIONATA = sp[1];
-                        }
-                    });
+                $("#add_new_veicolo").on('shown.bs.modal', function () {
+                    VEICOLO_DATATABLE.clear();
+                    VEICOLO_DATATABLE.ajax.reload();
                 });
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
-                });
-                $("[id^='standard_']").click(function (event) {
-                    LAVORO_SELEZIONATO = event.target.id;
-                    TIPO_LAVORO_SELEZIONATO = "standard";
                 });
                 $("#addStandardJobsButton").click(function (event) {
                     var jobs = [];
@@ -221,6 +157,107 @@
                         }
                     });
                 });
+                STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "GetStandardJobsDataTable",
+                        type: "POST",
+                        data: {praticaId: PRATICA_SELEZIONATA, categoriaId: CATEGORIA_SELEZIONATA}
+                    },
+                    sDom: 'lrtip', //to hide global search input box.
+                    initComplete: function () {
+                        this.api().columns().every(function () {
+                            var column = this;
+                            var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                                $(this).val()
+                                                );
+                                        column
+                                                .search(val)
+                                                .draw();
+                                    });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            });
+                        });
+                    }
+                });
+                                
+                VEICOLO_DATATABLE = $('#veicoloTableSelection').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "GetVeicoli",
+                        type: "POST"
+                    },
+                    sDom: 'lrtip', //to hide global search input box.
+                    initComplete: function () {
+                        this.api().columns().every(function () {
+                            var column = this;
+                            var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                                $(this).val()
+                                                );
+                                        column
+                                                .search(val)
+                                                .draw();
+                                    });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            });
+                        });
+                    }
+                });
+                
+                $('#deleteJobButton').click(function (event) {
+                    var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                        url: "DeleteJob",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    $("#li_" + LAVORO_SELEZIONATO).remove();
+                                } else {
+                                    alert("Errore con il DB ->\n : [" + data.result + "]");
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+
+                        }
+                    });
+                });
+                $(".categoria *").on("click", function () {
+                    var categoryParent = $(this).parents(".categoria");
+                    var classList = categoryParent.attr('class').split(/\s+/);
+                    $.each(classList, function (index, item) {
+                        if (item.startsWith("categoria_")) {
+                            var sp = item.split("_");
+                            CATEGORIA_SELEZIONATA = sp[1];
+                        }
+                    });
+                });
+                $("[id^='standard_']").click(function (event) {
+                    LAVORO_SELEZIONATO = event.target.id;
+                    TIPO_LAVORO_SELEZIONATO = "standard";
+                });
+                
                 //custom jobs event handler
                 $("[id^='custom_']").click(function (event) {
                     LAVORO_SELEZIONATO = event.target.id;
@@ -373,13 +410,13 @@
                                 if (data.result === "ok") {
                                     $("#notification_area").prepend("<div class='alert alert-success alert-dismissable'>\n\
                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
-Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
+" + data.messaggio.toString() + "\n\
 </div>"
                                             );
                                 } else {
                                     $("#notification_area").prepend("<div class='alert alert-danger alert-dismissable'>\n\
                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
-Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
+" + data.messaggio.toString() + "\n\
 </div>"
                                             );
                                 }
@@ -493,7 +530,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
 
                                             <div class="form-group">
                                                 <div class="col-lg-6">
-                                                    <input type="hidden" id="idPratica" name="idPratica" <% out.print("value=\"" + praticaInfos.get(0).getIdPratica()+ "\""); %> />
+                                                    <input type="hidden" id="idPratica" name="idPratica" <% out.print("value=\"" + praticaInfos.get(0).getIdPratica() + "\""); %> />
                                                     <label>Codice Arrivo</label>
                                                     <input class="form-control" id="arrivo" <% out.print("value=\"" + praticaInfos.get(0).getArrivo() + "\""); %> >
                                                 </div>
@@ -557,6 +594,21 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
                                         <i class="fa fa-car fw"></i>
                                         <a style="margin-left:1em"data-toggle="collapse"
                                            href="#collapseOggettoRiparazione">Oggetto della riparazione</a>
+                                        <div class='pull-right'>
+                                            <div class='btn-group'>
+                                                <button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>
+                                                    Azioni <span class='caret'></span>
+                                                </button>
+                                                <ul class='dropdown-menu pull-right' role='menu'>
+                                                    <li>
+                                                        <a href='' data-toggle='modal' data-target='#add_new_veicolo' >Crea nuova piattaforma/veicolo</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href='' data-toggle='modal' data-target='#search_veicolo' >Cerca piattaforma/veicolo</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>                                    
                                 </div>
                                 <!-- /.panel-heading -->
@@ -611,6 +663,21 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
                                         <i class="fa fa-user fw"></i>
                                         <a style="margin-left:1em"data-toggle="collapse"                                             
                                            href="#collapseCliente">Informazioni cliente</a>
+                                        <div class='pull-right'>
+                                            <div class='btn-group'>
+                                                <button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>
+                                                    Azioni <span class='caret'></span>
+                                                </button>
+                                                <ul class='dropdown-menu pull-right' role='menu'>
+                                                    <li>
+                                                        <a href='' data-toggle='modal' data-target='#add_new_cliente' >Crea nuovo cliente</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href='' data-toggle='modal' data-target='#search_cliente' >Cerca cliente</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>                                   
                                 </div>
                                 <!-- /.panel-heading -->
@@ -974,6 +1041,58 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit\n\
             </div>
             <!-- /.modal-dialog -->
         </div>
+
+        <div class="modal fade" id="add_new_veicolo" tabindex="-1" role="dialog" aria-labelledby="searchVeicoloLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="searchVeicoloLabel" >Veicoli in archivio</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p style="text-align:center; margin:1em " >Seleziona il veicolo da inserire nella pratica</p>
+                        <table id="veicoloTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Marca</th>
+                                    <th>Modello</th>
+                                    <th>Targa</th>
+                                    <th>Kilometraggio</th>
+                                    <th>Anno</th>
+                                    <th>Tipo</th>
+                                    <th>Matricola</th>
+                                    <th>Ore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Marca</th>
+                                    <th>Modello</th>
+                                    <th>Targa</th>
+                                    <th>Kilometraggio</th>
+                                    <th>Anno</th>
+                                    <th>Tipo</th>
+                                    <th>Matricola</th>
+                                    <th>Ore</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
+                        <button type="button" id="setVeicoloInPraticaButton" class="btn btn-primary" data-dismiss="modal">Seleziona</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
         <!-- /.modal -->
         <div id="dialog-message" title="Azione eseguita">
             <p id="messaggio_pratica">

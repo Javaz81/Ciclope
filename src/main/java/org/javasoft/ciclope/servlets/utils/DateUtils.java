@@ -5,7 +5,6 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
-import com.sun.media.jfxmedia.logging.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +30,17 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEEEEE dd-MM-yyyy",locale);
         return sdf.format(date);
     }
+    public static String formatDateFromAdministration(String date){
+        if(date == null)
+            throw new IllegalArgumentException("The date or locale must not be null");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String data = null;
+        try {
+            data = new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
+        } catch (ParseException ex) {
+        }
+        return data;
+    }
     public static String formatDateYearForAdministration(Date date, Locale locale){
         if(date == null || locale == null)
             throw new IllegalArgumentException("The date or locale must not be null");
@@ -53,16 +63,23 @@ public class DateUtils {
         }
         return data;
     }
-    public static String formatAdminYearForMySQL(String date, Locale locale){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy", locale);
-        String data;
-        try {
-            data = new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
-        } catch (ParseException ex) {
-            data= null;
-            Logger.logMsg(Logger.ERROR, ex.getMessage());
+    /**
+     *  Prende la data come "mercoledì 2021-01-23" e ne prende solo la parte 
+     *  numerica.
+     * @param extDate
+     * @return borda
+     */
+    public static String formatExtendedDateFromAdministrator(String extDate){
+        if(extDate.equalsIgnoreCase("NULL")){
+            return extDate;
         }
-        return data;
+        String[] dd = extDate.split(" ");
+        return "'".concat(formatDateFromAdministration(dd[1].replace("'", ""))).concat("'");
+    }
+    
+    public static String formatAdminYearForMySQL(String date, Locale locale){
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy", locale);
+        return date;
     }
     /**
      * <p>Checks if two dates are on the same day ignoring time.</p>
