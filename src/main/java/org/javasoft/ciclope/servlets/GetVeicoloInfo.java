@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.persistence.Veicolo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -31,8 +32,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "AddCustomJob", urlPatterns = {"/AddCustomJob"})
-public class AddCustomJob extends HttpServlet {
+@WebServlet(name = "GetVeicoloInfo", urlPatterns = {"/GetVeicoloInfo"})
+public class GetVeicoloInfo extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,11 +44,10 @@ public class AddCustomJob extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        Transaction t = null;
         try (PrintWriter out = response.getWriter()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
@@ -61,41 +61,50 @@ public class AddCustomJob extends HttpServlet {
                     Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String praticaId = (String) ((JSONObject)obj).get("praticaId");
-            String categoriaId = (String) ((JSONObject)obj).get("categoriaId");
-            String descrizione = ((String)((JSONObject)obj).get("descrizione"));            
+            String vid = (String) ((JSONObject)obj).get("vid");         
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session s = sf.openSession();
-            Transaction t = s.getTransaction();
+            t = s.getTransaction();
             try {
                 t.begin();
-                String qs = "INSERT INTO ciclope.lavoripratichecustom ( pratica, categoria, descrizione) VALUES ('"+praticaId+"','"+categoriaId+"','"+descrizione+"')";
-                Query q = s.createSQLQuery(qs);
-                int rows = q.executeUpdate();
-                if(rows != 1){
-                    throw new Exception("Nessun lavoro aggiornato. E' già stata cancellata la riga?");
-                }
-                qs = "SELECT id FROM ciclope.lavoripratichecustom WHERE pratica='"+praticaId+"' AND categoria = '"+categoriaId+"' AND descrizione = '"+descrizione+"'";
-                q = s.createSQLQuery(qs);
-                ArrayList<Integer> ids = (ArrayList<Integer>) q.list();
-                if(ids.size()!=1){
-                    throw new Exception("Lavoro inserito, ma il DB ha rilevato un problema nella ricerca.");
+                String qs = "SELECT * from ciclope.veicolo WHERE idVeicolo='"+vid+"'";
+                Query q = s.createSQLQuery(qs).addEntity(Veicolo.class);
+                ArrayList<Veicolo> rows = (ArrayList<Veicolo>) q.list();
+                if(rows.size()!= 1){
+                    throw new Exception("Nessun veicolo trovato. Riprovare o contattare Andrea.");
                 }
                 t.commit();
                 HashMap<String,String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ok");
-                resMap.put("jobId", ids.get(0).toString());
-                resMap.put("descrizione",descrizione);
+                StringBuilder sb = new StringBuilder();
+                Veicolo v = rows.get(0);
+                sb.append(v.getIdVeicolo())
+                        .append("#")
+                        .append(v.getMarca() == null?"":v.getMarca())
+                        .append("#")
+                        .append(v.getModello() == null?"":v.getModello())
+                        .append("#")
+                        .append(v.getTarga() == null?"":v.getTarga())
+                        .append("#")
+                        .append(v.getKilometraggio() == null ? "":v.getKilometraggio())
+                        .append("#")
+                        .append(v.getAnno() == null ? "" : v.getAnno())
+                        .append("#")
+                        .append(v.getTipo() == null ? "" : v.getTipo())
+                        .append("#")
+                        .append(v.getMatricola() == null ? "" : v.getMatricola())
+                        .append("#")
+                        .append(v.getOre() == null ? "" : v.getOre());
+                resMap.put("row", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {
                 Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
                 t.rollback();
                 HashMap<String,String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ko");
-                resMap.put("messaggio", ex.getMessage());
+                resMap.put("descrizione", ex.getMessage());
                 out.println(JSONObject.toJSONString(resMap));
             }
-            
         }
     }
 

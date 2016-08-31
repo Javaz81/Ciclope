@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.persistence.Veicolo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -31,8 +32,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "AddCustomJob", urlPatterns = {"/AddCustomJob"})
-public class AddCustomJob extends HttpServlet {
+@WebServlet(name = "AddVeicolo", urlPatterns = {"/AddVeicolo"})
+public class AddVeicolo extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,8 +44,6 @@ public class AddCustomJob extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -61,45 +60,101 @@ public class AddCustomJob extends HttpServlet {
                     Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String praticaId = (String) ((JSONObject)obj).get("praticaId");
-            String categoriaId = (String) ((JSONObject)obj).get("categoriaId");
-            String descrizione = ((String)((JSONObject)obj).get("descrizione"));            
+            String marca = (String) ((JSONObject) obj).get("marca");
+            String modello = (String) ((JSONObject) obj).get("modello");
+            String targa = ((String) ((JSONObject) obj).get("targa"));
+            String kilometraggio = (String) ((JSONObject) obj).get("kilometraggio");
+            String anno = (String) ((JSONObject) obj).get("anno");
+            String tipo = ((String) ((JSONObject) obj).get("tipo"));
+            String matricola = (String) ((JSONObject) obj).get("matricola");
+            String ore = (String) ((JSONObject) obj).get("ore");
+
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session s = sf.openSession();
             Transaction t = s.getTransaction();
             try {
                 t.begin();
-                String qs = "INSERT INTO ciclope.lavoripratichecustom ( pratica, categoria, descrizione) VALUES ('"+praticaId+"','"+categoriaId+"','"+descrizione+"')";
+                String qs = "INSERT INTO ciclope.veicolo ( marca, modello, targa, kilometraggio, anno, tipo, matricola, ore) "
+                        + "VALUES (" + parseParam(marca) + ","
+                        + parseParam(modello) + ","
+                        + parseParam(targa) + ","
+                        + parseParam(kilometraggio) + ","
+                        + parseParam(anno) + ","
+                        + parseParam(tipo) + ","
+                        + parseParam(matricola) + ","
+                        + parseParam(ore)
+                        + ")";
                 Query q = s.createSQLQuery(qs);
                 int rows = q.executeUpdate();
-                if(rows != 1){
+                if (rows != 1) {
                     throw new Exception("Nessun lavoro aggiornato. E' già stata cancellata la riga?");
                 }
-                qs = "SELECT id FROM ciclope.lavoripratichecustom WHERE pratica='"+praticaId+"' AND categoria = '"+categoriaId+"' AND descrizione = '"+descrizione+"'";
-                q = s.createSQLQuery(qs);
-                ArrayList<Integer> ids = (ArrayList<Integer>) q.list();
-                if(ids.size()!=1){
-                    throw new Exception("Lavoro inserito, ma il DB ha rilevato un problema nella ricerca.");
+                qs = "SELECT * FROM ciclope.veicolo WHERE "
+                        + "marca " + parseParamForQuery(marca) + " AND "
+                        + "modello " + parseParamForQuery(modello) + " AND "
+                        + "targa " + parseParamForQuery(targa) + " AND "
+                        + "kilometraggio " + parseParamForQuery(kilometraggio) + " AND "
+                        + "anno " + parseParamForQuery(anno) + " AND "
+                        + "tipo " + parseParamForQuery(tipo) + " AND "
+                        + "matricola " + parseParamForQuery(matricola) + " AND "
+                        + "ore " + parseParamForQuery(ore);
+                q = s.createSQLQuery(qs).addEntity(Veicolo.class);
+                ArrayList<Veicolo> veicolo = (ArrayList<Veicolo>) q.list();
+                if (veicolo.size() != 1) {
+                    throw new Exception("Veicolo inserito, ma il DB ha rilevato un problema nella ricerca.");
                 }
                 t.commit();
-                HashMap<String,String> resMap = new HashMap<String, String>();
+                HashMap<String, String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ok");
-                resMap.put("jobId", ids.get(0).toString());
-                resMap.put("descrizione",descrizione);
+                StringBuilder sb = new StringBuilder();
+                Veicolo v = veicolo.get(0);
+                sb.append(v.getIdVeicolo())
+                        .append("#")
+                        .append(v.getMarca() == null ? "" : v.getMarca())
+                        .append("#")
+                        .append(v.getModello() == null ? "" : v.getModello())
+                        .append("#")
+                        .append(v.getTarga() == null ? "" : v.getTarga())
+                        .append("#")
+                        .append(v.getKilometraggio() == null ? "" : v.getKilometraggio())
+                        .append("#")
+                        .append(v.getAnno() == null ? "" : v.getAnno())
+                        .append("#")
+                        .append(v.getTipo() == null ? "" : v.getTipo())
+                        .append("#")
+                        .append(v.getMatricola() == null ? "" : v.getMatricola())
+                        .append("#")
+                        .append(v.getOre() == null ? "" : v.getOre());
+                resMap.put("veicolo", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {
                 Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
                 t.rollback();
-                HashMap<String,String> resMap = new HashMap<String, String>();
+                HashMap<String, String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ko");
                 resMap.put("messaggio", ex.getMessage());
                 out.println(JSONObject.toJSONString(resMap));
             }
-            
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    private static String parseParam(String param) {
+        if (param.trim().equalsIgnoreCase("")) {
+            return "NULL";
+        } else {
+            return "'".concat(param).concat("'");
+        }
+    }
+    private static String parseParamForQuery(String param) {
+        if (param.trim().equalsIgnoreCase("")) {
+            return "IS NULL";
+        } else {
+            return "= '".concat(param).concat("'");
+        }
+    }
+    
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

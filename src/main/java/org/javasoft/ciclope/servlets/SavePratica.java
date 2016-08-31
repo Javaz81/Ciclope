@@ -216,8 +216,7 @@ public class SavePratica extends HttpServlet {
                         + collaudo_usl_data+","
                         + registro_di_controllo+","
                         + lavori_segnalati
-                        + ") "
-                        + "WHERE ciclope.pratica.idPratica = "+praticaId);
+                        + ")");
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();

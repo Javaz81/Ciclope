@@ -124,24 +124,21 @@ public class GetVeicoli extends HttpServlet {
             jo = new JSONObject();
             jo.put("draw", draw);
             jo.put("recordsTotal", Integer.toString(aicrecs.size()));
-            jo.put("recordsFiltered", Integer.toString(aicrecs.size()));
-            JSONArray array = new JSONArray();
+            jo.put("recordsFiltered", Integer.toString(aicrecs.size()));            
             JSONArray row;
-            array.add(jo);
+            JSONArray array = new JSONArray();
             for (Veicolo ob : aicrecs) {
                 row = new JSONArray();
                 row.add(ob.getIdVeicolo());
                 row.add(ob.getMarca());
                 row.add(ob.getModello());
                 row.add(ob.getTarga());
-                row.add(ob.getKilometraggio());
-                row.add(ob.getAnno());
                 row.add(ob.getTipo());
                 row.add(ob.getMatricola());
-                row.add(ob.getOre());
                 array.add(row);
             }
-            out.println(array.toJSONString());
+            jo.put("data", array);
+            out.println(jo.toJSONString());
         }
     }
 

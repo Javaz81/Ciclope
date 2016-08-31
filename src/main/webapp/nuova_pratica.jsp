@@ -93,23 +93,19 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
-                
+
                 $("#add_standard_job").on('shown.bs.modal', function () {
                     STANDARD_JOBS_DATATABLE.clear();
                     STANDARD_JOBS_DATATABLE.ajax.reload();
-                });   
+                });
                 $('#standardJobTableSelection').on('preXhr.dt', function (e, settings, data) {
                     data.praticaId = PRATICA_SELEZIONATA;
                     data.categoriaId = CATEGORIA_SELEZIONATA;
                 });
-                $("#add_new_veicolo").on('shown.bs.modal', function () {
-                    VEICOLO_DATATABLE.clear();
-                    VEICOLO_DATATABLE.ajax.reload();
-                });
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
                 });
-                $("#addStandardJobsButton").click(function (event) {
+                $("#addStandardJobsButton").click(function () {
                     var jobs = [];
                     $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
                         // Come referenza viene usato il codice SuperAssistenza e 
@@ -173,12 +169,8 @@
                             var select = $('<select><option value=""></option></select>')
                                     .appendTo($(column.footer()).empty())
                                     .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                                $(this).val()
-                                                );
-                                        column
-                                                .search(val)
-                                                .draw();
+                                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                        column.search(val).draw();
                                     });
                             column.data().unique().sort().each(function (d, j) {
                                 select.append('<option value="' + d + '">' + d + '</option>');
@@ -186,7 +178,144 @@
                         });
                     }
                 });
-                                
+
+                //Veicolo Section
+                $("#addNewVeicoloButton").click(function(){
+                    var marca = $("#marca1").val();
+                    var modello = $("#modello1").val();
+                    var targa = $("#targa1").val();
+                    var kilometraggio = $("#kilometraggio1").val();
+                    var anno = $("#anno1").val();
+                    var tipo = $("input[name=tipo1]:checked").val();
+                    var matricola = $("#matricola1").val();
+                    var ore = $("#ore1").val();
+                    
+                    var p = {
+                        marca: marca,
+                        modello: modello,
+                        targa: targa,
+                        kilometraggio: kilometraggio,
+                        anno: anno,
+                        tipo: tipo,
+                        matricola: matricola,
+                        ore: ore,
+                    };
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                            url: "AddVeicolo",
+                            cache: false,
+                            dataType: 'json',
+                            data: requestJson,
+                            type: 'POST',
+                            async: true,
+                            success: function (data) {
+                                if (data !== undefined) {
+                                    if (data.result === "ok") {
+                                        //compila veicolo
+                                        var values = data.veicolo.split("#");
+                                        var tipo = values[6];
+                                        $("#idVeicolo").val(values[0]);
+                                        $("#marca").val(values[1]);
+                                        $("#modello").val(values[2]);
+                                        $("#targa").val(values[3]);
+                                        $("#kilometraggio").val(values[4]);
+                                        $("#anno").val(values[5]);
+                                        if (tipo === "PLE") {
+                                            $("#tipo_ple").prop('checked', true);
+                                            $("#tipo_pv").prop('checked', false);
+                                            $("#tipo_autogru").prop('checked', false);
+                                        } else if (tipo === "PV") {
+                                            $("#tipo_ple").prop('checked', false);
+                                            $("#tipo_pv").prop('checked', true);
+                                            $("#tipo_autogru").prop('checked', false);
+                                        } else {
+                                            $("#tipo_ple").prop('checked', false);
+                                            $("#tipo_pv").prop('checked', false);
+                                            $("#tipo_autogru").prop('checked', true);
+                                        }
+                                        $("#matricola").val(values[7]);
+                                        $("#ore").val(values[8]);
+                                    } else {
+                                        alert("Errore nel DB->" + data.messaggio);
+                                    }
+                                }
+                            },
+                            error: function (xhttpjqr, err, data) {
+                                alert(err);
+                            },
+                            complete: function (xhttpjqr, evtobj, data) {
+                            }
+                        });
+                });
+                $("#setVeicoloInPraticaButton").click(function (event) {
+                    veicoloId = "-1";
+                    $("#veicoloTableSelection tbody tr.selected").each(function (index, value) {
+                        veicoloId = value.childNodes[0].innerText;
+                    });
+                    if (veicoloId === "-1") {
+                        return;
+                    } else {
+                        var jobsCode = {vid: veicoloId};
+                        requestJson = JSON.stringify(jobsCode);
+                        $.ajax({
+                            url: "GetVeicoloInfo",
+                            cache: false,
+                            data: requestJson,
+                            dataType: 'json',
+                            type: 'POST',
+                            async: true,
+                            success: function (data) {
+                                if (data !== undefined) {
+                                    if (data.result === "ok") {
+                                        //compila veicolo
+                                        var values = data.row.split("#");
+                                        var tipo = values[6];
+                                        $("#idVeicolo").val(values[0]);
+                                        $("#marca").val(values[1]);
+                                        $("#modello").val(values[2]);
+                                        $("#targa").val(values[3]);
+                                        $("#kilometraggio").val(values[4]);
+                                        $("#anno").val(values[5]);
+                                        if (tipo === "PLE") {
+                                            $("#tipo_ple").prop('checked', true);
+                                            $("#tipo_pv").prop('checked', false);
+                                            $("#tipo_autogru").prop('checked', false);
+                                        } else if (tipo === "PV") {
+                                            $("#tipo_ple").prop('checked', false);
+                                            $("#tipo_pv").prop('checked', true);
+                                            $("#tipo_autogru").prop('checked', false);
+                                        } else {
+                                            $("#tipo_ple").prop('checked', false);
+                                            $("#tipo_pv").prop('checked', false);
+                                            $("#tipo_autogru").prop('checked', true);
+                                        }
+                                        $("#matricola").val(values[7]);
+                                        $("#ore").val(values[8]);
+                                    } else {
+                                        alert("Errore nel DB->" + data.result);
+                                    }
+                                }
+                            },
+                            error: function (xhttpjqr, err, data) {
+                                alert(err);
+                            },
+                            complete: function (xhttpjqr, evtobj, data) {
+                            }
+                        });
+                    }
+                });
+                $('#veicoloTableSelection tbody').on('click', 'tr', function () {
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    } else {
+                        VEICOLO_DATATABLE.$('tr.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                    }
+                });
+                $("#search_veicolo").on('shown.bs.modal', function () {
+                    VEICOLO_DATATABLE.clear();
+                    VEICOLO_DATATABLE.ajax.reload();
+                });
                 VEICOLO_DATATABLE = $('#veicoloTableSelection').DataTable({
                     responsive: true,
                     processing: true,
@@ -196,6 +325,7 @@
                         type: "POST"
                     },
                     sDom: 'lrtip', //to hide global search input box.
+
                     initComplete: function () {
                         this.api().columns().every(function () {
                             var column = this;
@@ -215,7 +345,7 @@
                         });
                     }
                 });
-                
+
                 $('#deleteJobButton').click(function (event) {
                     var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
                     requestJson = JSON.stringify(p);
@@ -257,7 +387,7 @@
                     LAVORO_SELEZIONATO = event.target.id;
                     TIPO_LAVORO_SELEZIONATO = "standard";
                 });
-                
+
                 //custom jobs event handler
                 $("[id^='custom_']").click(function (event) {
                     LAVORO_SELEZIONATO = event.target.id;
@@ -351,7 +481,7 @@
                     var targa = $("#targa").val();
                     var kilometraggio = $("#kilometraggio").val();
                     var anno = $("#anno").val();
-                    var tipo = $("#tipo input:checked").val();
+                    var tipo = $("input[name=tipo]:checked").val();
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
@@ -1042,7 +1172,7 @@
             <!-- /.modal-dialog -->
         </div>
 
-        <div class="modal fade" id="add_new_veicolo" tabindex="-1" role="dialog" aria-labelledby="searchVeicoloLabel" aria-hidden="true">
+        <div class="modal fade" id="search_veicolo" tabindex="-1" role="dialog" aria-labelledby="searchVeicoloLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1058,11 +1188,8 @@
                                     <th>Marca</th>
                                     <th>Modello</th>
                                     <th>Targa</th>
-                                    <th>Kilometraggio</th>
-                                    <th>Anno</th>
                                     <th>Tipo</th>
                                     <th>Matricola</th>
-                                    <th>Ore</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1074,11 +1201,8 @@
                                     <th>Marca</th>
                                     <th>Modello</th>
                                     <th>Targa</th>
-                                    <th>Kilometraggio</th>
-                                    <th>Anno</th>
                                     <th>Tipo</th>
                                     <th>Matricola</th>
-                                    <th>Ore</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -1092,7 +1216,59 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
-
+        <div class="modal fade" id="add_new_veicolo" tabindex="-1" role="dialog" aria-labelledby="addNewVeicoloLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="addNewVeicoloLabel" >Creazione nuova Piattaforma/Veicolo:</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Marca</label>
+                            <input class="form-control" id="marca1" val="" >
+                            <label>Modello</label>
+                            <input class="form-control" id="modello1"  val="" >
+                            <label>Targa</label>
+                            <input class="form-control" id="targa1" val="" >
+                            <label>Kilometraggio</label>
+                            <input class="form-control" id="kilometraggio1"  val="" >
+                            <label>Anno</label>
+                            <input class="form-control" id="anno1"  val="">
+                            <script>
+                                $("#anno1").datepicker({
+                                    changeYear: true,
+                                    yearRange: "1930:2150",
+                                    dateFormat: "yy"
+                                });
+                            </script>
+                            <div class="form-group" style="margin-top:1em; margin-bottom: 1em" id="tipo">
+                                <label>Tipo:</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="tipo1" id="tipo_ple" value="PLE" checked >PLE
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="tipo1" id="tipo_pv" value="PV" >PV
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="tipo1" id="tipo_autogru" value="AUTOGRU"> AUTOGRU
+                                </label>
+                            </div>
+                            <label>Matricola</label>
+                            <input class="form-control" id="matricola1" value="" >
+                            <label>Ore</label>
+                            <input class="form-control" id="ore1" value="" >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
+                        <button type="button" id="addNewVeicoloButton" class="btn btn-primary" data-dismiss="modal">Crea</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
         <!-- /.modal -->
         <div id="dialog-message" title="Azione eseguita">
             <p id="messaggio_pratica">

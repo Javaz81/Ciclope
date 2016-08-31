@@ -126,7 +126,6 @@ public class GetStandardJobsDataTable extends HttpServlet {
             }
 
             //Finally we build the datatables format response.
-            JSONObject jo = null;
             JSONObject jo1 = new JSONObject();
             JSONArray row;
             JSONArray arraytop = new JSONArray();
