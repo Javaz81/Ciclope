@@ -543,6 +543,7 @@
 " + data.messaggio.toString() + "\n\
 </div>"
                                             );
+                                    $("#idPratica").val(result.praticaId);
                                 } else {
                                     $("#notification_area").prepend("<div class='alert alert-danger alert-dismissable'>\n\
                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\

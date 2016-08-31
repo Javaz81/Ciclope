@@ -200,7 +200,9 @@ public class SavePratica extends HttpServlet {
                         + "collaudo_usl,"
                         + "collaudo_usl_data,"
                         + "registro_di_controllo,"
-                        + "lavori_segnalati"
+                        + "lavori_segnalati,"
+                        + "Cliente_idCliente,"
+                        + "Veicolo"
                         + ")"
                         + "VALUES "
                         + "("
@@ -215,7 +217,9 @@ public class SavePratica extends HttpServlet {
                         + collaudo_usl+","
                         + collaudo_usl_data+","
                         + registro_di_controllo+","
-                        + lavori_segnalati
+                        + lavori_segnalati+","
+                        + idCliente+","
+                        + veicoloId
                         + ")");
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
@@ -242,8 +246,10 @@ public class SavePratica extends HttpServlet {
                         + "collaudo_usl=" + parseBooleanParam(collaudo_usl) + ", "
                         + "collaudo_usl_data=" + formatExtendedDateFromAdministrator(collaudo_usl_data) + ", "
                         + "registro_di_controllo=" + parseBooleanParam(registro_di_controllo) + ", "
-                        + "lavori_segnalati="+ lavori_segnalati+" "
-                        + "WHERE ciclope.pratica.idPratica=" + praticaId + " ");
+                        + "lavori_segnalati="+ lavori_segnalati+", "
+                        + "Cliente_idCliente="+ idCliente + ", "
+                        + "veicolo="+ veicoloId+" "
+                        + "WHERE ciclope.pratica.idPratica=" + praticaId);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -260,6 +266,7 @@ public class SavePratica extends HttpServlet {
             JSONObject jo = new JSONObject();
             result.put("result", "ok");
             result.put("messaggio", "Aggiornamento effettuato con successo!!!");
+            result.put("praticaId",praticaId);
             jo.putAll(result);
             out.println(jo.toJSONString());
         }
