@@ -265,7 +265,15 @@ public class SavePratica extends HttpServlet {
             t.commit();
             JSONObject jo = new JSONObject();
             result.put("result", "ok");
-            result.put("messaggio", "Aggiornamento effettuato con successo!!!");
+            if(
+                    !(uscita.trim().equalsIgnoreCase("")  || uscita.trim().equalsIgnoreCase("NULL")) &&
+                    !(data_uscita.trim().equalsIgnoreCase("") || data_uscita.trim().equalsIgnoreCase("NULL"))
+                    )
+            {
+                result.put("messaggio","Aggiornamento eseguito con successo. La pratica è considerata <b>chiusa</b>");
+            }else{
+                result.put("messaggio", "Aggiornamento effettuato con successo!!!");
+            }
             result.put("praticaId",praticaId);
             jo.putAll(result);
             out.println(jo.toJSONString());

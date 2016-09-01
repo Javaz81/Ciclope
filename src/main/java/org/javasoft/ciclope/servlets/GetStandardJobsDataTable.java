@@ -102,8 +102,7 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     + "ciclope.tipolavoro.idTipoLavoro\n"
                     + "from ciclope.tipolavoro join ciclope.lavoripratichestandard\n"
                     + "on  ciclope.tipolavoro.idTipoLavoro = ciclope.lavoripratichestandard.tipolavoro \n"
-                    + "where\n"
-                    + "ciclope.lavoripratichestandard.pratica = "+ praticaId+"\n"
+                    + (praticaId.contains("-1")?"":"where ciclope.lavoripratichestandard.pratica = "+ praticaId+"\n")
                     + ")\n"
                     + extSearch
                     + " ORDER BY "+ orderColumn + " " + orderDir + " LIMIT " + extSearchLimit + " OFFSET " + startSearchLimit 

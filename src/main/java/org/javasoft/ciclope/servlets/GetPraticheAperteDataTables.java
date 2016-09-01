@@ -102,7 +102,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                     + " ciclope.pratica.data_arrivo as data_pratica\n"
                     + " from ciclope.pratica\n"
                     + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where ciclope.pratica.uscita is null"
+                    + " where (ciclope.pratica.uscita is null OR ciclope.pratica.data_uscita is null)"
                     + extSearch.toString()
                     + " ORDER BY " + orderColumn + " " + orderDir + "\n"
                     + " LIMIT "+extSearchLimit

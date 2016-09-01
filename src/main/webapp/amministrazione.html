@@ -111,7 +111,7 @@ and open the template in the editor.
                 });
                 $('#dataTables-pratiche tbody').on('click', 'tr', function () {
                     var data = table.row(this).data();
-                    var loc = 'nuova_pratica.jsp?newPratice=false&praticaId='+(data[0].toString());
+                    var loc = 'gestisci_pratica.jsp?newPratice=false&praticaId='+(data[0].toString());
                     location.assign(loc);
                 });
             });
@@ -169,7 +169,7 @@ and open the template in the editor.
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
-                                <a class="btn btn-default btn-primary" style="margin-bottom:1em;" href="nuova_pratica.html">
+                                <a class="btn btn-default btn-primary" style="margin-bottom:1em;" href="gestisci_pratica.jsp?newPratice=true&praticaId=">
                                     <i class="fa fa-plus"></i> Nuova pratica
                                 </a>
                                 <!-- LISTA DELLE PRATICA -->

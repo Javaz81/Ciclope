@@ -94,7 +94,7 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
-                
+
                 //Standard Jobs DataTable section
                 $("#add_standard_job").on('shown.bs.modal', function () {
                     STANDARD_JOBS_DATATABLE.clear();
@@ -106,7 +106,7 @@
                 });
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
-                });                
+                });
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
                     responsive: true,
                     processing: true,
@@ -299,7 +299,7 @@
                         });
                     }
                 });
-                
+
                 //CLiente Datatable secion
                 $("#addNewClienteButton").click(function () {
                     var nome = $("#nome1").val();
@@ -424,8 +424,8 @@
                         });
                     }
                 });
-                
-                
+
+
                 //MAin and standard Jobs handlers
                 $('#deleteJobButton').click(function (event) {
                     var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
@@ -469,6 +469,14 @@
                     TIPO_LAVORO_SELEZIONATO = "standard";
                 });
                 $("#addStandardJobsButton").click(function () {
+                    if (PRATICA_SELEZIONATA === '-1') {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
+                                </div>"
+                                );
+                    }
                     var jobs = [];
                     $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
                         // Come referenza viene usato il codice SuperAssistenza e 
@@ -552,6 +560,14 @@
                     });
                 });
                 $("#addCustomJobButton").click(function (event) {
+                    if (PRATICA_SELEZIONATA === '-1') {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>\n\
+                                </div>"
+                                );
+                    }
                     var text = $("#editbox_addcustomjob").val().trim();
                     var p = {praticaId: PRATICA_SELEZIONATA, categoriaId: CATEGORIA_SELEZIONATA, descrizione: text};
                     requestJson = JSON.stringify(p);
@@ -598,12 +614,28 @@
                         }
                     });
                 });
-                
+
                 //Main Buttons handlers.
                 $("#button_save").click(function (event) {
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
                     var data_arrivo = $("#data_arrivo").val();
+                    if (arrivo.trim()) === '' ) {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
+                                </div>"
+                                );
+                    }
+                    if (data_arrivo.trim()) === '' ) {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
+                                </div>"
+                                );
+                    }
                     var uscita = $("#uscita").val();
                     var data_uscita = $("#data_uscita").val();
                     var veicoloId = $("#idVeicolo").val();
@@ -760,7 +792,19 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="btn-group" style="margin-bottom:1em">
-                                <button type="button" id="button_save" class="btn btn-primary">Salva modifiche</button>
+                                <%
+                                    if (request.getParameter("newPratice").equalsIgnoreCase("true")) {
+                                        out.println("<button type='button' id='button_save' class='btn btn-primary'>Crea e salva</button>");
+                                    } else {
+                                        out.println("<button type='button' id='button_save' class='btn btn-primary'>Salva modifiche</button>");
+                                    }
+                                %>
+                                <!-- 
+                                    Basta abilitare questa sezione per abilitare i pulsanti:
+                                    gli handlers non ci sono ma potranno essere messi come feature aggiuntive...
+                                    concentriamoci sulla parte di magazzino.
+                                -->
+                                <%--
                                 <button type="button" id="button_export" class="btn btn-primary">Esporta pratica</button>
                                 <button type="button" id="button_print" class="btn btn-primary">Stampa pratica</button>
                                 <%
@@ -770,6 +814,7 @@
                                         out.println("<button type=\"button\" id=\"button_delete\" class=\"btn btn-primary\">Elimina pratica</button>");
                                     }
                                 %>
+                                --%>                          
 
                             </div>
                         </div>
