@@ -9,27 +9,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.javasoft.ciclope.persistence.Cliente;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.json.simple.JSONArray;
+import org.javasoft.ciclope.persistence.Veicolo;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author Andrea
+ * @author andrea
  */
-public class GetRifornimentiDaFare extends HttpServlet {
+@WebServlet(name = "GetClienteInfo", urlPatterns = {"/GetClienteInfo"})
+public class GetClienteInfo extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,39 +48,56 @@ public class GetRifornimentiDaFare extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        Transaction t = null;
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            Session s = HibernateUtil.getSessionFactory().openSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
-            Object obj;
+            Object obj = null;
             JSONParser p = new JSONParser();
             if (json != null) {
                 try {
                     obj = p.parse(json);
                 } catch (ParseException ex) {
-                    Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            Query q = s.createSQLQuery("select a.descrizione from articolo where a.scorta_rimanente < scorta_minima");
-            List aicrecs = q.list();
-            t.commit();
-            JSONObject jo;
-            Object[] ob;
-            String[] art;
-            JSONArray array = new JSONArray();
-
-            for (Object o : aicrecs) {
-                jo = new JSONObject();
-                ob = (Object[]) o;
-                jo.put("Descrizione", (String) ob[0]);
-                jo.put("Rimanenza", (Integer) ob[1]);
-                array.add(jo);
+            String cid = (String) ((JSONObject)obj).get("cid");         
+            SessionFactory sf = HibernateUtil.getSessionFactory();
+            Session s = sf.openSession();
+            t = s.getTransaction();
+            try {
+                t.begin();
+                String qs = "SELECT * from ciclope.cliente WHERE idCliente='"+cid+"'";
+                Query q = s.createSQLQuery(qs).addEntity(Cliente.class);
+                ArrayList<Cliente> rows = (ArrayList<Cliente>) q.list();
+                if(rows.size()!= 1){
+                    throw new Exception("Nessun cliente trovato. Riprovare o contattare Andrea.");
+                }
+                t.commit();
+                HashMap<String,String> resMap = new HashMap<String, String>();
+                resMap.put("result", "ok");
+                StringBuilder sb = new StringBuilder();
+                Cliente c = rows.get(0);
+                sb.append(c.getIdCliente())
+                        .append("#")
+                        .append(c.getNome() == null?"":c.getNome())
+                        .append("#")
+                        .append(c.getCognome() == null?"":c.getCognome())
+                        .append("#")
+                        .append(c.getCellulare() == null?"":c.getCellulare())
+                        .append("#")
+                        .append(c.getLocalita() == null ? "":c.getLocalita());
+                resMap.put("row", sb.toString());
+                out.println(JSONObject.toJSONString(resMap));
+            } catch (Exception ex) {
+                Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
+                t.rollback();
+                HashMap<String,String> resMap = new HashMap<String, String>();
+                resMap.put("result", "ko");
+                resMap.put("descrizione", ex.getMessage());
+                out.println(JSONObject.toJSONString(resMap));
             }
-            out.println(array.toJSONString());
         }
     }
 
@@ -115,8 +137,7 @@ public class GetRifornimentiDaFare extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Questa servlet fornisce i rifornimeti attualmente da effettuare "
-                + "dal reparto di produzione e approvvigionamento";
+        return "Short description";
     }// </editor-fold>
 
 }

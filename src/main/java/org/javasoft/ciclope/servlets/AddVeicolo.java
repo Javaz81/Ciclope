@@ -68,7 +68,17 @@ public class AddVeicolo extends HttpServlet {
             String tipo = ((String) ((JSONObject) obj).get("tipo"));
             String matricola = (String) ((JSONObject) obj).get("matricola");
             String ore = (String) ((JSONObject) obj).get("ore");
-
+            
+            //Sanitizing string
+            marca = marca.replace("'", "''");
+            modello = modello.replace("'", "''");
+            targa = targa.replace("'", "''");
+            kilometraggio = kilometraggio.replace("'", "''");
+            anno = anno.replace("'", "''");
+            tipo = tipo.replace("'", "''");
+            matricola = matricola.replace("'", "''");
+            ore = ore.replace("'", "''");
+            
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session s = sf.openSession();
             Transaction t = s.getTransaction();
@@ -110,21 +120,21 @@ public class AddVeicolo extends HttpServlet {
                 Veicolo v = veicolo.get(0);
                 sb.append(v.getIdVeicolo())
                         .append("#")
-                        .append(v.getMarca() == null ? "" : v.getMarca())
+                        .append(v.getMarca() == null ? "" : v.getMarca().replace("''", "'"))
                         .append("#")
-                        .append(v.getModello() == null ? "" : v.getModello())
+                        .append(v.getModello() == null ? "" : v.getModello().replace("''", "'"))
                         .append("#")
-                        .append(v.getTarga() == null ? "" : v.getTarga())
+                        .append(v.getTarga() == null ? "" : v.getTarga().replace("''", "'"))
                         .append("#")
-                        .append(v.getKilometraggio() == null ? "" : v.getKilometraggio())
+                        .append(v.getKilometraggio() == null ? "" : v.getKilometraggio().toString().replace("''", "'"))
                         .append("#")
-                        .append(v.getAnno() == null ? "" : v.getAnno())
+                        .append(v.getAnno() == null ? "" : v.getAnno().toString().replace("''", "'"))
                         .append("#")
-                        .append(v.getTipo() == null ? "" : v.getTipo())
+                        .append(v.getTipo() == null ? "" : v.getTipo().replace("''", "'"))
                         .append("#")
-                        .append(v.getMatricola() == null ? "" : v.getMatricola())
+                        .append(v.getMatricola() == null ? "" : v.getMatricola().replace("''", "'"))
                         .append("#")
-                        .append(v.getOre() == null ? "" : v.getOre());
+                        .append(v.getOre() == null ? "" : v.getOre().toString().replace("''", "'"));
                 resMap.put("veicolo", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {

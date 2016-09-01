@@ -65,6 +65,7 @@
             // declarations
             var STANDARD_JOBS_DATATABLE;
             var VEICOLO_DATATABLE;
+            var CLIENTE_DATATABLE;
             var CATEGORIA_SELEZIONATA = "-1";
             var PRATICA_SELEZIONATA = "-1";
             var LAVORO_SELEZIONATO = "-1";
@@ -93,7 +94,8 @@
                     dateFormat: "DD dd-mm-yy",
                     showAnim: "slide"
                 });
-
+                
+                //Standard Jobs DataTable section
                 $("#add_standard_job").on('shown.bs.modal', function () {
                     STANDARD_JOBS_DATATABLE.clear();
                     STANDARD_JOBS_DATATABLE.ajax.reload();
@@ -104,55 +106,7 @@
                 });
                 $('#standardJobTableSelection tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
-                });
-                $("#addStandardJobsButton").click(function () {
-                    var jobs = [];
-                    $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
-                        // Come referenza viene usato il codice SuperAssistenza e 
-                        // non il relativo ID interno del DB.
-                        jobs.push(value.childNodes[1].innerText);
-                    });
-                    var jobsCode = {praticaId: PRATICA_SELEZIONATA, codes: jobs};
-                    requestJson = JSON.stringify(jobsCode);
-                    $.ajax({
-                        url: "AddStandardJobs",
-                        cache: false,
-                        data: requestJson,
-                        dataType: 'json',
-                        type: 'POST',
-                        async: true,
-                        success: function (data) {
-                            if (data !== undefined) {
-                                if (data.result === "ok") {
-                                    $.each(data.rows, function (index, value) {
-                                        var items = value.split("#");
-                                        $("#list_categoria_" + CATEGORIA_SELEZIONATA).prepend(
-                                                "<div class='list-group-item' id='li_standard_" + items[0] + "' >\n\
-                                                    <i class='fa fa-toggle-right fa-fw' id='standard_" + items[0] + "'></i>\n\
-                                                    <span id='desc_standard_" + items[0] + "' >" + items[1] + "</span><span class='pull-right' id='standard_" + items[0] + "'>\n\
-                                                        <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + items[0] + "' data-target='#delete_job'>\n\
-                                                            <i class='fa fa-times-circle fa-fw' id='standard_" + items[0] + "'></i>\n\
-                                                        </button>\n\
-                                                    </span>\n\
-                                                </div>"
-                                                );
-                                        $("button#standard_" + items[0]).click(function (event) {
-                                            LAVORO_SELEZIONATO = event.target.id;
-                                            TIPO_LAVORO_SELEZIONATO = "standard";
-                                        });
-                                    });
-                                } else {
-                                    alert("Errore nel DB->" + data.result);
-                                }
-                            }
-                        },
-                        error: function (xhttpjqr, err, data) {
-                            alert(err);
-                        },
-                        complete: function (xhttpjqr, evtobj, data) {
-                        }
-                    });
-                });
+                });                
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
                     responsive: true,
                     processing: true,
@@ -179,8 +133,8 @@
                     }
                 });
 
-                //Veicolo Section
-                $("#addNewVeicoloButton").click(function(){
+                //Veicolo DataTable section
+                $("#addNewVeicoloButton").click(function () {
                     var marca = $("#marca1").val();
                     var modello = $("#modello1").val();
                     var targa = $("#targa1").val();
@@ -189,7 +143,7 @@
                     var tipo = $("input[name=tipo1]:checked").val();
                     var matricola = $("#matricola1").val();
                     var ore = $("#ore1").val();
-                    
+
                     var p = {
                         marca: marca,
                         modello: modello,
@@ -198,54 +152,54 @@
                         anno: anno,
                         tipo: tipo,
                         matricola: matricola,
-                        ore: ore,
+                        ore: ore
                     };
                     requestJson = JSON.stringify(p);
                     $.ajax({
-                            url: "AddVeicolo",
-                            cache: false,
-                            dataType: 'json',
-                            data: requestJson,
-                            type: 'POST',
-                            async: true,
-                            success: function (data) {
-                                if (data !== undefined) {
-                                    if (data.result === "ok") {
-                                        //compila veicolo
-                                        var values = data.veicolo.split("#");
-                                        var tipo = values[6];
-                                        $("#idVeicolo").val(values[0]);
-                                        $("#marca").val(values[1]);
-                                        $("#modello").val(values[2]);
-                                        $("#targa").val(values[3]);
-                                        $("#kilometraggio").val(values[4]);
-                                        $("#anno").val(values[5]);
-                                        if (tipo === "PLE") {
-                                            $("#tipo_ple").prop('checked', true);
-                                            $("#tipo_pv").prop('checked', false);
-                                            $("#tipo_autogru").prop('checked', false);
-                                        } else if (tipo === "PV") {
-                                            $("#tipo_ple").prop('checked', false);
-                                            $("#tipo_pv").prop('checked', true);
-                                            $("#tipo_autogru").prop('checked', false);
-                                        } else {
-                                            $("#tipo_ple").prop('checked', false);
-                                            $("#tipo_pv").prop('checked', false);
-                                            $("#tipo_autogru").prop('checked', true);
-                                        }
-                                        $("#matricola").val(values[7]);
-                                        $("#ore").val(values[8]);
+                        url: "AddVeicolo",
+                        cache: false,
+                        dataType: 'json',
+                        data: requestJson,
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    //compila veicolo
+                                    var values = data.veicolo.split("#");
+                                    var tipo = values[6];
+                                    $("#idVeicolo").val(values[0]);
+                                    $("#marca").val(values[1]);
+                                    $("#modello").val(values[2]);
+                                    $("#targa").val(values[3]);
+                                    $("#kilometraggio").val(values[4]);
+                                    $("#anno").val(values[5]);
+                                    if (tipo === "PLE") {
+                                        $("#tipo_ple").prop('checked', true);
+                                        $("#tipo_pv").prop('checked', false);
+                                        $("#tipo_autogru").prop('checked', false);
+                                    } else if (tipo === "PV") {
+                                        $("#tipo_ple").prop('checked', false);
+                                        $("#tipo_pv").prop('checked', true);
+                                        $("#tipo_autogru").prop('checked', false);
                                     } else {
-                                        alert("Errore nel DB->" + data.messaggio);
+                                        $("#tipo_ple").prop('checked', false);
+                                        $("#tipo_pv").prop('checked', false);
+                                        $("#tipo_autogru").prop('checked', true);
                                     }
+                                    $("#matricola").val(values[7]);
+                                    $("#ore").val(values[8]);
+                                } else {
+                                    alert("Errore nel DB->" + data.messaggio);
                                 }
-                            },
-                            error: function (xhttpjqr, err, data) {
-                                alert(err);
-                            },
-                            complete: function (xhttpjqr, evtobj, data) {
                             }
-                        });
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
                 });
                 $("#setVeicoloInPraticaButton").click(function (event) {
                     veicoloId = "-1";
@@ -345,7 +299,134 @@
                         });
                     }
                 });
+                
+                //CLiente Datatable secion
+                $("#addNewClienteButton").click(function () {
+                    var nome = $("#nome1").val();
+                    var cognome = $("#cognome1").val();
+                    var cellulare = $("#cellulare1").val();
+                    var localita = $("#localita1").val();
 
+                    var p = {
+                        nome: nome,
+                        cognome: cognome,
+                        cellulare: cellulare,
+                        localita: localita
+                    };
+                    requestJson = JSON.stringify(p);
+                    $.ajax({
+                        url: "AddCliente",
+                        cache: false,
+                        dataType: 'json',
+                        data: requestJson,
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    //compila veicolo
+                                    var values = data.veicolo.split("#");
+                                    $("#idCliente").val(values[0]);
+                                    $("#nome").val(values[1]);
+                                    $("#cognome").val(values[2]);
+                                    $("#cellulare").val(values[3]);
+                                    $("#localita").val(values[4]);
+                                } else {
+                                    alert("Errore nel DB->" + data.messaggio);
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
+                });
+                $("#setClienteInPraticaButton").click(function (event) {
+                    clienteId = "-1";
+                    $("#clienteTableSelection tbody tr.selected").each(function (index, value) {
+                        clienteId = value.childNodes[0].innerText;
+                    });
+                    if (clienteId === "-1") {
+                        return;
+                    } else {
+                        var clienteCode = {cid: clienteId};
+                        requestJson = JSON.stringify(clienteCode);
+                        $.ajax({
+                            url: "GetClienteInfo",
+                            cache: false,
+                            data: requestJson,
+                            dataType: 'json',
+                            type: 'POST',
+                            async: true,
+                            success: function (data) {
+                                if (data !== undefined) {
+                                    if (data.result === "ok") {
+                                        //compila veicolo
+                                        var values = data.row.split("#");
+                                        $("#idCliente").val(values[0]);
+                                        $("#nome").val(values[1]);
+                                        $("#cognome").val(values[2]);
+                                        $("#cellulare").val(values[3]);
+                                        $("#localita").val(values[4]);
+                                    } else {
+                                        alert("Errore nel DB->" + data.result);
+                                    }
+                                }
+                            },
+                            error: function (xhttpjqr, err, data) {
+                                alert(err);
+                            },
+                            complete: function (xhttpjqr, evtobj, data) {
+                            }
+                        });
+                    }
+                });
+                $('#clienteTableSelection tbody').on('click', 'tr', function () {
+                    if ($(this).hasClass('selected')) {
+                        $(this).removeClass('selected');
+                    } else {
+                        CLIENTE_DATATABLE.$('tr.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                    }
+                });
+                $("#search_cliente").on('shown.bs.modal', function () {
+                    CLIENTE_DATATABLE.clear();
+                    CLIENTE_DATATABLE.ajax.reload();
+                });
+                CLIENTE_DATATABLE = $('#clienteTableSelection').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "GetClienti",
+                        type: "POST"
+                    },
+                    sDom: 'lrtip', //to hide global search input box.
+
+                    initComplete: function () {
+                        this.api().columns().every(function () {
+                            var column = this;
+                            var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                                $(this).val()
+                                                );
+                                        column
+                                                .search(val)
+                                                .draw();
+                                    });
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            });
+                        });
+                    }
+                });
+                
+                
+                //MAin and standard Jobs handlers
                 $('#deleteJobButton').click(function (event) {
                     var p = {jobId: LAVORO_SELEZIONATO.split("_")[1], categoria: CATEGORIA_SELEZIONATA, tipo: TIPO_LAVORO_SELEZIONATO};
                     requestJson = JSON.stringify(p);
@@ -386,6 +467,54 @@
                 $("[id^='standard_']").click(function (event) {
                     LAVORO_SELEZIONATO = event.target.id;
                     TIPO_LAVORO_SELEZIONATO = "standard";
+                });
+                $("#addStandardJobsButton").click(function () {
+                    var jobs = [];
+                    $("#standardJobTableSelection tbody tr.selected").each(function (index, value) {
+                        // Come referenza viene usato il codice SuperAssistenza e 
+                        // non il relativo ID interno del DB.
+                        jobs.push(value.childNodes[1].innerText);
+                    });
+                    var jobsCode = {praticaId: PRATICA_SELEZIONATA, codes: jobs};
+                    requestJson = JSON.stringify(jobsCode);
+                    $.ajax({
+                        url: "AddStandardJobs",
+                        cache: false,
+                        data: requestJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            if (data !== undefined) {
+                                if (data.result === "ok") {
+                                    $.each(data.rows, function (index, value) {
+                                        var items = value.split("#");
+                                        $("#list_categoria_" + CATEGORIA_SELEZIONATA).prepend(
+                                                "<div class='list-group-item' id='li_standard_" + items[0] + "' >\n\
+                                                    <i class='fa fa-toggle-right fa-fw' id='standard_" + items[0] + "'></i>\n\
+                                                    <span id='desc_standard_" + items[0] + "' >" + items[1] + "</span><span class='pull-right' id='standard_" + items[0] + "'>\n\
+                                                        <button type='button' class='btn-xs btn-danger' data-toggle='modal' id='standard_" + items[0] + "' data-target='#delete_job'>\n\
+                                                            <i class='fa fa-times-circle fa-fw' id='standard_" + items[0] + "'></i>\n\
+                                                        </button>\n\
+                                                    </span>\n\
+                                                </div>"
+                                                );
+                                        $("button#standard_" + items[0]).click(function (event) {
+                                            LAVORO_SELEZIONATO = event.target.id;
+                                            TIPO_LAVORO_SELEZIONATO = "standard";
+                                        });
+                                    });
+                                } else {
+                                    alert("Errore nel DB->" + data.result);
+                                }
+                            }
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            alert(err);
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                        }
+                    });
                 });
 
                 //custom jobs event handler
@@ -469,6 +598,8 @@
                         }
                     });
                 });
+                
+                //Main Buttons handlers.
                 $("#button_save").click(function (event) {
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
@@ -972,6 +1103,7 @@
                             </div>
                         </div>                        
                     </div>
+                    <!-- Lavori da effettuare --> 
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="panel panel-default panel-group">
@@ -1270,6 +1402,78 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
+
+        <div class="modal fade" id="search_cliente" tabindex="-1" role="dialog" aria-labelledby="searchClienteLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="searchClienteLabel" >Clienti in archivio</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p style="text-align:center; margin:1em " >Seleziona il cliente da inserire nella pratica</p>
+                        <table id="clienteTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Cognome</th>
+                                    <th>Cellulare</th>
+                                    <th>Localita</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Cognome</th>
+                                    <th>Cellulare</th>
+                                    <th>Localita</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
+                        <button type="button" id="setClienteInPraticaButton" class="btn btn-primary" data-dismiss="modal">Seleziona</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <div class="modal fade" id="add_new_cliente" tabindex="-1" role="dialog" aria-labelledby="addNewClienteLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="addNewClienteLabel" >Creazione nuova cliente:</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input class="form-control" id="nome1" value="" >
+                            <label>Cognome</label>
+                            <input class="form-control" id="cognome1" value="" >
+                            <label>Celluare</label>
+                            <input class="form-control" id="cellulare1" value="" >
+                            <label>Localita</label>
+                            <input class="form-control" id="localita1" value="" >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
+                        <button type="button" id="addNewClienteButton" class="btn btn-primary" data-dismiss="modal">Crea</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
         <!-- /.modal -->
         <div id="dialog-message" title="Azione eseguita">
             <p id="messaggio_pratica">

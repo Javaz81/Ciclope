@@ -118,7 +118,7 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                 jo.put("arrivo", ob[1].toString());
                 jo.put("marca", ob[2].toString());
                 jo.put("modello", ob[3].toString());
-                jo.put("targa", ob[4] == null ? "Speciale" : ob[4].toString());
+                jo.put("targa", ob[4] == null ? "(NO_TARGA)" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
                 jo.put("data_arrivo", DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
                 array.add(jo);

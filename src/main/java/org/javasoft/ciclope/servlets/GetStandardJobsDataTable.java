@@ -7,9 +7,7 @@ package org.javasoft.ciclope.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.servlet.ServletException;
@@ -22,7 +20,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.javasoft.ciclope.servlets.utils.DateUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

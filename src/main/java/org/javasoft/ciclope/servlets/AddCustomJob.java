@@ -64,6 +64,10 @@ public class AddCustomJob extends HttpServlet {
             String praticaId = (String) ((JSONObject)obj).get("praticaId");
             String categoriaId = (String) ((JSONObject)obj).get("categoriaId");
             String descrizione = ((String)((JSONObject)obj).get("descrizione"));            
+            
+            //Sanitizes string for single quote char.
+            descrizione = descrizione.replace("'", "''");
+            
             SessionFactory sf = HibernateUtil.getSessionFactory();
             Session s = sf.openSession();
             Transaction t = s.getTransaction();
@@ -85,7 +89,7 @@ public class AddCustomJob extends HttpServlet {
                 HashMap<String,String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ok");
                 resMap.put("jobId", ids.get(0).toString());
-                resMap.put("descrizione",descrizione);
+                resMap.put("descrizione",descrizione.replace("''", "'"));
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {
                 Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);

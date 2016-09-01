@@ -18,6 +18,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.javasoft.ciclope.persistence.Cliente;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.persistence.Veicolo;
 import org.json.simple.JSONArray;
@@ -27,8 +28,8 @@ import org.json.simple.JSONObject;
  *
  * @author andrea
  */
-@WebServlet(name = "GetVeicoli", urlPatterns = {"/GetVeicoli"})
-public class GetVeicoli extends HttpServlet {
+@WebServlet(name = "GetClienti", urlPatterns = {"/GetClienti"})
+public class GetClienti extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -53,18 +54,14 @@ public class GetVeicoli extends HttpServlet {
             }
             String[] columnNames = new String[]{
                 "id",
-                "marca",
-                "modello",
-                "targa",
-                "kilometraggio",
-                "anno",
-                "tipo",
-                "matricola",
-                "ore"
+                "nome",
+                "cognome",
+                "cellulare",
+                "localita"
             };
-            String orderColumn = Integer.valueOf(maps.get("order[0][column]")[0]).equals(0) ?
-                    "idVeicolo" : 
-                    columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
+            String orderColumn = Integer.valueOf(maps.get("order[0][column]")[0]).equals(0)
+                    ? "idCliente"
+                    : columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
             String orderDir = maps.get("order[0][dir]")[0];
             StringBuilder extSearch = new StringBuilder(2000);
             String extSearchLimit = maps.get("length")[0];
@@ -79,7 +76,7 @@ public class GetVeicoli extends HttpServlet {
                         extSearch.append("");
                     } else {
                         extSearch.
-                                append(i != 0 ? columnNames[i] : "idVeicolo").
+                                append(i != 0 ? columnNames[i] : "idCliente").
                                 append(" = ").
                                 append("\"").
                                 append(e.getValue()[0]).
@@ -88,19 +85,19 @@ public class GetVeicoli extends HttpServlet {
                     }
                     i++;
                 }
-                
+
             }
-            if(extSearch.toString().endsWith(" AND ")){
-                extSearch.replace(extSearch.length()-5, extSearch.length(), "");
+            if (extSearch.toString().endsWith(" AND ")) {
+                extSearch.replace(extSearch.length() - 5, extSearch.length(), "");
             }
-            
-            q = s.createSQLQuery("SELECT * FROM ciclope.veicolo "
-                    + (extSearch.toString().trim().equals("") ? 
-                    "" : "WHERE " + extSearch.toString())
-                    + "ORDER BY "+orderColumn+" "+orderDir+" "
-                    + "LIMIT "+extSearchLimit+" "
-                    + "OFFSET "+startSearchLimit).addEntity(Veicolo.class);
-            List<Veicolo> aicrecs = q.list();
+
+            q = s.createSQLQuery("SELECT * FROM ciclope.cliente "
+                    + (extSearch.toString().trim().equals("")
+                    ? "" : "WHERE " + extSearch.toString())
+                    + "ORDER BY " + orderColumn + " " + orderDir + " "
+                    + "LIMIT " + extSearchLimit + " "
+                    + "OFFSET " + startSearchLimit).addEntity(Cliente.class);
+            List<Cliente> aicrecs = q.list();
             t.commit();
 
             // Changing "draw" variable let the jquery datatables redraw itself 
@@ -117,17 +114,16 @@ public class GetVeicoli extends HttpServlet {
             jo = new JSONObject();
             jo.put("draw", draw);
             jo.put("recordsTotal", Integer.toString(aicrecs.size()));
-            jo.put("recordsFiltered", Integer.toString(aicrecs.size()));            
+            jo.put("recordsFiltered", Integer.toString(aicrecs.size()));
             JSONArray row;
             JSONArray array = new JSONArray();
-            for (Veicolo ob : aicrecs) {
+            for (Cliente ob : aicrecs) {
                 row = new JSONArray();
-                row.add(ob.getIdVeicolo());
-                row.add(ob.getMarca());
-                row.add(ob.getModello());
-                row.add(ob.getTarga());
-                row.add(ob.getTipo());
-                row.add(ob.getMatricola());
+                row.add(ob.getIdCliente());
+                row.add(ob.getNome());
+                row.add(ob.getCognome());
+                row.add(ob.getCellulare());
+                row.add(ob.getLocalita());
                 array.add(row);
             }
             jo.put("data", array);
