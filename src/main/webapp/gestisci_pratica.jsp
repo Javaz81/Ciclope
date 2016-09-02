@@ -745,6 +745,30 @@
                         }
                     });
                 });
+
+                $("#button_export_material").click(function (event) {
+                    if (PRATICA_SELEZIONATA === "-1") {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>La pratica non è valida o è vuota.\n\
+            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+</div>");
+                    }
+                    ;
+                    encodedData = encodeURIComponent(PRATICA_SELEZIONATA);
+                    $("<form>")
+                            .attr("action", "ExportMaterialePratica")
+                            .attr("method", "post")
+                            .append(
+                                    $("input")
+                                    .attr("type", "hidden")
+                                    .attr("name", "praticaId")
+                                    .attr("value", encodedData)
+                                    )
+                            .appendTo("body")
+                            .submit()
+                            .remove();
+                    return;
+                });
                 // end $(document).ready
             });
         </script>
@@ -821,6 +845,7 @@
                                         out.println("<button type='button' id='button_save' class='btn btn-primary'>Salva modifiche</button>");
                                     }
                                 %>
+                                <button  type='button' id='button_export_material' class='btn btn-primary'>Esporta Materiale</button>
                                 <!-- 
                                     Basta abilitare questa sezione per abilitare i pulsanti:
                                     gli handlers non ci sono ma potranno essere messi come feature aggiuntive...
