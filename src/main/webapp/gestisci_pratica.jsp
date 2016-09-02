@@ -660,7 +660,7 @@
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
-                    if (veicoloId.trim() === '-1' ) {
+                    if (idCliente.trim() === '-1' ) {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -784,14 +784,8 @@
                             <li>
                                 <a href="amministrazione.html">
                                     <i class="fa fa-archive fa-fw"></i>
-                                    Pratiche
-                                    <span class="fa arrow"></span>
+                                    Pratiche Correnti
                                 </a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="#"><i class="fa fa-folder fa-fw"></i>Pratiche chiuse</a>
-                                    </li>
-                                </ul>
                             </li>
 
                             <li>
