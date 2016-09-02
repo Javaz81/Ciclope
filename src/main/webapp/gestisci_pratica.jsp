@@ -4,6 +4,7 @@
     Author     : andrea
 --%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="org.javasoft.ciclope.amministrazione.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -620,25 +621,36 @@
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
                     var data_arrivo = $("#data_arrivo").val();
-                    if (arrivo.trim()) === '' ) {
+                    if (arrivo.trim() === '' ) {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
                                     La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
                                 </div>"
                                 );
+                        return;
                     }
-                    if (data_arrivo.trim()) === '' ) {
+                    if (data_arrivo.trim() === '' ) {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
                                     La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
                                 </div>"
                                 );
+                        return;
                     }
                     var uscita = $("#uscita").val();
                     var data_uscita = $("#data_uscita").val();
                     var veicoloId = $("#idVeicolo").val();
+                    if (veicoloId.trim() === '-1' ) {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                     Deve essere scelto un <b>veicolo</b>.Crealo o sceglilo dalla lista\n\
+                                </div>"
+                                );
+                        return;
+                    }
                     var marca = $("#marca").val();
                     var modello = $("#modello").val();
                     var targa = $("#targa").val();
@@ -648,6 +660,15 @@
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
+                    if (veicoloId.trim() === '-1' ) {
+                        $("#notification_area").prepend(
+                                "<div class='alert alert-danger alert-dismissable'>\n\
+                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                                     Deve essere scelto un <b>cliente</b>.Crealo o sceglilo dalla lista.\n\
+                                </div>"
+                                );
+                        return;
+                    }
                     var nome = $("#nome").val();
                     var cognome = $("#cognome").val();
                     var cellulare = $("#cellulare").val();
@@ -706,7 +727,7 @@
 " + data.messaggio.toString() + "\n\
 </div>"
                                             );
-                                    $("#idPratica").val(result.praticaId);
+                                    $("#idPratica").val(data.praticaId);
                                 } else {
                                     $("#notification_area").prepend("<div class='alert alert-danger alert-dismissable'>\n\
                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -740,7 +761,13 @@
     </head>
     <body>
         <%
-            praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
+            if(request.getParameter("praticaId").contains("-1")){               
+                praticaInfos = new ArrayList<CompletePraticaInfo>();
+                praticaInfos.add(CompletePraticaInfo.getEmptyCompletePraticaInfo());
+            }
+            else{
+                praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
+            }
             //categoriaInfos = AmministrazioneUtils.GetAllCategoryInformation(Integer.parseInt(request.getParameter("praticaId")));
         %>
         <div id="wrapper">

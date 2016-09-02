@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.DateUtils;
 import static org.javasoft.ciclope.servlets.utils.DateUtils.formatAdminYearForMySQL;
 import static org.javasoft.ciclope.servlets.utils.DateUtils.formatExtendedDateFromAdministrator;
 import org.json.simple.JSONObject;
@@ -143,7 +144,7 @@ public class SavePratica extends HttpServlet {
                         + "tipo=" + tipo + ", "
                         + "matricola=" + matricola + ", "
                         + "ore=" + ore + " "
-                        + "WHERE idVeicolo=" + veicoloId);
+                        + "WHERE idVeicolo"+(veicoloId.contains("NULL")?" IS ":" = ") + veicoloId);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -170,7 +171,7 @@ public class SavePratica extends HttpServlet {
                         + "cognome=" + cognome + ", "
                         + "cellulare=" + cellulare + ", "
                         + "localita=" + localita + " "
-                        + "WHERE idCliente=" + idCliente);
+                        + "WHERE idCliente"+(idCliente.contains("NULL")?" IS ":" = ") + idCliente);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();
@@ -184,7 +185,7 @@ public class SavePratica extends HttpServlet {
                 }
             }
             //salva dati pratica
-            if (praticaId.equalsIgnoreCase("-1") || praticaId.equalsIgnoreCase("")) {
+            if (praticaId.equalsIgnoreCase("-1") || praticaId.equalsIgnoreCase("") || praticaId.contains("NULL")) {
                 //se la pratica è nuova allora...
                 nuovaPratica = true;
                 Query q = s.createSQLQuery("INSERT INTO ciclope.pratica "
@@ -207,15 +208,15 @@ public class SavePratica extends HttpServlet {
                         + "VALUES "
                         + "("
                         + arrivo+","
-                        + data_arrivo+","
+                        + DateUtils.formatDateForAdministration(data_arrivo,Locale.ITALY)+","
                         + uscita+","
-                        + data_uscita+","
+                        + DateUtils.formatDateForAdministration(data_uscita,Locale.ITALY)+","
                         + preventivo_lavori+","
-                        + preventivo_lavori_data+","
+                        + DateUtils.formatDateForAdministration(preventivo_lavori_data,Locale.ITALY)+","
                         + revisione_mctc+","
-                        + revisione_mctc_data+","
+                        + DateUtils.formatDateForAdministration(revisione_mctc_data,Locale.ITALY)+","
                         + collaudo_usl+","
-                        + collaudo_usl_data+","
+                        + DateUtils.formatDateForAdministration(collaudo_usl_data,Locale.ITALY)+","
                         + registro_di_controllo+","
                         + lavori_segnalati+","
                         + idCliente+","
@@ -249,7 +250,7 @@ public class SavePratica extends HttpServlet {
                         + "lavori_segnalati="+ lavori_segnalati+", "
                         + "Cliente_idCliente="+ idCliente + ", "
                         + "veicolo="+ veicoloId+" "
-                        + "WHERE ciclope.pratica.idPratica=" + praticaId);
+                        + "WHERE ciclope.pratica.idPratica"+(praticaId.contains("NULL")?" IS ":" = ") + praticaId);
                 int n_row = q.executeUpdate();
                 if (n_row != 1) {
                     t.rollback();

@@ -54,7 +54,7 @@ public class CompletePraticaInfo {
     private String cellulareCliente;
 
     private String localitaCliente;
-    
+
     /* veicolo */
     private String idVeicolo;
 
@@ -73,6 +73,41 @@ public class CompletePraticaInfo {
     private String matricolaVeicolo;
 
     private String oreVeicolo;
+
+    public static CompletePraticaInfo getEmptyCompletePraticaInfo() {
+        CompletePraticaInfo cpi = new CompletePraticaInfo();
+        cpi.setAnnoVeicolo("");
+        cpi.setArrivo("");
+        cpi.setCellulareCliente("");
+        cpi.setCognomeCliente("");
+        cpi.setCollaudo_usl("");
+        cpi.setCollaudo_usl_data("");
+        cpi.setData_arrivo("");
+        cpi.setData_fattura("");
+        cpi.setData_uscita("");
+        cpi.setIdCliente("-1");
+        cpi.setIdPratica("-1");
+        cpi.setIdVeicolo("-1");
+        cpi.setKilometraggioVeicolo("");
+        cpi.setLavori_segnalati("");
+        cpi.setLocalitaCliente("");
+        cpi.setMarcaVeicolo("");
+        cpi.setMatricolaVeicolo("");
+        cpi.setModelloVeicolo("");
+        cpi.setNomeCliente("");
+        cpi.setNumero_fattura("");
+        cpi.setOreVeicolo("");
+        cpi.setPreventivo_lavori("");
+        cpi.setPreventivo_lavori_data("");
+        cpi.setRegistro_di_controllo("");
+        cpi.setRegistro_di_controllo_data("");
+        cpi.setRevisione_mctc("");
+        cpi.setRevisione_mctc_data("");
+        cpi.setTargaVeicolo("");
+        cpi.setTipoVeicolo("");
+        cpi.setUscita("");
+        return cpi;
+    }
 
     /**
      * Get the value of oreVeicolo
@@ -236,7 +271,6 @@ public class CompletePraticaInfo {
         this.idVeicolo = idVeicolo;
     }
 
-    
     /**
      * Get the value of collaudo_usl
      *

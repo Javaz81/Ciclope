@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DateUtils {
     /**
@@ -29,6 +31,18 @@ public class DateUtils {
             throw new IllegalArgumentException("The date or locale must not be null");
         SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEEEEE dd-MM-yyyy",locale);
         return sdf.format(date);
+    }
+     public static String formatDateForAdministration(String date, Locale locale){
+        if(date == null || locale == null)
+            throw new IllegalArgumentException("The date or locale must not be null");
+        date = date.replace("'", "");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEEEEE dd-MM-yyyy",locale);
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").format(sdf.parse(date));
+        } catch (ParseException ex) {
+            Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "NULL";
     }
     public static String formatDateFromAdministration(String date){
         if(date == null)
