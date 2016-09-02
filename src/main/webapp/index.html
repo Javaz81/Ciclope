@@ -673,7 +673,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                            + 'MARCA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].marca + "</span>" + 
+                                            ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].modello + "</span>" + 
+                                            ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].targa + "</span>" + 
+                                            ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].matricola + "</span>" + 
+                                            '</a></li>'
+                                            );
                                 }
 
                                 items = items.concat(items2);

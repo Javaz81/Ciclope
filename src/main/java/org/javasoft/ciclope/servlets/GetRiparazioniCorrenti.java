@@ -70,7 +70,8 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                             + " ciclope.veicolo.modello as modello,\n"
                             + " ciclope.veicolo.targa as targa,\n"
                             + " ciclope.veicolo.tipo as tipo,\n"
-                            + " ciclope.pratica.data_arrivo as data_pratica\n"
+                            + " ciclope.pratica.data_arrivo as data_pratica,\n"
+                            + " ciclope.veicolo.matricola as matricola\n"
                             + " from ciclope.pratica\n"
                             + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
                             + " where ciclope.pratica.uscita is null"
@@ -86,7 +87,8 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                             + " ciclope.veicolo.modello as modello,\n"
                             + " ciclope.veicolo.targa as targa,\n"
                             + " ciclope.veicolo.tipo as tipo,\n"
-                            + " ciclope.pratica.data_arrivo as data_pratica\n"
+                            + " ciclope.pratica.data_arrivo as data_pratica,\n"
+                            + " ciclope.veicolo.matricola as matricola\n"
                             + " from ciclope.pratica\n"
                             + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
                             + " where ciclope.pratica.uscita is null"
@@ -100,7 +102,8 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                         + " ciclope.veicolo.modello as modello,\n"
                         + " ciclope.veicolo.targa as targa,\n"
                         + " ciclope.veicolo.tipo as tipo,\n"
-                        + " ciclope.pratica.data_arrivo as data_pratica\n"
+                        + " ciclope.pratica.data_arrivo as data_pratica,\n"
+                        + " ciclope.veicolo.matricola as matricola\n"
                         + " from ciclope.pratica\n"
                         + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
                         + " where ciclope.pratica.uscita is null"
@@ -120,6 +123,7 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                 jo.put("modello", ob[3].toString());
                 jo.put("targa", ob[4] == null ? "(NO_TARGA)" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
+                jo.put("matricola", ob[7] == null ? "(NO_MATRICOLA)":ob[7].toString());
                 jo.put("data_arrivo", DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
                 array.add(jo);
             }
