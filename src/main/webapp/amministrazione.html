@@ -44,43 +44,21 @@ and open the template in the editor.
         <script src="js/libs/startbootstrap-sb-admin-2/js/sb-admin-2.js"></script>
         <script>
             //declarations
-
+            var PRATICHE_APERTE = "false";
             //functions
-
-            $(function () {
-                var limit = 10000;    //increase number of dataPoints by increasing the limit
-                var y = 0;
-                var data = [];
-                var dataSeries = {type: "line"};
-                var dataPoints = [];
-                for (var i = 0; i < limit; i += 1) {
-                    y += (Math.random() * 10 - 5);
-                    dataPoints.push({
-                        x: i,
-                        y: y
-                    });
-                }
-                dataSeries.dataPoints = dataPoints;
-                data.push(dataSeries);
-
-                //Better to construct options first and then pass it as a parameter
-                var options = {
-                    zoomEnabled: true,
-                    animationEnabled: true,
-                    title: {
-                        text: "Try Zooming - Panning"
-                    },
-                    axisX: {
-                        labelAngle: 30
-                    },
-                    axisY: {
-                        includeZero: false
-                    },
-                    data: data  // random data
-                };
-                $("#chartContainer").CanvasJSChart(options);
-            });
-
+            function getParameterByName(name, url) {
+                if (!url)
+                    url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                if (!results)
+                    return null;
+                if (!results[2])
+                    return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+            PRATICHE_APERTE = getParameterByName("chiuse");
             //events
             $(document).ready(function () {
                 // DataTable
@@ -88,7 +66,11 @@ and open the template in the editor.
                     responsive: true,
                     processing: true,
                     serverSide: true,
-                    ajax: "GetPraticheAperteDataTables",
+                    ajax: {
+                        url: "GetPraticheAperteDataTables",
+                        type: "POST",
+                        data: {praticaMode: PRATICHE_APERTE}
+                    },
                     sDom: 'lrtip', //to hide global search input box.
                     initComplete: function () {
                         this.api().columns().every(function () {
@@ -111,11 +93,11 @@ and open the template in the editor.
                 });
                 $('#dataTables-pratiche tbody').on('click', 'tr', function () {
                     var data = table.row(this).data();
-                    var loc = 'gestisci_pratica.jsp?newPratice=false&praticaId='+(data[0].toString());
+                    var loc = 'gestisci_pratica.jsp?newPratice=false&praticaId=' + (data[0].toString());
                     location.assign(loc);
                 });
             });
-            
+
         </script>
     </head>
     <body>
@@ -208,8 +190,6 @@ and open the template in the editor.
                                     </table>
                                 </div>
                                 <div class="list-group" id="lista_pratiche"></div>
-                                <!-- /.list-group -->
-                                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
                             </div>
                             <!-- /.panel-body -->
                         </div>

@@ -69,6 +69,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             String orderColumn = columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
             String orderDir = maps.get("order[0][dir]")[0];
             StringBuilder extSearch = new StringBuilder(2000);
+            String startSearchLimit = maps.get("start")[0];
             String extSearchLimit = maps.get("length")[0];
             extSearch.append("");
             int i = 0;
@@ -91,7 +92,14 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             String json = null;
             JSONObject obj = null;
             Query q = null;
-
+            
+            //elenca le pratiche chiuse?
+            boolean pc;
+            if(maps.get("praticaMode")[0].equalsIgnoreCase(""))
+                pc = false; // solo pratiche aperte di default
+            else
+                pc =!maps.get("praticaMode")[0].equalsIgnoreCase("false");
+            
             q = s.createSQLQuery("select "
                     + " ciclope.pratica.idPratica as praticaId,\n"
                     + " ciclope.pratica.arrivo as arrivo,\n"
@@ -102,10 +110,10 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                     + " ciclope.pratica.data_arrivo as data_pratica\n"
                     + " from ciclope.pratica\n"
                     + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
-                    + " where (ciclope.pratica.uscita is null OR ciclope.pratica.data_uscita is null)"
+                    + " where (ciclope.pratica.uscita is "+(pc?"not null":"null")+" OR ciclope.pratica.data_uscita is "+(pc?"not null":"null")+")"
                     + extSearch.toString()
                     + " ORDER BY " + orderColumn + " " + orderDir + "\n"
-                    + " LIMIT "+extSearchLimit
+                    + " LIMIT "+extSearchLimit+" OFFSET "+ startSearchLimit
             );
 
             List<Object[]> aicrecs = q.list();

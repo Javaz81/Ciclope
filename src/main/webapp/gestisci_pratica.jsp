@@ -621,7 +621,7 @@
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
                     var data_arrivo = $("#data_arrivo").val();
-                    if (arrivo.trim() === '' ) {
+                    if (arrivo.trim() === '') {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -630,7 +630,7 @@
                                 );
                         return;
                     }
-                    if (data_arrivo.trim() === '' ) {
+                    if (data_arrivo.trim() === '') {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -642,7 +642,7 @@
                     var uscita = $("#uscita").val();
                     var data_uscita = $("#data_uscita").val();
                     var veicoloId = $("#idVeicolo").val();
-                    if (veicoloId.trim() === '-1' ) {
+                    if (veicoloId.trim() === '-1') {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -660,7 +660,7 @@
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
-                    if (idCliente.trim() === '-1' ) {
+                    if (idCliente.trim() === '-1') {
                         $("#notification_area").prepend(
                                 "<div class='alert alert-danger alert-dismissable'>\n\
                                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
@@ -761,11 +761,10 @@
     </head>
     <body>
         <%
-            if(request.getParameter("praticaId").contains("-1")){               
+            if (request.getParameter("praticaId").contains("-1")) {
                 praticaInfos = new ArrayList<CompletePraticaInfo>();
                 praticaInfos.add(CompletePraticaInfo.getEmptyCompletePraticaInfo());
-            }
-            else{
+            } else {
                 praticaInfos = AmministrazioneUtils.GetAllPraticaInformation(Integer.parseInt(request.getParameter("praticaId")));
             }
             //categoriaInfos = AmministrazioneUtils.GetAllCategoryInformation(Integer.parseInt(request.getParameter("praticaId")));
@@ -782,14 +781,16 @@
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
                             <li>
-                                <a href="amministrazione.html">
-                                    <i class="fa fa-archive fa-fw"></i>
+                                <a href="amministrazione.html?chiuse=false">
+                                    <i class="fa fa-file-archive-o fa-fw"></i>
                                     Pratiche Correnti
                                 </a>
                             </li>
-
                             <li>
-                                <a href="amministrazione.html"><i class="fa fa-clock-o fa-fw"></i> Ore lavorate</a>
+                                <a href="amministrazione.html?chiuse=true">
+                                    <i class="fa fa-archive fa-fw"></i>
+                                    Pratiche Chiuse
+                                </a>
                             </li>
                         </ul>
                     </div>
