@@ -4,22 +4,31 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ciclope?zeroDateTimeBehavior=convertToNull</property>
+        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+        
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ciclope?zeroDateTimeBehavior=convertToNull&amp;useSSL=false</property>
         <property name="hibernate.connection.username">ciclope</property>
         <property name="hibernate.connection.password">ciclope</property>
+        <property name="hibernate.generate_statistics">true</property>
         <property name="hibernate.show_sql">true</property>
         <!--        <property name="hibernate.connection.isolation">8</property> -->
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.use_sql_comments">true</property>
+        <!-- 
+            Use session because all hibernate transactions use openSession method.
+            Change "session" with "thread" value if all hb transaction uses
+            getCurrentSession method.
+        --> 
         <property name="hibernate.current_session_context_class">thread</property>
     
-        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-        <property name="hibernate.c3p0.min_size">5</property>
-        <property name="hibernate.c3p0.max_size">200</property>
-        <property name="hibernate.c3p0.timeout">10</property>
-        <property name="hibernate.c3p0.max_statements">50</property>
-        <property name="hibernate.c3p0.idle_test_period">3000</property>
-        <property name="hibernate.generate_statistics">true</property>
+        <!-- C3p0 -->
+        <property name="hibernate.c3p0.min_size">10</property>
+        <property name="hibernate.c3p0.max_size">100</property>
+        <property name="hibernate.c3p0.idle_test_period">5</property>
+        <property name="hibernate.c3p0.timeout">3</property>
+        <property name="hibernate.c3p0.max_statements">10</property>
+
+
 
         <mapping resource="org/javasoft/ciclope/persistence/Orelavorate.hbm.xml"/>
         <mapping resource="org/javasoft/ciclope/persistence/Veicolo.hbm.xml"/>

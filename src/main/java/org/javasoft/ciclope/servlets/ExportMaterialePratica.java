@@ -140,7 +140,7 @@ public class ExportMaterialePratica extends HttpServlet {
         Transaction t;
         try {
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             t = s.getTransaction();
             t.begin();
             Query q = s.createSQLQuery("select"

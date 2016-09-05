@@ -64,7 +64,7 @@ public class GetClienteInfo extends HttpServlet {
             }
             String cid = (String) ((JSONObject)obj).get("cid");         
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             t = s.getTransaction();
             try {
                 t.begin();

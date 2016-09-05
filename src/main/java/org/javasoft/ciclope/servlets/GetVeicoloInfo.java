@@ -63,7 +63,7 @@ public class GetVeicoloInfo extends HttpServlet {
             }
             String vid = (String) ((JSONObject)obj).get("vid");         
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             t = s.getTransaction();
             try {
                 t.begin();

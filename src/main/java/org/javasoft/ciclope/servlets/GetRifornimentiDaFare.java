@@ -45,7 +45,7 @@ public class GetRifornimentiDaFare extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            Session s = HibernateUtil.getSessionFactory().openSession();
+            Session s = HibernateUtil.getSessionFactory().getCurrentSession();
             Transaction t = s.getTransaction();
             t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));

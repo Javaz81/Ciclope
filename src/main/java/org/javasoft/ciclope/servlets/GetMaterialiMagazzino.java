@@ -45,7 +45,7 @@ public class GetMaterialiMagazzino extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             /* TODO output your page here. You may use following sample code. */
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             Transaction t = s.getTransaction();
             t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));

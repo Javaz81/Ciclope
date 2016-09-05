@@ -80,7 +80,7 @@ public class AddVeicolo extends HttpServlet {
             ore = ore.replace("'", "''");
             
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             Transaction t = s.getTransaction();
             try {
                 t.begin();

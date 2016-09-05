@@ -52,7 +52,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         Transaction t = null;
 
         SessionFactory sf = HibernateUtil.getSessionFactory();
-        Session s = sf.openSession();
+        Session s = sf.getCurrentSession();
         t = s.getTransaction();
         t.begin();
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));

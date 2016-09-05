@@ -44,7 +44,7 @@ public class GetVeicoli extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             Transaction t = s.getTransaction();
             t.begin();
             Map<String, String[]> maps = null;

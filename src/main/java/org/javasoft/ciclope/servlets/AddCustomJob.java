@@ -69,7 +69,7 @@ public class AddCustomJob extends HttpServlet {
             descrizione = descrizione.replace("'", "''");
             
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             Transaction t = s.getTransaction();
             try {
                 t.begin();

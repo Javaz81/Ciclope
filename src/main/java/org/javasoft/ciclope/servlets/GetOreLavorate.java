@@ -51,7 +51,7 @@ public class GetOreLavorate extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.openSession();
+            Session s = sf.getCurrentSession();
             Transaction t = s.getTransaction();
             t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));

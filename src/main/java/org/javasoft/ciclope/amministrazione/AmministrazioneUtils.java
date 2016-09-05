@@ -29,6 +29,7 @@ public class AmministrazioneUtils {
      * Crea la lista di tutte le informazioni della pratica, clienti, veicoli e
      * lavori annessi compresi.
      *
+     * @param pratica_id
      * @return Tutte le informazioni sulla pratica.
      */
     public static List<CompletePraticaInfo> GetAllPraticaInformation(int pratica_id) {
@@ -37,7 +38,7 @@ public class AmministrazioneUtils {
         Transaction t = null;
         ArrayList<CompletePraticaInfo> praticaInfos = null;
         try {
-            s = HibernateUtil.getSessionFactory().openSession();
+            s = HibernateUtil.getSessionFactory().getCurrentSession();
             t = s.getTransaction();
             t.begin();
             String json = null;
@@ -103,7 +104,7 @@ public class AmministrazioneUtils {
         Transaction t = null;
         ArrayList<CompleteCategoriaInfo> categoriaInfos = null;
         try {
-            s = HibernateUtil.getSessionFactory().openSession();
+            s = HibernateUtil.getSessionFactory().getCurrentSession();
             t = s.getTransaction();
             t.begin();
             String json = null;
@@ -139,7 +140,7 @@ public class AmministrazioneUtils {
         Transaction t = null;
         ArrayList<TipoLavoroPratica> tipoLavoriInfos = null;
         try {
-            s = HibernateUtil.getSessionFactory().openSession();
+            s = HibernateUtil.getSessionFactory().getCurrentSession();
             t = s.getTransaction();
             t.begin();
             String q1 = "SELECT * \n"

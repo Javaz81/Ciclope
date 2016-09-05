@@ -62,7 +62,7 @@ public class SavePratica extends HttpServlet {
             HashMap<String, Object> result = new HashMap<String, Object>();
             try {
                 SessionFactory sf = HibernateUtil.getSessionFactory();
-                Session s = sf.openSession();
+                Session s = sf.getCurrentSession();
                 t = s.getTransaction();
                 t.begin();
                 BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
