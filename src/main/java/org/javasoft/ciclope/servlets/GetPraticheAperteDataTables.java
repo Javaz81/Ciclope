@@ -60,10 +60,11 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             String[] columnNames = new String[]{
                 "idPratica",
                 "arrivo",
+                "nome",
+                "cognome",
                 "marca",
-                "modello",
                 "targa",
-                "tipo",
+                "matricola",
                 "data_pratica"
             };
             String orderColumn = columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
@@ -73,21 +74,33 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             String extSearchLimit = maps.get("length")[0];
             extSearch.append("");
             int i = 0;
+            int schColIdx = 0;
             String colNameVal = "";
             for(String name: columnNames){
-                if(!maps.get("columns["+i+"][search][value]")[0].equals("")){
-                    if(maps.get("columns["+i+"][search][value]")[0].equals("null")){
+                if( name.equals("cognome") || name.equals("matricola")){
+                    i++;
+                    continue;
+                }
+                if(!maps.get("columns["+schColIdx+"][search][value]")[0].equals("")){
+                    if(maps.get("columns["+schColIdx+"][search][value]")[0].equals("null")){
                         colNameVal = " IS NULL";
                     }else{
-                        if(name.equalsIgnoreCase(columnNames[6])){                            
-                            colNameVal = " = '"+DateUtils.formatDateMySQL(maps.get("columns["+i+"][search][value]")[0], Locale.ITALY)+"'";
+                        if(name.equalsIgnoreCase(columnNames[7])){                            
+                            colNameVal = " = '"+DateUtils.formatDateMySQL(maps.get("columns["+schColIdx+"][search][value]")[0], Locale.ITALY)+"'";
                         }else{
-                            colNameVal = " = '"+maps.get("columns["+i+"][search][value]")[0]+"'";
+                            colNameVal = " = '"+maps.get("columns["+schColIdx+"][search][value]")[0]+"'";
                         }
                     }
-                    extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"data_arrivo":columnNames[i]).append(colNameVal);
+                    if(columnNames[i].equals("nome") || columnNames[i].equals("targa")){
+                        extSearch.append(" AND (").append(columnNames[i]).append(colNameVal).append(" OR ")
+                                .append(columnNames[i+1]).append(colNameVal).append(")");
+                    }
+                    else{
+                        extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"data_arrivo":columnNames[i]).append(colNameVal);
+                    }
                 }
                 i++;
+                schColIdx++;
             }
             String json = null;
             JSONObject obj = null;
@@ -103,13 +116,15 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             q = s.createSQLQuery("select "
                     + " ciclope.pratica.idPratica as praticaId,\n"
                     + " ciclope.pratica.arrivo as arrivo,\n"
+                    + " ciclope.cliente.nome as nome,\n"
+                    + " ciclope.cliente.cognome as cognome,\n"
                     + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.modello as modello,\n"
+                    + " ciclope.veicolo.matricola as matricola,\n"
                     + " ciclope.veicolo.targa as targa,\n"
-                    + " ciclope.veicolo.tipo as tipo,\n"
                     + " ciclope.pratica.data_arrivo as data_pratica\n"
                     + " from ciclope.pratica\n"
                     + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                    + " left join ciclope.cliente on ciclope.pratica.Cliente_IdCliente = ciclope.cliente.idCliente\n"
                     + " where (ciclope.pratica.uscita is "+(pc?"not null":"null")+" OR ciclope.pratica.data_uscita is "+(pc?"not null":"null")+")"
                     + extSearch.toString()
                     + " ORDER BY " + orderColumn + " " + orderDir + "\n"
@@ -137,13 +152,23 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             jo1.put("recordsFiltered", Integer.toString(aicrecs.size()));
             for (Object[] ob : aicrecs) {
                 row = new JSONArray();
+                for(int idx = 0; idx < ob.length; idx++){
+                    if(ob[idx] == null)
+                        ob[idx]="";
+                }
+                
                 row.add(ob[0].toString());
                 row.add(ob[1].toString());
-                row.add(ob[2].toString());
-                row.add(ob[3].toString());
-                row.add(ob[4] == null ? "null" : ob[4].toString());
-                row.add(ob[5].toString());
-                row.add(DateUtils.isToday((Date) ob[6]) ? "Oggi" : DateUtils.formatDate((Date) ob[6], Locale.ITALY));
+                if(ob[3].equals(""))                    
+                    row.add(ob[2].toString());
+                else
+                    row.add(ob[3].toString());
+                row.add(ob[4].toString());
+                if(ob[6].equals(""))
+                    row.add(ob[5].toString());
+                else
+                    row.add(ob[6].toString());
+                row.add(DateUtils.isToday((Date) ob[7]) ? "Oggi" : DateUtils.formatDate((Date) ob[7], Locale.ITALY));
                 arraytop.add(row);
             }
             jo1.put("data", arraytop);
