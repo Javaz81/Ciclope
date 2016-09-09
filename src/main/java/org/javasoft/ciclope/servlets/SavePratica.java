@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -68,6 +70,7 @@ public class SavePratica extends HttpServlet {
                 BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
                 String json;
                 json = br.readLine();
+                json = URLDecoder.decode(json, "UTF-8");
                 Object obj = null;
 
                 JSONParser p = new JSONParser();
@@ -120,7 +123,7 @@ public class SavePratica extends HttpServlet {
                 String collaudo_usl_data = parseParam(((JSONObject) obj).get("collaudo_usl_data").toString().replace("'", "''"));
                 String registro_di_controllo = parseBooleanParam(((JSONObject) obj).get("registro_di_controllo").toString().replace("'", "''"));
                 String lavori_segnalati = parseParam(((JSONObject) obj).get("lavori_segnalati").toString().replace("'", "''"));
-
+                
                 boolean nuovaPratica = false;
                 boolean clienteAssente = true;
                 boolean nuovoVeicolo = false;
@@ -274,10 +277,10 @@ public class SavePratica extends HttpServlet {
                 } else {
                     result.put("messaggio", "Aggiornamento effettuato con successo!!!");
                 }
-                result.put("praticaId", praticaId);
+                result.put("praticaId", praticaId.replace("'", ""));
                 jo.putAll(result);
                 out.println(jo.toJSONString());
-            } catch (Exception ex) {
+            } catch (HibernateException | IOException ex) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
                 result.put("result", "ko");

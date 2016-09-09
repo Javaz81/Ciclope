@@ -681,7 +681,7 @@
                     var collaudo_usl_data = $("#collaudo_usl_data").val();
                     var registro_di_controllo = $("#registro_di_controllo").val();
                     var lavori_segnalati = $("#lavori_segnalati").val();
-
+                    
                     var p = {
                         praticaId: praticaId,
                         arrivo: arrivo,
@@ -711,7 +711,9 @@
                         registro_di_controllo: registro_di_controllo,
                         lavori_segnalati: lavori_segnalati
                     };
-                    requestJson = JSON.stringify(p);
+                    //l'encoding è necessario a causa del fatto che dei campi
+                    //possono presentare dei caratteri mal codificabili.
+                    requestJson = encodeURIComponent(JSON.stringify(p));                    
                     $.ajax({
                         url: "SavePratica",
                         cache: false,
