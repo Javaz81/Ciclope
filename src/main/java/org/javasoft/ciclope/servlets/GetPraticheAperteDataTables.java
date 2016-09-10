@@ -67,8 +67,17 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 "matricola",
                 "data_pratica"
             };
-            String orderColumn = columnNames[Integer.valueOf(maps.get("order[0][column]")[0])];
+            String orderColumn = null;
             String orderDir = maps.get("order[0][dir]")[0];
+            int coln = Integer.valueOf(maps.get("order[0][column]")[0]);
+            if (coln < 2)
+               orderColumn = columnNames[coln];
+            else if( coln == 2)
+                orderColumn = columnNames[2].concat(" ").concat(orderDir).concat(",")
+                        .concat(columnNames[3]);
+            else if ( coln >= 3)
+                orderColumn = columnNames[coln++];
+           
             StringBuilder extSearch = new StringBuilder(2000);
             String startSearchLimit = maps.get("start")[0];
             String extSearchLimit = maps.get("length")[0];
@@ -77,7 +86,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             int schColIdx = 0;
             String colNameVal = "";
             for(String name: columnNames){
-                if( name.equals("cognome") || name.equals("matricola")){
+                if( name.equals("cognome")){
                     i++;
                     continue;
                 }
@@ -91,7 +100,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                             colNameVal = " = '"+maps.get("columns["+schColIdx+"][search][value]")[0]+"'";
                         }
                     }
-                    if(columnNames[i].equals("nome") || columnNames[i].equals("targa")){
+                    if(columnNames[i].equals("nome")){
                         extSearch.append(" AND (").append(columnNames[i]).append(colNameVal).append(" OR ")
                                 .append(columnNames[i+1]).append(colNameVal).append(")");
                     }
@@ -164,10 +173,8 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 else
                     row.add(ob[3].toString());
                 row.add(ob[4].toString());
-                if(ob[6].equals(""))
-                    row.add(ob[5].toString());
-                else
-                    row.add(ob[6].toString());
+                row.add(ob[5].toString());
+                row.add(ob[6].toString());
                 row.add(DateUtils.isToday((Date) ob[7]) ? "Oggi" : DateUtils.formatDate((Date) ob[7], Locale.ITALY));
                 arraytop.add(row);
             }

@@ -326,7 +326,7 @@
                             if (data !== undefined) {
                                 if (data.result === "ok") {
                                     //compila veicolo
-                                    var values = data.veicolo.split("#");
+                                    var values = data.cliente.split("#");
                                     $("#idCliente").val(values[0]);
                                     $("#nome").val(values[1]);
                                     $("#cognome").val(values[2]);
