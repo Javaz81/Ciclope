@@ -48,8 +48,8 @@ public class AggiornaOreLavorate extends HttpServlet {
         boolean exception = false;
         String oreLavorateId;
         String materialeId;
-        Integer qty_upd;
-        Integer qty_cur = null;
+        Float qty_upd;
+        Float qty_cur = null;
         Transaction t;
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json;
@@ -72,7 +72,7 @@ public class AggiornaOreLavorate extends HttpServlet {
             return;
         }
         oreLavorateId = (String) ((JSONObject) obj).get("idOreLavorate");
-        qty_upd = Integer.parseInt((String) ((JSONObject) obj).get("ore"));
+        qty_upd = Float.parseFloat((String) ((JSONObject) obj).get("ore"));
         Session s = SessionUtils.getCiclopeSession();
         t= s.getTransaction();
         t.begin();
@@ -82,7 +82,7 @@ public class AggiornaOreLavorate extends HttpServlet {
             if (n_row != 1) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
-                jo.put("qty", Integer.toString(qty_cur));
+                jo.put("qty", Float.toString(qty_cur));
                 jo.put("result", "ko");
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jo.toJSONString());
@@ -91,7 +91,7 @@ public class AggiornaOreLavorate extends HttpServlet {
             }
             t.commit();
             JSONObject jo = new JSONObject();
-            jo.put("qty", Integer.toString(qty_upd));
+            jo.put("qty", Float.toString(qty_upd));
             jo.put("result", "ok");
             try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());
@@ -99,7 +99,7 @@ public class AggiornaOreLavorate extends HttpServlet {
         } catch (Exception ex) {
             t.rollback();
             JSONObject jo = new JSONObject();
-            jo.put("qty", Integer.toString(qty_cur));
+            jo.put("qty", Float.toString(qty_cur));
             jo.put("result", "ko");
             jo.put("message", ex.getMessage());
             try (PrintWriter out = response.getWriter()) {

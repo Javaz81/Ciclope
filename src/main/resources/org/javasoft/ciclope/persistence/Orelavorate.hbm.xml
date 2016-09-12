@@ -14,7 +14,7 @@
         <many-to-one name="pratica" class="org.javasoft.ciclope.persistence.Pratica" fetch="select">
             <column name="pratica" not-null="true" />
         </many-to-one>
-        <property name="ore" type="java.lang.Byte">
+        <property name="ore" type="java.lang.Float">
             <column name="ore" />
         </property>
         <property name="giornata" type="date">
