@@ -19,9 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -89,12 +87,7 @@ public class GetMaterialiRiparazione extends HttpServlet {
                 jo = new JSONObject();
                 jo.put("codice", ob[0].toString());
                 jo.put("descrizione", ob[1].toString());
-                sq = ((String) ob[2].toString()).split("\\.");
-                jo.put("quantita_consumata",
-                        ob[4].toString().equalsIgnoreCase("pz")
-                        ? sq[0]
-                        : ob[2].toString()
-                );
+                jo.put("quantita_consumata",ob[2].toString());
                 jo.put("rimanenza", ob[3].toString());
                 jo.put("unita_misura", ob[4].toString());
                 jo.put("praticaHeader",((JSONObject) obj).get("praticaHeader"));

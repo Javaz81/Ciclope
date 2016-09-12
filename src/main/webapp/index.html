@@ -870,8 +870,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
                                 for (var i = 0; i < data.length; i++) {
                                     items2.push('<li><a href="#dlgAggiornaQuantita" \n\
-                     onClick="updateMaterialName(this.id,' + data[i].quantita_consumata + ')" id="' + data[i].codice + '">'
-                                            + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].quantita_consumata + '</div></a></li>');
+                     onClick="updateMaterialName(this.id,' + parseFloat(data[i].quantita_consumata) + ')" id="' + data[i].codice + '">'
+                                            + data[i].descrizione + ' <div class="ui-li-count count_prev">' + parseFloat(data[i].quantita_consumata) + '</div></a></li>');
                                 }
                             } else {
                                 $("#nome_riparazione").html("<h1>" + praticaHeaderName + "</h1>");

@@ -46,8 +46,8 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         boolean exception = false;
         String praticaId;
         String materialeId;
-        Integer qty_upd;
-        Integer qty_cur = null;
+        Float qty_upd;
+        Float qty_cur = null;
         Transaction t = null;
         
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
@@ -63,7 +63,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
             }
         } else {
             JSONObject jo = new JSONObject();
-            jo.put("qty", Integer.toString(0));
+            jo.put("qty", Float.toString(0));
             jo.put("result", "ko");
             try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());
@@ -72,8 +72,8 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         }
         praticaId = (String) ((JSONObject) obj).get("praticaId");
         materialeId = (String) ((JSONObject) obj).get("materialeId");
-        qty_upd = Integer.parseInt((String) ((JSONObject) obj).get("quantita_da_aggiornare"));
-        qty_cur = Integer.parseInt((String) ((JSONObject) obj).get("quantita_corrente"));
+        qty_upd = Float.parseFloat((String) ((JSONObject) obj).get("quantita_da_aggiornare"));
+        qty_cur = Float.parseFloat((String) ((JSONObject) obj).get("quantita_corrente"));
         
         Session s = SessionUtils.getCiclopeSession();
         t = s.getTransaction();
@@ -86,7 +86,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
             if (n_row != 1) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
-                jo.put("qty", Integer.toString(qty_cur));
+                jo.put("qty", Float.toString(qty_cur));
                 jo.put("result", "ko");
                  try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());
@@ -98,7 +98,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
             if (n_row != 1) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
-                jo.put("qty", Integer.toString(qty_cur));
+                jo.put("qty", Float.toString(qty_cur));
                 jo.put("result", "ko");
                  try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());
@@ -107,7 +107,8 @@ public class UpdateQuantitaMateriale extends HttpServlet {
             }
             t.commit();
             JSONObject jo = new JSONObject();
-            jo.put("qty", Integer.toString(qty_cur + qty_upd));
+            Float res = qty_cur + qty_upd;
+            jo.put("qty", Float.toString(res));
             jo.put("result", "ok");
              try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());
@@ -115,7 +116,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         } catch (Exception ex) {
             t.rollback();
             JSONObject jo = new JSONObject();
-            jo.put("qty", Integer.toString(qty_cur));
+            jo.put("qty", Float.toString(qty_cur));
             jo.put("result", "ko");
             jo.put("message", ex.getMessage());
             try (PrintWriter out = response.getWriter()) {
