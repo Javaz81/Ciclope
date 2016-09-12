@@ -20,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.Articolo;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -42,10 +43,7 @@ public class GetMaterialiMagazzino extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            /* TODO output your page here. You may use following sample code. */
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
+            Session s = SessionUtils.getCiclopeSession();
             Transaction t = s.getTransaction();
             t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
@@ -62,7 +60,7 @@ public class GetMaterialiMagazzino extends HttpServlet {
                 jo.put("codice", ob.getIdArticolo());
                 jo.put("descrizione", ob.getDescrizione());
                 jo.put("rimanenza", ob.getScortaRimanente());
-                jo.put("scorta_minima",ob.getScortaRimanente());
+                jo.put("scorta_minima", ob.getScortaRimanente());
                 jo.put("unita_di_misura", ob.getUnitaDiMisura());
                 array.add(jo);
             }

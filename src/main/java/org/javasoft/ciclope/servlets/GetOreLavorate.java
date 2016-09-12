@@ -25,6 +25,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -50,10 +51,6 @@ public class GetOreLavorate extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -78,6 +75,9 @@ public class GetOreLavorate extends HttpServlet {
             }
             personaleId = ((JSONObject) obj).get("personaleId").toString();
 
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             Query q = s.createSQLQuery("select personale.Nome, personale.Cognome, orelavorate.giornata,"
                     + " veicolo.matricola, veicolo.marca, veicolo.modello, orelavorate.ore, pratica.idPratica, orelavorate.IdOreLavorate \n"
                     + "from orelavorate\n"

@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -22,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,10 +47,6 @@ public class DeleteJob extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             try {
-                SessionFactory sf = HibernateUtil.getSessionFactory();
-                Session s = sf.getCurrentSession();
-                Transaction t = s.getTransaction();
-                t.begin();
                 BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
                 String json;
                 json = br.readLine();
@@ -68,16 +64,19 @@ public class DeleteJob extends HttpServlet {
 
                 jobId = ((JSONObject) obj).get("jobId").toString();
                 tipoJob = ((JSONObject) obj).get("tipo").toString();
-
+                
+                Session s = SessionUtils.getCiclopeSession();
+                Transaction t = s.getTransaction();
+                t.begin();
                 Query q;
                 if (tipoJob.equalsIgnoreCase("standard")) {
                     q = s.createSQLQuery("DELETE FROM ciclope.lavoripratichestandard WHERE id = '" + jobId + "'");
                 } else {
                     q = s.createSQLQuery("DELETE FROM ciclope.lavoripratichecustom WHERE id = '" + jobId + "'");
                 }
-                
+
                 q.executeUpdate();
-                
+
                 t.commit();
                 JSONObject jo;
                 jo = new JSONObject();
@@ -86,7 +85,7 @@ public class DeleteJob extends HttpServlet {
             } catch (Exception ex) {
                 JSONObject jo;
                 jo = new JSONObject();
-                jo.put("result",ex.getMessage());
+                jo.put("result", ex.getMessage());
                 out.println(jo.toJSONString());
             }
         }

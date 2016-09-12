@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,10 +48,6 @@ public class AddMaterialeInRiparazione extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-           SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -63,7 +60,7 @@ public class AddMaterialeInRiparazione extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }else{
-                t.rollback();
+
                 JSONObject jo = new JSONObject();
                 jo.put("qty", Integer.toString(0));
                 jo.put("result", "ko");
@@ -74,6 +71,9 @@ public class AddMaterialeInRiparazione extends HttpServlet {
             String materialeId = (String) ((JSONObject) obj).get("materialeId");
             Integer qty_upd = 1;
             Integer qty_cur = 0;
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
+            t.begin();
             //Inserisci il materiale nella pratica ed aggiorna di una quantita.
             Query q = s.createSQLQuery("INSERT INTO ciclope.materialepratica (pratica, articolo, quantita_consumata)"
                     + " VALUES ('"+praticaId+"', '"+materialeId+"', '1')");

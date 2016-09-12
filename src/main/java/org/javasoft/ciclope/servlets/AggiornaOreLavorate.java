@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -49,12 +50,7 @@ public class AggiornaOreLavorate extends HttpServlet {
         String materialeId;
         Integer qty_upd;
         Integer qty_cur = null;
-        Transaction t = null;
-
-        SessionFactory sf = HibernateUtil.getSessionFactory();
-        Session s = sf.getCurrentSession();
-        t = s.getTransaction();
-        t.begin();
+        Transaction t;
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json;
         json = br.readLine();
@@ -67,7 +63,6 @@ public class AggiornaOreLavorate extends HttpServlet {
                 Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            t.rollback();
             JSONObject jo = new JSONObject();
             jo.put("qty", Integer.toString(0));
             jo.put("result", "ko");
@@ -78,6 +73,9 @@ public class AggiornaOreLavorate extends HttpServlet {
         }
         oreLavorateId = (String) ((JSONObject) obj).get("idOreLavorate");
         qty_upd = Integer.parseInt((String) ((JSONObject) obj).get("ore"));
+        Session s = SessionUtils.getCiclopeSession();
+        t= s.getTransaction();
+        t.begin();
         Query q = s.createSQLQuery("UPDATE ciclope.orelavorate SET ore='" + qty_upd + "' WHERE idOreLavorate='" + oreLavorateId + "'");
         try {
             int n_row = q.executeUpdate();

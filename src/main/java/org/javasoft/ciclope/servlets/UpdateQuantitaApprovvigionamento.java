@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -51,15 +52,14 @@ public class UpdateQuantitaApprovvigionamento extends HttpServlet {
         Transaction t = null;
         Integer approv_updated = null;
 
-        SessionFactory sf = HibernateUtil.getSessionFactory();
-        Session s = sf.getCurrentSession();
-        t = s.getTransaction();
-        t.begin();
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json;
         json = br.readLine();
         Object obj = null;
         JSONParser p = new JSONParser();
+        Session s = SessionUtils.getCiclopeSession();
+        t = s.getTransaction();
+        t.begin();
         if (json != null) {
             try {
                 obj = p.parse(json);
@@ -106,10 +106,10 @@ public class UpdateQuantitaApprovvigionamento extends HttpServlet {
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jo.toJSONString());
                 }
-            }else{
-               approv_updated = (Integer) result.get(0);
+            } else {
+                approv_updated = (Integer) result.get(0);
             }
-            
+
             t.commit();
             JSONObject jo = new JSONObject();
             jo.put("qty", approv_updated.toString());

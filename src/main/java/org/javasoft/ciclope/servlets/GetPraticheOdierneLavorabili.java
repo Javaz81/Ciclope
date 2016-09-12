@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,10 +49,6 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -71,12 +68,14 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
              try {
                 giornata = new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("dd/MM/yyyy").parse(giornataJs));
             } catch (java.text.ParseException ex) {
-                t.rollback();
                 JSONObject jo = new JSONObject();
                 jo.put("result", "ko");
                 out.println(jo.toJSONString());
                 return;
             }
+             Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             Query q = s.createSQLQuery("select ciclope.pratica.idPratica as praticaId,\n"
                     + "ciclope.pratica.arrivo as arrivo,\n"
                     + "ciclope.veicolo.marca as marca,\n"

@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -46,10 +47,6 @@ public class AddPraticaLavorataOdierna extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -62,7 +59,6 @@ public class AddPraticaLavorataOdierna extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                t.rollback();
                 JSONObject jo = new JSONObject();
                 jo.put("result", "ko");
                 out.println(jo.toJSONString());
@@ -75,13 +71,14 @@ public class AddPraticaLavorataOdierna extends HttpServlet {
             try {
                 giornata = new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("dd/MM/yyyy").parse(giornataJs));
             } catch (java.text.ParseException ex) {
-                t.rollback();
                 JSONObject jo = new JSONObject();
                 jo.put("result", "ko");
                 out.println(jo.toJSONString());
                 return;
             }
-
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
+            t.begin();
             //Inserisci il materiale nella pratica ed aggiorna di una quantita.
             Query q = s.createSQLQuery("INSERT INTO ciclope.orelavorate "
                     + "(ore, personale, pratica, giornata) VALUES ('0','" + personaleId + "',"

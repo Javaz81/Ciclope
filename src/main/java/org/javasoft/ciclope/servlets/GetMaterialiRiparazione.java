@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,10 +48,6 @@ public class GetMaterialiRiparazione extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -63,6 +60,9 @@ public class GetMaterialiRiparazione extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             Query q = s.createSQLQuery("select"
                     + " ciclope.articolo.idArticolo as codice,\n"
                     + " ciclope.articolo.descrizione as descrizione,\n"

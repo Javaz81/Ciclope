@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.exceptions.UnexceptedResultException;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -51,10 +52,6 @@ public class AddStandardJobs extends HttpServlet {
         Transaction t = null;
         try (PrintWriter out = response.getWriter()) {
             try {
-                SessionFactory sf = HibernateUtil.getSessionFactory();
-                Session s = sf.getCurrentSession();
-                t = s.getTransaction();
-                t.begin();
                 BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
                 String json;
                 json = br.readLine();
@@ -62,7 +59,7 @@ public class AddStandardJobs extends HttpServlet {
                 JSONParser p = new JSONParser();
                 if (json != null) {
                     try {
-                        obj = (JSONObject)p.parse(json);
+                        obj = (JSONObject) p.parse(json);
                     } catch (ParseException ex) {
                         Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -74,10 +71,13 @@ public class AddStandardJobs extends HttpServlet {
                 praticaId = obj.get("praticaId").toString();
                 StringBuilder sb = new StringBuilder();
                 sb.append("SELECT idTipoLavoro FROM ciclope.tipolavoro WHERE ciclope.tipolavoro.codice IN (");
-                for(Object job : jobCodes){
+                for (Object job : jobCodes) {
                     sb.append("\"").append(job.toString()).append("\",");
                 }
-                sb.replace(sb.lastIndexOf(","), sb.length(),")");
+                sb.replace(sb.lastIndexOf(","), sb.length(), ")");
+                Session s = SessionUtils.getCiclopeSession();
+                t = s.getTransaction();
+                t.begin();
                 Query q = s.createSQLQuery(sb.toString());
                 ArrayList<Integer> arr = (ArrayList<Integer>) q.list();
                 int rows;
@@ -87,14 +87,15 @@ public class AddStandardJobs extends HttpServlet {
                     q.setInteger("praticaId", Integer.parseUnsignedInt(praticaId));
                     q.setInteger("job", arr.get(i));
                     rows = q.executeUpdate();
-                    if(rows != 1 )
+                    if (rows != 1) {
                         throw new UnexceptedResultException("Una o più righe non sono state inserite");
-                    i+=1;
+                    }
+                    i += 1;
                 }
-                StringBuilder qs =new StringBuilder("SELECT ciclope.lavoripratichestandard.id, tipolavoro.descrizione, ciclope.tipolavoro.codice\n" +
-"FROM ciclope.lavoripratichestandard INNER JOIN ciclope.tipoLavoro\n" +
-"ON ciclope.lavoripratichestandard.tipolavoro = ciclope.tipolavoro.idTipoLavoro\n" +
-"WHERE ciclope.lavoripratichestandard.pratica = "+praticaId+" AND ciclope.tipolavoro.codice IN (");
+                StringBuilder qs = new StringBuilder("SELECT ciclope.lavoripratichestandard.id, tipolavoro.descrizione, ciclope.tipolavoro.codice\n"
+                        + "FROM ciclope.lavoripratichestandard INNER JOIN ciclope.tipoLavoro\n"
+                        + "ON ciclope.lavoripratichestandard.tipolavoro = ciclope.tipolavoro.idTipoLavoro\n"
+                        + "WHERE ciclope.lavoripratichestandard.pratica = " + praticaId + " AND ciclope.tipolavoro.codice IN (");
                 for (Object ob : jobCodes) {
                     qs.append("\"").append(ob.toString()).append("\",");
                 }
@@ -103,8 +104,9 @@ public class AddStandardJobs extends HttpServlet {
                 q = s.createSQLQuery(qs.toString());
                 ArrayList<Object[]> objs = (ArrayList<Object[]>) q.list();
                 ArrayList<String> objsrows = new ArrayList<String>(objs.size());
-                for(Object[] o : objs)
+                for (Object[] o : objs) {
                     objsrows.add(o[0].toString().concat("#").concat(o[1].toString()).concat("#").concat(o[2].toString()));
+                }
                 t.commit();
                 JSONObject jo;
                 JSONArray ja = new JSONArray();

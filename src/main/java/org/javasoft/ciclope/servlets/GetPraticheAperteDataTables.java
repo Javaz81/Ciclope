@@ -22,6 +22,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -45,11 +46,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
             Map<String, String[]> maps = null;
-            t.begin();
             if (request.getParameterMap().size() > 0) {
                 maps = request.getParameterMap();
             }
@@ -121,7 +118,9 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 pc = false; // solo pratiche aperte di default
             else
                 pc =!maps.get("praticaMode")[0].equalsIgnoreCase("false");
-            
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             q = s.createSQLQuery("select "
                     + " ciclope.pratica.idPratica as praticaId,\n"
                     + " ciclope.pratica.arrivo as arrivo,\n"

@@ -28,6 +28,7 @@ import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
 import static org.javasoft.ciclope.servlets.utils.DateUtils.formatAdminYearForMySQL;
 import static org.javasoft.ciclope.servlets.utils.DateUtils.formatExtendedDateFromAdministrator;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -63,10 +64,6 @@ public class SavePratica extends HttpServlet {
             Transaction t = null;
             HashMap<String, Object> result = new HashMap<String, Object>();
             try {
-                SessionFactory sf = HibernateUtil.getSessionFactory();
-                Session s = sf.getCurrentSession();
-                t = s.getTransaction();
-                t.begin();
                 BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
                 String json;
                 json = br.readLine();
@@ -74,6 +71,9 @@ public class SavePratica extends HttpServlet {
                 Object obj = null;
 
                 JSONParser p = new JSONParser();
+                Session s = SessionUtils.getCiclopeSession();
+                t = s.getTransaction();
+                t.begin();
                 if (json != null) {
                     try {
                         obj = p.parse(json);
@@ -123,7 +123,7 @@ public class SavePratica extends HttpServlet {
                 String collaudo_usl_data = parseParam(((JSONObject) obj).get("collaudo_usl_data").toString().replace("'", "''"));
                 String registro_di_controllo = parseBooleanParam(((JSONObject) obj).get("registro_di_controllo").toString().replace("'", "''"));
                 String lavori_segnalati = parseParam(((JSONObject) obj).get("lavori_segnalati").toString().replace("'", "''"));
-                
+
                 boolean nuovaPratica = false;
                 boolean clienteAssente = true;
                 boolean nuovoVeicolo = false;

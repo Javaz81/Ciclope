@@ -20,11 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.Cliente;
-import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.javasoft.ciclope.persistence.Veicolo;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,7 +45,8 @@ public class AddCliente extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
@@ -58,7 +57,7 @@ public class AddCliente extends HttpServlet {
                 try {
                     obj = p.parse(json);
                 } catch (ParseException ex) {
-                    Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AddCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             String nome = (String) ((JSONObject) obj).get("nome");
@@ -72,9 +71,8 @@ public class AddCliente extends HttpServlet {
             cellulare = cellulare.replace("'", "''");
             localita = localita.replace("'", "''");
 
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
             try {
                 t.begin();
                 String qs = "INSERT INTO ciclope.cliente ( nome, cognome, cellulare, localita) "
@@ -115,7 +113,7 @@ public class AddCliente extends HttpServlet {
                 resMap.put("cliente", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {
-                Logger.getLogger(EditCustomJob.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddCliente.class.getName()).log(Level.SEVERE, null, ex);
                 t.rollback();
                 HashMap<String, String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ko");

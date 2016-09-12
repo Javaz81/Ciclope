@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.persistence.Veicolo;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -79,9 +80,8 @@ public class AddVeicolo extends HttpServlet {
             matricola = matricola.replace("'", "''");
             ore = ore.replace("'", "''");
             
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
             try {
                 t.begin();
                 String qs = "INSERT INTO ciclope.veicolo ( marca, modello, targa, kilometraggio, anno, tipo, matricola, ore) "

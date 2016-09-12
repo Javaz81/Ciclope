@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +22,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -65,9 +65,8 @@ public class EditCustomJob extends HttpServlet {
             //Sanitizes string for single quote char.
             descrizione = descrizione.replace("'", "''");
             
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
             try {
                 t.begin();
                 String qs = "UPDATE ciclope.lavoripratichecustom SET descrizione='"+descrizione+"' WHERE id='"+jobId+"'";

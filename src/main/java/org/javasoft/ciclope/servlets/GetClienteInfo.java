@@ -24,7 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.Cliente;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.javasoft.ciclope.persistence.Veicolo;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -63,11 +63,10 @@ public class GetClienteInfo extends HttpServlet {
                 }
             }
             String cid = (String) ((JSONObject)obj).get("cid");         
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            t= s.getTransaction();
+            t.begin();
             try {
-                t.begin();
                 String qs = "SELECT * from ciclope.cliente WHERE idCliente='"+cid+"'";
                 Query q = s.createSQLQuery(qs).addEntity(Cliente.class);
                 ArrayList<Cliente> rows = (ArrayList<Cliente>) q.list();

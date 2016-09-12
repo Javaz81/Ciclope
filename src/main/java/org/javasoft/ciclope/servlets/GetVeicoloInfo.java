@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.persistence.Veicolo;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -62,8 +63,7 @@ public class GetVeicoloInfo extends HttpServlet {
                 }
             }
             String vid = (String) ((JSONObject)obj).get("vid");         
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
+            Session s = SessionUtils.getCiclopeSession();
             t = s.getTransaction();
             try {
                 t.begin();

@@ -25,6 +25,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -49,17 +50,16 @@ public class GetRiparazioniCorrenti extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
+        try (PrintWriter out = response.getWriter()) {            
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
             JSONObject obj = null;
             JSONParser p = new JSONParser();
             Query q = null;
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             if (json != null) {
                 try {
                     obj = (JSONObject) p.parse(json);

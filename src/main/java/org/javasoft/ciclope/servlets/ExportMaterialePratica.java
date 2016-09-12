@@ -35,6 +35,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 
 /**
  *
@@ -139,9 +140,8 @@ public class ExportMaterialePratica extends HttpServlet {
     private static List<Object[]> getDati(String praticaId) {
         Transaction t;
         try {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            t= s.getTransaction();
             t.begin();
             Query q = s.createSQLQuery("select"
                     + " ciclope.articolo.idArticolo as codice,\n"

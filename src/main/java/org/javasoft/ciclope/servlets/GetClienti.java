@@ -20,7 +20,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.Cliente;
 import org.javasoft.ciclope.persistence.HibernateUtil;
-import org.javasoft.ciclope.persistence.Veicolo;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -44,10 +44,7 @@ public class GetClienti extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
+           
             Map<String, String[]> maps = null;
             if (request.getParameterMap().size() > 0) {
                 maps = request.getParameterMap();
@@ -90,7 +87,10 @@ public class GetClienti extends HttpServlet {
             if (extSearch.toString().endsWith(" AND ")) {
                 extSearch.replace(extSearch.length() - 5, extSearch.length(), "");
             }
-
+            
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
+            t.begin();
             q = s.createSQLQuery("SELECT * FROM ciclope.cliente "
                     + (extSearch.toString().trim().equals("")
                     ? "" : "WHERE " + extSearch.toString())

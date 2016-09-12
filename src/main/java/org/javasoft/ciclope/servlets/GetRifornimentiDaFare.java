@@ -20,6 +20,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -43,11 +44,7 @@ public class GetRifornimentiDaFare extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            Session s = HibernateUtil.getSessionFactory().getCurrentSession();
-            Transaction t = s.getTransaction();
-            t.begin();
+        try (PrintWriter out = response.getWriter()) {            
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
@@ -60,6 +57,9 @@ public class GetRifornimentiDaFare extends HttpServlet {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             Query q = s.createSQLQuery("select a.descrizione from articolo where a.scorta_rimanente < scorta_minima");
             List aicrecs = q.list();
             t.commit();

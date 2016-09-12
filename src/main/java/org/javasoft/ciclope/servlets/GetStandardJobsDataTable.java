@@ -20,6 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -43,11 +44,7 @@ public class GetStandardJobsDataTable extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
             Map<String, String[]> maps = null;
-            t.begin();
             if (request.getParameterMap().size() > 0) {
                 maps = request.getParameterMap();
             }
@@ -87,6 +84,9 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     i++;
                 }
             }
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t = s.getTransaction();
+            t.begin();
             q = s.createSQLQuery("Select "
                     + "ciclope.categoriatipolavoro.nome as Categoria,\n"
                     + "ciclope.tipolavoro.codice as Codice,\n"

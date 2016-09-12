@@ -23,6 +23,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -68,9 +69,8 @@ public class AddCustomJob extends HttpServlet {
             //Sanitizes string for single quote char.
             descrizione = descrizione.replace("'", "''");
             
-            SessionFactory sf = HibernateUtil.getSessionFactory();
-            Session s = sf.getCurrentSession();
-            Transaction t = s.getTransaction();
+            Session s = SessionUtils.getCiclopeSession();
+            Transaction t= s.getTransaction();
             try {
                 t.begin();
                 String qs = "INSERT INTO ciclope.lavoripratichecustom ( pratica, categoria, descrizione) VALUES ('"+praticaId+"','"+categoriaId+"','"+descrizione+"')";

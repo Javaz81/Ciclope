@@ -9,8 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -22,6 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -50,11 +49,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         Integer qty_upd;
         Integer qty_cur = null;
         Transaction t = null;
-
-        SessionFactory sf = HibernateUtil.getSessionFactory();
-        Session s = sf.getCurrentSession();
-        t = s.getTransaction();
-        t.begin();
+        
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json;
         json = br.readLine();
@@ -67,7 +62,6 @@ public class UpdateQuantitaMateriale extends HttpServlet {
                 Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            t.rollback();
             JSONObject jo = new JSONObject();
             jo.put("qty", Integer.toString(0));
             jo.put("result", "ko");
@@ -80,6 +74,10 @@ public class UpdateQuantitaMateriale extends HttpServlet {
         materialeId = (String) ((JSONObject) obj).get("materialeId");
         qty_upd = Integer.parseInt((String) ((JSONObject) obj).get("quantita_da_aggiornare"));
         qty_cur = Integer.parseInt((String) ((JSONObject) obj).get("quantita_corrente"));
+        
+        Session s = SessionUtils.getCiclopeSession();
+        t = s.getTransaction();
+        t.begin();        
         Query q = s.createSQLQuery("UPDATE ciclope.materialepratica "
                 + "SET quantita_consumata = quantita_consumata+'" + qty_upd + "' "
                 + "WHERE pratica='" + praticaId + "' and articolo = '" + materialeId + "'");
