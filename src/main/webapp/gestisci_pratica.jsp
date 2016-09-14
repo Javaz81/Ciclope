@@ -681,7 +681,7 @@
                     var collaudo_usl_data = $("#collaudo_usl_data").val();
                     var registro_di_controllo = $("#registro_di_controllo").val();
                     var lavori_segnalati = $("#lavori_segnalati").val();
-                    
+
                     var p = {
                         praticaId: praticaId,
                         arrivo: arrivo,
@@ -713,7 +713,7 @@
                     };
                     //l'encoding è necessario a causa del fatto che dei campi
                     //possono presentare dei caratteri mal codificabili.
-                    requestJson = encodeURIComponent(JSON.stringify(p));                    
+                    requestJson = encodeURIComponent(JSON.stringify(p));
                     $.ajax({
                         url: "SavePratica",
                         cache: false,
@@ -757,18 +757,8 @@
                     }
                     ;
                     encodedData = encodeURIComponent(PRATICA_SELEZIONATA);
-                    $("<form>")
-                            .attr("action", "ExportMaterialePratica")
-                            .attr("method", "post")
-                            .append(
-                                    $("input")
-                                    .attr("type", "hidden")
-                                    .attr("name", "praticaId")
-                                    .attr("value", encodedData)
-                                    )
-                            .appendTo("body")
-                            .submit()
-                            .remove();
+                    $("#exportInput").val(encodedData);
+                    $("#exportForm").submit();
                     return;
                 });
                 // end $(document).ready
@@ -835,6 +825,13 @@
                     <div id="notification_area" class="col-lg-12">
 
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form id="exportForm" action="ExportMaterialePratica" role="form" method="POST">
+                            <input id="exportInput" type="hidden" name="praticaId" value="" />
+                        </form>
+                    </div>                     
                 </div>
                 <form role="form" method="POST">
                     <div class="row">
