@@ -5,17 +5,23 @@
  */
 package org.javasoft.ciclope.amministrazione;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
+import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -181,4 +187,50 @@ public class AmministrazioneUtils {
         }
         return tipoLavoriInfos;
     }
+
+    public static Map<Date, Integer> GetTotalHourWorkedPerDay(int operatore, int ultimi_n_giorni) {
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");
+        Calendar localCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+        Date start, stop;
+        stop = localCalendar.getTime();
+        localCalendar.add(Calendar.DATE, -(ultimi_n_giorni));
+        start = localCalendar.getTime();
+        String s_start, s_stop;
+        s_start = sdf.format(start);
+        s_stop = sdf.format(stop);
+        Session s;
+        Transaction t = null;
+        Map<Date,Integer> workingDays = new HashMap<Date,Integer>(0);
+        List<Object[]> aicrecs = new ArrayList<Object[]>();
+        try {
+            s = SessionUtils.getCiclopeSession();
+            t = s.getTransaction();
+            t.begin();
+            String q1 = "SELECT giornata, sum(ore) FROM ciclope.orelavorate\n"
+                    + "where \n"
+                    + "(giornata between '"+s_start+"' AND curdate())\n"
+                    + "and\n"
+                    + "personale = "+operatore+" \n"
+                    + "group by giornata"
+                    + "order by \n"
+                    + "giornata asc";
+            Query q = s.createSQLQuery(q1);
+            aicrecs = q.list();
+            t.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (t != null) {
+                t.rollback();
+                return null;
+            }
+        }
+        for(Object[] objs: aicrecs ){
+            workingDays.put((Date)objs[0], (int)objs[1]);
+        }
+        for (Date d : DateUtils.getAllWorkingDays(start)){
+            workingDays.put(d, 0);
+        }
+        return workingDays;
+    }
+
 }

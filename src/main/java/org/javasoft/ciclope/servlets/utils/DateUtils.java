@@ -5,13 +5,24 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
+import de.jollyday.Holiday;
+import de.jollyday.HolidayCalendar;
+import de.jollyday.HolidayManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
 
 public class DateUtils {
+    public static HolidayManager HOLYDAY_MANAGER = HolidayManager.getInstance(HolidayCalendar.ITALY);
+
     /**
      * 
      * @param date
@@ -342,6 +353,30 @@ public class DateUtils {
 
     /** The maximum date possible. */
     public static Date MAX_DATE = new Date(Long.MAX_VALUE);
-    
+
+    /**
+     * Get the list of the working date from the startInclusiveDate to current 
+     * one.
+     * @param startInclusiveDate The date from which start to check.
+     * @return A list of Date rapresenting working days till today.
+     */
+    public static Iterable<Date> getAllWorkingDays(Date startInclusiveDate) {
+        Date d = startInclusiveDate;
+        List<Date> list = new ArrayList<Date>();
+        Calendar localCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+        Calendar currentDate = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+        localCalendar.setTime(d);
+        LocalDate startLd = LocalDate.of(
+                localCalendar.get(Calendar.YEAR), 
+                localCalendar.get(Calendar.MONTH),
+                localCalendar.get(Calendar.DAY_OF_MONTH)
+        );
+        LocalDate now = LocalDate.ofYearDay(currentDate.get(Calendar.YEAR),currentDate.get(Calendar.DAY_OF_YEAR));
+        Set<Holiday> hds = HOLYDAY_MANAGER.getHolidays(startLd, now, "");
+        while(DateUtils.isToday(localCalendar.getTime())){
+            //TODO
+        }
+        return null;
+    }
 }
 
