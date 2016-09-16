@@ -4,6 +4,14 @@
     Author     : andrea
 --%>
 
+<%@page import="org.javasoft.ciclope.persistence.Personale"%>
+<%@page import="org.javasoft.ciclope.amministrazione.AmministrazioneUtils.DayHours"%>
+<%@page import="java.util.List"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Map.Entry"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Date"%>
+<%@page import="org.javasoft.ciclope.amministrazione.AmministrazioneUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -92,29 +100,58 @@
                         <div class="h3">Ore Lavorate</div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-3 col-md-6">
-                            <div class="panel panel-danger">
-                                <div class="panel-heading">
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <i class="fa fa-user-md fa-5x"></i>
-                                        </div>
-                                        <div class="col-xs-9 text-right">
-                                            <div class="h3">Scorpioni</div>
-                                            <div class="huge">26</div>
-                                            <div>Giornate non complete</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#">
-                                    <div class="panel-footer">
-                                        <span class="pull-left">Dettagli</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <%
+                            DayHours todayDh = new DayHours(new Date(),0f);
+                            float todayHours = 0f;
+                            boolean onlyTodayNotComplete= false;
+                            for (Personale personale : AmministrazioneUtils.GetAllOperatori()) {
+                                todayHours = 0;
+                                List<DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), 1);
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
+                                int count = 0;
+                                for (DayHours d : thswpd) {
+                                    if (d.getHours() != 8f) {
+                                        count++;
+                                    }
+                                    if(d.equals(todayDh))
+                                        todayHours = d.getHours();
+                                }
+                                out.println("<div class=\"col-lg-3 col-md-9\">");
+                                //Se hai lavorato poco solo oggi allora fai solo un warning
+                                onlyTodayNotComplete = todayHours != 8f && count == 1;
+                                if(onlyTodayNotComplete){
+                                    out.println("<div class=\"panel panel-warning\">");
+                                }else{
+                                    out.println("<div class=\"panel "+(count > 0?"panel-red":"panel-green")+"\">");
+                                }
+                                out.println("<div class=\"panel-heading\">");
+                                out.println("<div class=\"row\">");
+                                out.println("<div class=\"col-xs-3\">");
+                                out.println("<div>"+personale.getCognome().toUpperCase()+"</div>");
+                                out.println("<i class=\"fa fa-user fa-4x\"></i>");
+                                out.println("</div>");
+                                out.println("<div class=\"col-xs-9 text-right\">");
+                                 if(onlyTodayNotComplete){
+                                     out.println("<div class=\"huge\">"+todayHours+"</div>");
+                                out.println("<div>ORE LAVORATE OGGI</div>");
+                                }else{
+                                     out.println("<div class=\"huge\">"+Integer.toString(count)+"</div>");
+                                out.println("<div>GIORNI NON COMPLETI</div>");
+                                }                               
+                                out.println("</div>");
+                                out.println("</div>");
+                                out.println("</div>");
+                                out.println("<a href=\"#\">");
+                                out.println("<div class=\"panel-footer\">");
+                                out.println("<span class=\"pull-left\">Vai ai dettagli</span>");
+                                out.println("<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>");
+                                out.println("<div class=\"clearfix\"></div>");
+                                out.println("</div>");
+                                out.println("</a>");
+                                out.println("</div>");
+                                out.println("</div>");
+                            }
+                        %>
                     </div>
                 </div>
             </div>

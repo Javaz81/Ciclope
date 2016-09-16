@@ -5,24 +5,28 @@
  */
 package org.javasoft.ciclope.amministrazione;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.SortedMap;
 import java.util.TimeZone;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
+import org.javasoft.ciclope.persistence.Personale;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -139,7 +143,35 @@ public class AmministrazioneUtils {
         }
         return categoriaInfos;
     }
+    public static List<Personale> GetAllOperatori(){
+        Personale c = null;
+        Session s = null;
+        Transaction t = null;
+        ArrayList<Personale> personale = null;
+        try {
+            s = HibernateUtil.getSessionFactory().getCurrentSession();
+            t = s.getTransaction();
+            t.begin();
+            String json = null;
+            JSONObject obj = null;
+            Query q = null;
 
+            q = s.createSQLQuery("SELECT * "
+                    + "FROM ciclope.personale "
+                    + "ORDER BY Nome"
+            ).addEntity(Personale.class);
+
+            personale = (ArrayList<Personale>) q.list();
+            t.commit();
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (t != null) {
+                t.rollback();
+            }
+        }
+        return personale;
+    }
     public static List<TipoLavoroPratica> GetAllLavori(int praticaId, int categoriaId) {
         TipoLavoroPratica c = null;
         Session s = null;
@@ -188,9 +220,9 @@ public class AmministrazioneUtils {
         return tipoLavoriInfos;
     }
 
-    public static Map<Date, Integer> GetTotalHourWorkedPerDay(int operatore, int ultimi_n_giorni) {
+    public static List<DayHours> GetTotalHourWorkedPerDay(int operatore, int ultimi_n_giorni) {
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");
-        Calendar localCalendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+        Calendar localCalendar = DateUtils.GetLocalCalendar();
         Date start, stop;
         stop = localCalendar.getTime();
         localCalendar.add(Calendar.DATE, -(ultimi_n_giorni));
@@ -200,7 +232,7 @@ public class AmministrazioneUtils {
         s_stop = sdf.format(stop);
         Session s;
         Transaction t = null;
-        Map<Date,Integer> workingDays = new HashMap<Date,Integer>(0);
+        ArrayList<DayHours> workingDays = new ArrayList<DayHours>(0);
         List<Object[]> aicrecs = new ArrayList<Object[]>();
         try {
             s = SessionUtils.getCiclopeSession();
@@ -211,7 +243,7 @@ public class AmministrazioneUtils {
                     + "(giornata between '"+s_start+"' AND curdate())\n"
                     + "and\n"
                     + "personale = "+operatore+" \n"
-                    + "group by giornata"
+                    + "group by giornata \n"
                     + "order by \n"
                     + "giornata asc";
             Query q = s.createSQLQuery(q1);
@@ -225,12 +257,104 @@ public class AmministrazioneUtils {
             }
         }
         for(Object[] objs: aicrecs ){
-            workingDays.put((Date)objs[0], (int)objs[1]);
+            workingDays.add(new DayHours((Date)objs[0], ((BigDecimal)objs[1]).floatValue()));
         }
-        for (Date d : DateUtils.getAllWorkingDays(start)){
-            workingDays.put(d, 0);
+        DayHours dh = null;
+        for (Date d : DateUtils.getAllWorkingDaysFrom(start)){
+            dh = new DayHours(d, 0);
+            if (!workingDays.contains(dh))
+                workingDays.add(new DayHours(d, 0f));
         }
+        Collections.sort(workingDays);
         return workingDays;
+    }
+
+    public static class DayHours implements Comparable {
+        
+        private Date day;
+
+        /**
+         * Get the value of day
+         *
+         * @return the value of day
+         */
+        public Date getDay() {
+            return day;
+        }
+
+        /**
+         * Set the value of day
+         *
+         * @param day new value of day
+         */
+        public void setDay(Date day) {
+            this.day = day;
+        }
+
+        private float hours;
+
+        /**
+         * Get the value of hours
+         *
+         * @return the value of hours
+         */
+        public float getHours() {
+            return hours;
+        }
+
+        /**
+         * Set the value of hours
+         *
+         * @param hours new value of hours
+         */
+        public void setHours(float hours) {
+            this.hours = hours;
+        }
+
+        public DayHours() {
+        }
+
+        public DayHours(Date day, float hours) {
+            this.day = day;
+            this.hours = hours;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            DayHours dh = (DayHours) o;
+            return this.getDay().compareTo(dh.getDay());
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 67 * hash + Objects.hashCode(this.day);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final DayHours other = (DayHours) obj;
+            Calendar thisCal = DateUtils.GetLocalCalendar();
+            Calendar otherCal = DateUtils.GetLocalCalendar();
+            thisCal.setTime(this.day);
+            otherCal.setTime(other.getDay());
+            if ( thisCal.get(Calendar.DAY_OF_MONTH) != otherCal.get(Calendar.DAY_OF_MONTH) )
+                return false;
+            if ( thisCal.get(Calendar.MONTH) != otherCal.get(Calendar.MONTH) )
+                return false;
+            //finally
+            return thisCal.get(Calendar.YEAR) == otherCal.get(Calendar.YEAR);
+        }
     }
 
 }
