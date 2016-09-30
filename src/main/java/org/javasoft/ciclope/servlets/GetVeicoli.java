@@ -53,11 +53,8 @@ public class GetVeicoli extends HttpServlet {
                 "marca",
                 "modello",
                 "targa",
-                "kilometraggio",
-                "anno",
                 "tipo",
-                "matricola",
-                "ore"
+                "matricola"
             };
             String orderColumn = Integer.valueOf(maps.get("order[0][column]")[0]).equals(0) ?
                     "idVeicolo" : 
@@ -96,7 +93,7 @@ public class GetVeicoli extends HttpServlet {
             q = s.createSQLQuery("SELECT * FROM ciclope.veicolo "
                     + (extSearch.toString().trim().equals("") ? 
                     "" : "WHERE " + extSearch.toString())
-                    + "ORDER BY "+orderColumn+" "+orderDir+" "
+                    + " ORDER BY "+orderColumn+" "+orderDir+" "
                     + "LIMIT "+extSearchLimit+" "
                     + "OFFSET "+startSearchLimit).addEntity(Veicolo.class);
             List<Veicolo> aicrecs = q.list();

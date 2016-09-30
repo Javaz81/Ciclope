@@ -98,72 +98,88 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="h3">Ore Lavorate</div>
-                    </div> 
-                    <div class="row">
-                        <%
-                            DayHours todayDh = new DayHours(new Date(), 0f);
-                            float todayHours = 0f;
-                            boolean onlyTodayNotComplete = false;
-                            for (Personale personale : AmministrazioneUtils.GetAllOperatori()) {
-                                todayHours = 0;
-                                List<DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), 4);
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
-                                int count = 0;
-                                for (DayHours d : thswpd) {
-                                    if (d.getHours() != 8f) {
-                                        count++;
-                                    }
-                                    if (d.equals(todayDh)) {
-                                        todayHours = d.getHours();
-                                    }
-                                }
-                                out.println("<div class=\"col-lg-3 col-md-9\">");
-                                //Se hai lavorato poco solo oggi allora fai solo un warning
-                                onlyTodayNotComplete = todayHours != 8f && count == 1;
-                                if (onlyTodayNotComplete) {
-                                    out.println("<div class=\"panel panel-green\">");
-                                } else {
-                                    out.println("<div class=\"panel " + (count <=1?"panel-green":"panel-red") + "\">");
-                                }
-                                out.println("<div class=\"panel-heading\">");
-                                out.println("<div class=\"row\">");
-                                out.println("<div class=\"col-xs-3\">");
-                                out.println("<div>" + personale.getCognome().toUpperCase() + "</div>");
-                                out.println("<i class=\"fa fa-user fa-4x\"></i>");
-                                out.println("</div>");
-                                out.println("<div class=\"col-xs-9 text-right\">");
-                                if (onlyTodayNotComplete) {
-                                    out.println("<div class=\"huge\">" + todayHours + "</div>");
-                                    out.println("<div>ORE LAVORATE OGGI</div>");
-                                } else if(count>1){
-                                    out.println("<div class=\"huge\">" + Integer.toString(count)+ "</div>");
-                                    out.println("<div>GIORNI NON COMPLETATI</div>");
-                                } else {
-                                    out.println("<div class=\"huge\"> OK </div>");
-                                    out.println("<div>TUTTO SEGNATO</div>");
-                                }
-                                out.println("</div>");
-                                out.println("</div>");
-                                out.println("</div>");
-                                out.println("<a href=\"#\">");
-                                out.println("<div class=\"panel-footer\">");
-                                out.println("<span class=\"pull-left\">Vai ai dettagli</span>");
-                                out.println("<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>");
-                                out.println("<div class=\"clearfix\"></div>");
-                                out.println("</div>");
-                                out.println("</a>");
-                                out.println("</div>");
-                                out.println("</div>");
-                            }
-                        %>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 class="h3">Ciao</h2>
+                        <span style="display: inline-block">Ore non segnate negli utlimi:</span>
+                        <span style="display: inline-block">
+                            <select class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>5</option>
+                                <option>12</option>
+                            </select>
+                        </span>
+                        <span  style="display: inline-block">giorni.</span>
                     </div>
+                </div>
+                <div class="row">                           
+                    <%
+                        DayHours todayDh = new DayHours(new Date(), 0f);
+                        float todayHours = 0f;
+                        boolean onlyTodayNotComplete = false;
+                        for (Personale personale : AmministrazioneUtils.GetAllOperatori()) {
+                            todayHours = 0;
+                            List<DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), 30);
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
+                            int count = 0;
+                            for (DayHours d : thswpd) {
+                                if (d.getHours() != 8f) {
+                                    count++;
+                                }
+                                if (d.equals(todayDh)) {
+                                    todayHours = d.getHours();
+                                }
+                            }
+                            out.println("<div class=\"col-lg-3 col-md-4\">");
+                            //Se hai lavorato poco solo oggi allora fai solo un warning
+                            onlyTodayNotComplete = todayHours != 8f && count == 1;
+                            if (onlyTodayNotComplete) {
+                                out.println("<div class=\"panel panel-green\">");
+                            } else {
+                                out.println("<div class=\"panel " + (count <= 1 ? "panel-green" : "panel-red") + "\">");
+                            }
+                            out.println("<div class=\"panel-heading\">");
+                            out.println("<div class=\"row\">");
+                            out.println("<div class=\"col-xs-3\">");
+                            out.println("<div>" + personale.getCognome().toUpperCase() + "</div>");
+                            out.println("<i class=\"fa fa-user fa-4x\"></i>");
+                            out.println("</div>");
+                            out.println("<div class=\"col-xs-9 text-right\">");
+                            if (onlyTodayNotComplete) {
+                                out.println("<div class=\"huge\">" + todayHours + "</div>");
+                                out.println("<div>ORE LAVORATE OGGI</div>");
+                            } else if (count > 1) {
+                                out.println("<div class=\"huge\">" + Integer.toString(count) + "</div>");
+                                out.println("<div>GIORNI NON COMPLETATI</div>");
+                            } else {
+                                out.println("<div class=\"huge\"> OK </div>");
+                                out.println("<div>TUTTO SEGNATO</div>");
+                            }
+                            out.println("</div>");
+                            out.println("</div>");
+                            out.println("</div>");
+                            out.println("<a href=\"#\">");
+                            out.println("<div class=\"panel-footer\">");
+                            out.println("<span class=\"pull-left\">Vai ai dettagli</span>");
+                            out.println("<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>");
+                            out.println("<div class=\"clearfix\"></div>");
+                            out.println("</div>");
+                            out.println("</a>");
+                            out.println("</div>");
+                            out.println("</div>");
+                        }
+                    %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="h3">Ciao</h2>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>
