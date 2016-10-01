@@ -18,9 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -169,7 +166,7 @@ public class ExportMaterialePratica extends HttpServlet {
             Session s = SessionUtils.getCiclopeSession();
             t = s.getTransaction();
             t.begin();
-            Query q = null;
+            Query q;
             List<Object[]> aicrecs = new ArrayList<Object[]>();
             switch (elementType) {
                 case MATERIALE:

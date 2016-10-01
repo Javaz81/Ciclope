@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -59,7 +58,7 @@ public class AddMaterialeInRiparazione extends HttpServlet {
                 } catch (ParseException ex) {
                     Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }else{
+            } else {
 
                 JSONObject jo = new JSONObject();
                 jo.put("qty", Integer.toString(0));
@@ -72,70 +71,78 @@ public class AddMaterialeInRiparazione extends HttpServlet {
             Integer qty_upd = 1;
             Integer qty_cur = 0;
             Session s = SessionUtils.getCiclopeSession();
-            Transaction t= s.getTransaction();
-            t.begin();
-            //Inserisci il materiale nella pratica ed aggiorna di una quantita.
-            Query q = s.createSQLQuery("INSERT INTO ciclope.materialepratica (pratica, articolo, quantita_consumata)"
-                    + " VALUES ('"+praticaId+"', '"+materialeId+"', '1')");
-            int n_row = q.executeUpdate();
-            if (n_row != 1) {
-                t.rollback();
-                JSONObject jo = new JSONObject();
-                jo.put("qty", Integer.toString(qty_cur));
-                jo.put("result", "ko");
-                out.println(jo.toJSONString());
-                return;
-            }
-            q = s.createSQLQuery(" UPDATE `ciclope`.`articolo` SET `scorta_rimanente`=scorta_rimanente-'" + qty_upd + "' WHERE `idArticolo`='" + materialeId + "'");
-            n_row = q.executeUpdate();
-            if (n_row != 1) {
-                t.rollback();
-                JSONObject jo = new JSONObject();
-                jo.put("qty", Integer.toString(qty_cur));
-                jo.put("result", "ko");
-                out.println(jo.toJSONString());
-                return;
-            }
-            q = s.createSQLQuery("select"
-                    + " ciclope.articolo.idArticolo as codice,\n"
-                    + " ciclope.articolo.descrizione as descrizione,\n"
-                    + " ciclope.materialepratica.quantita_consumata as quantita_consumata,\n"
-                    + " ciclope.articolo.scorta_rimanente as rimanenza,\n"
-                    + " ciclope.articolo.unita_di_misura as unita_misura\n"
-                    + " from \n"
-                    + " ciclope.pratica\n"
-                    + " inner join\n"
-                    + " ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo\n"
-                    + " inner join\n"
-                    + " ciclope.materialepratica on ciclope.pratica.idPratica = ciclope.materialepratica.pratica\n"
-                    + " inner join\n"
-                    + " ciclope.articolo on ciclope.materialepratica.articolo = ciclope.articolo.idArticolo\n"
-                    + " where (ciclope.pratica.uscita is null) and (ciclope.pratica.idPratica = " + praticaId + ")\n"
-                    + " order by ciclope.articolo.descrizione asc;");
-            List<Object[]> aicrecs = q.list();
-            t.commit();
-            
-            JSONObject jo;
-            JSONArray array = new JSONArray();
+            Transaction t = s.getTransaction();
+            try {
+                t.begin();
+                //Inserisci il materiale nella pratica ed aggiorna di una quantita.
+                Query q = s.createSQLQuery("INSERT INTO ciclope.materialepratica (pratica, articolo, quantita_consumata)"
+                        + " VALUES ('" + praticaId + "', '" + materialeId + "', '1')");
+                int n_row = q.executeUpdate();
+                if (n_row != 1) {
+                    t.rollback();
+                    JSONObject jo = new JSONObject();
+                    jo.put("qty", Integer.toString(qty_cur));
+                    jo.put("result", "ko");
+                    out.println(jo.toJSONString());
+                    return;
+                }
+                q = s.createSQLQuery(" UPDATE `ciclope`.`articolo` SET `scorta_rimanente`=scorta_rimanente-'" + qty_upd + "' WHERE `idArticolo`='" + materialeId + "'");
+                n_row = q.executeUpdate();
+                if (n_row != 1) {
+                    t.rollback();
+                    JSONObject jo = new JSONObject();
+                    jo.put("qty", Integer.toString(qty_cur));
+                    jo.put("result", "ko");
+                    out.println(jo.toJSONString());
+                    return;
+                }
+                q = s.createSQLQuery("select"
+                        + " ciclope.articolo.idArticolo as codice,\n"
+                        + " ciclope.articolo.descrizione as descrizione,\n"
+                        + " ciclope.materialepratica.quantita_consumata as quantita_consumata,\n"
+                        + " ciclope.articolo.scorta_rimanente as rimanenza,\n"
+                        + " ciclope.articolo.unita_di_misura as unita_misura\n"
+                        + " from \n"
+                        + " ciclope.pratica\n"
+                        + " inner join\n"
+                        + " ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo\n"
+                        + " inner join\n"
+                        + " ciclope.materialepratica on ciclope.pratica.idPratica = ciclope.materialepratica.pratica\n"
+                        + " inner join\n"
+                        + " ciclope.articolo on ciclope.materialepratica.articolo = ciclope.articolo.idArticolo\n"
+                        + " where (ciclope.pratica.uscita is null) and (ciclope.pratica.idPratica = " + praticaId + ")\n"
+                        + " order by ciclope.articolo.descrizione asc;");
+                List<Object[]> aicrecs = q.list();
+                t.commit();
 
-            String[] sq;
-            for (Object[] ob : aicrecs) {
-                jo = new JSONObject();
-                jo.put("codice", ob[0].toString());
-                jo.put("descrizione", ob[1].toString());
-                sq = ((String) ob[2].toString()).split("\\.");
-                jo.put("quantita_consumata",
-                        ob[4].toString().equalsIgnoreCase("pz")
-                        ? sq[0]
-                        : ob[2].toString()
-                );
-                jo.put("rimanenza", ob[3].toString());
-                jo.put("unita_misura", ob[4].toString());
-                jo.put("praticaHeader",((JSONObject) obj).get("praticaHeader"));
-                array.add(jo);
+                JSONObject jo;
+                JSONArray array = new JSONArray();
+
+                String[] sq;
+                for (Object[] ob : aicrecs) {
+                    jo = new JSONObject();
+                    jo.put("codice", ob[0].toString());
+                    jo.put("descrizione", ob[1].toString());
+                    sq = ((String) ob[2].toString()).split("\\.");
+                    jo.put("quantita_consumata",
+                            ob[4].toString().equalsIgnoreCase("pz")
+                            ? sq[0]
+                            : ob[2].toString()
+                    );
+                    jo.put("rimanenza", ob[3].toString());
+                    jo.put("unita_misura", ob[4].toString());
+                    jo.put("praticaHeader", ((JSONObject) obj).get("praticaHeader"));
+                    array.add(jo);
+                }
+                out.println(array.toJSONString());
+            } catch (Exception ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                t.rollback();
+                HashMap<String, String> resMap = new HashMap<String, String>();
+                resMap.put("result", "ko");
+                resMap.put("messaggio", ex.getMessage());
+                out.println(JSONObject.toJSONString(resMap));
             }
-            out.println(array.toJSONString());
-            
         }
     }
 

@@ -544,7 +544,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 var _p1 = pratica_corrente;
                 var _p2 = mId;
                 var _p3 = '1';
-                var p = {"praticaId": _p1, "materialeId": _p2, "quantita_da_aggiornare": _p3, praticaHeader: praticaName};
+                var p = {"praticaId": _p1, "materialeId": _p2, "quantita_da_aggiornare": _p3, praticaHeader: praticaHeaderName};
                 materialeJson = JSON.stringify(p);
                 $.ajax({
                     url: "AddMaterialeInRiparazione",
@@ -833,12 +833,13 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
                         avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                         minLength: 4,
-                        onComplete: function (barcode, qty) {
+                        onComplete: function (barcoderaw, qty) {
+                            var barcode = barcoderaw.replace(".","");
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
                                 addMaterialePratica(barcode);
-                            } else {
+                            } else {                          
                                 var count = parseInt($("#" + barcode + " .ui-li-count").text());
                                 $("#" + barcode + " .ui-li-count").text(count + 1);
                                 AggiornaQuantitaMateriale(barcode.toString(), count.toString());
@@ -956,7 +957,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#dlgAggiornaApprovvigionamento" \n\
                      onClick="updateApprovvigionamentoName(this.id,' + data[i].approvvigionamento + ')" id="' + data[i].codice + '">'
-                                        + data[i].descrizione + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
+                                        + data[i].descrizione + '<span style="color:'+data[i].color+';font-size:1em; font-weight:normal"> - RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
                             }
 
                             items = items.concat(items2);

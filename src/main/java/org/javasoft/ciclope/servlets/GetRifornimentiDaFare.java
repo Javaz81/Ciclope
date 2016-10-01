@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

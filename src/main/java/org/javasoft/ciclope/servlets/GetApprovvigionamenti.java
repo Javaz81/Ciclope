@@ -17,10 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.Articolo;
-import org.javasoft.ciclope.persistence.HibernateUtil;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -66,6 +64,7 @@ public class GetApprovvigionamenti extends HttpServlet {
                 jo.put("scorta_minima",ob.getScortaRimanente());
                 jo.put("unita_di_misura", ob.getUnitaDiMisura());
                 jo.put("approvvigionamento",ob.getApprovvigionamento());
+                jo.put("color", ob.getScortaRimanente()-ob.getScortaMinima()<0?"red":"blue");
                 array.add(jo);
             }
             out.println(array.toJSONString());
