@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,8 +30,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author andrea
  */
-@WebServlet(name = "UpdateQuantitaApprovvigionamento", urlPatterns = {"/UpdateQuantitaApprovvigionamento"})
-public class UpdateQuantitaApprovvigionamento extends HttpServlet {
+@WebServlet(name = "UpdateQuantitaRifornimento", urlPatterns = {"/UpdateQuantitaRifornimento"})
+public class UpdateQuantitaRifornimento extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +44,10 @@ public class UpdateQuantitaApprovvigionamento extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json;charset=UTF-8");
+         response.setContentType("application/json;charset=UTF-8");
         boolean exception = false;
         String materialeId = null;
-        String approv_upd = null;
+        String riforn_upd = null;
         Transaction t = null;
         BigDecimal approv_updated = null;
 
@@ -77,30 +76,30 @@ public class UpdateQuantitaApprovvigionamento extends HttpServlet {
             return;
         }
         materialeId = (String) ((JSONObject) obj).get("materialeId");
-        approv_upd = (String) ((JSONObject) obj).get("quantita_da_approvvigionare");
+        riforn_upd = (String) ((JSONObject) obj).get("quantita_da_rifornire");
         Query q = s.createSQLQuery("UPDATE ciclope.articolo "
-                + "SET approvvigionamento = approvvigionamento+'" + approv_upd + "' "
+                + "SET scorta_rimanente = scorta_rimanente+'" + riforn_upd + "' "
                 + "WHERE idArticolo = '" + materialeId + "'");
         try {
             int n_row = q.executeUpdate();
             if (n_row != 1) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
-                jo.put("qty", approv_upd);
+                jo.put("qty", riforn_upd);
                 jo.put("result", "ko");
                 try (PrintWriter out = response.getWriter()) {
                     out.println(jo.toJSONString());
                 }
                 return;
             }
-            q = s.createSQLQuery("SELECT approvvigionamento "
+            q = s.createSQLQuery("SELECT scorta_rimanente "
                     + "FROM ciclope.articolo "
                     + "WHERE idArticolo = '" + materialeId + "'");
             List result = q.list();
             if (result.isEmpty()) {
                 t.rollback();
                 JSONObject jo = new JSONObject();
-                jo.put("qty", approv_upd);
+                jo.put("qty", riforn_upd);
                 jo.put("result", "ko");
                 jo.put("message", "Articolo non trovato!");
                 try (PrintWriter out = response.getWriter()) {
@@ -120,7 +119,7 @@ public class UpdateQuantitaApprovvigionamento extends HttpServlet {
         } catch (Exception ex) {
             t.rollback();
             JSONObject jo = new JSONObject();
-            jo.put("qty", approv_upd);
+            jo.put("qty", riforn_upd);
             jo.put("result", "ko");
             jo.put("message", ex.getMessage());
             try (PrintWriter out = response.getWriter()) {

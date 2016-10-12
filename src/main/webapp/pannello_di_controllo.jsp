@@ -108,11 +108,11 @@
                                 <option>1</option>
                                 <option>2</option>
                                 <option>3</option>
-                                <option>5</option>
+                                <option>5</option>  
                                 <option>12</option>
                             </select>
                         </span>
-                        <span  style="display: inline-block">giorni.</span>
+                        <span style="display: inline-block">giorni.</span>
                     </div>
                 </div>
                 <div class="row">                           

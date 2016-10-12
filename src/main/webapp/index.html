@@ -22,7 +22,7 @@
         <script>
             //delarations...
             var praticaName, personaleName, praticaHeaderName, personale_corrente, giornata_corrente,
-                    pratica_corrente, praticaJson, materialeJson, orelavorateJson;
+                    pratica_corrente, praticaJson, materialeJson, orelavorateJson, rifornimentoJson;
             var praticaOreLavorate = null;
             var listaMateriali = null;
             var materialeAggiornato = null;
@@ -172,6 +172,16 @@
                 praticaJson = JSON.stringify(pratica);
                 pratica_corrente = id.toString();
             }
+            function updateRifornimentoName(idMateriale, qty) {
+                materialeAggiornato = $("#" + idMateriale).text();
+                var pos = materialeAggiornato.lastIndexOf(" ");
+                var dlgTitolo = materialeAggiornato.slice(0, pos);
+                $("#titleRifornimenti").text(dlgTitolo);
+                $('input[name="codiceMaterialeRif"]').val(idMateriale.toString());
+                $('input[name="rifornimento_corrente"]').val(qty.toString());
+                $('input[name="quantita_da_rifornire"]').val("0".toString());
+                $("#title_rifornimento_corrente").text("Rifornimento attuale:  " + qty.toString());
+            }
             function updateApprovvigionamentoName(idMateriale, qty) {
                 materialeAggiornato = $("#" + idMateriale).text();
                 var pos = materialeAggiornato.lastIndexOf(" ");
@@ -211,6 +221,11 @@
                 $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + data.qty);
                 $('input[name="approvvigionamento_corrente"]').val(qty);
             }
+            function cleanUpdateRifornimentoLoader(data) {
+                $.mobile.loading("hide");
+                $("#title_rifornimento_corrente").text("Rifornimento attuale: " + data.qty);
+                $('input[name="rifornimento_corrente"]').val(qty);
+            }
             function AggiornaApprovvigionamentoDlg() {
                 var _p1 = $('input[name="codiceMateriale"]').val();
                 var _p2 = $('input[name="quantita_da_approvvigionare"]').val();
@@ -240,6 +255,63 @@
                                 html: ""
                             });
                             setTimeout(cleanUpdateApprovvigionamentoLoader, 1000, data);
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            function AggiornaRifornimentoDlg() {
+                var _p1 = $('input[name="codiceMaterialeRif"]').val();
+                var _p2 = $('input[name="quantita_da_rifornire"]').val();
+                var _p3 = $('input[name="rifornimento_corrente"]').val();
+                var rifornimento = {"materialeId": _p1, "quantita_da_rifornire": _p2, "quantita_corrente": _p3};
+                rifornimentoJson = JSON.stringify(rifornimento);
+                $.mobile.loading('show', {
+                    text: 'Aggiornamento in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "UpdateQuantitaRifornimento",
+                    cache: false,
+                    data: rifornimentoJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(cleanUpdateRifornimentoLoader, 1000, data);
                         } else {
                             $.mobile.loading('show', {
                                 text: data.message,
@@ -673,10 +745,10 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                            + 'MARCA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].marca + "</span>" + 
-                                            ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].modello + "</span>" + 
-                                            ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].targa + "</span>" + 
-                                            ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;'+data[i].matricola + "</span>" + 
+                                            + 'MARCA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].marca + "</span>" +
+                                            ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].modello + "</span>" +
+                                            ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].targa + "</span>" +
+                                            ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].matricola + "</span>" +
                                             '</a></li>'
                                             );
                                 }
@@ -834,12 +906,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                         minLength: 4,
                         onComplete: function (barcoderaw, qty) {
-                            var barcode = barcoderaw.replace(".","");
+                            var barcode = barcoderaw.replace(".", "");
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
                                 addMaterialePratica(barcode);
-                            } else {                          
+                            } else {
                                 var count = parseInt($("#" + barcode + " .ui-li-count").text());
                                 $("#" + barcode + " .ui-li-count").text(count + 1);
                                 AggiornaQuantitaMateriale(barcode.toString(), count.toString());
@@ -957,7 +1029,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#dlgAggiornaApprovvigionamento" \n\
                      onClick="updateApprovvigionamentoName(this.id,' + data[i].approvvigionamento + ')" id="' + data[i].codice + '">'
-                                        + data[i].descrizione + '<span style="color:'+data[i].color+';font-size:1em; font-weight:normal"> - RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
+                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
                             }
 
                             items = items.concat(items2);
@@ -1002,17 +1074,18 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
             </div>
             <div data-role="content">
                 <div id="main_content">
-                    <div id="type_selection" class="ui-grid-b">
-                        <div class="ui-block-a">
-                            <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Magazzino</a>
-                        </div>
-                        <div class="ui-block-b">
-                            <a data-role="button" href="#pgOreLavorate-main">Segna-Ore</a>
-                        </div>
-                        <div class="ui-block-c">
-                            <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
-                            <canvas id="myCanvas" height="100" width="100"></canvas>
-                        </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Magazzino</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgOreLavorate-main">Segna-Ore</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgRifornimenti">Rifornimenti</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
+                        <canvas id="myCanvas" height="100" width="100"></canvas>
                     </div>
                 </div>
             </div>
@@ -1145,6 +1218,22 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     data-input="#filterApprovvigionamenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
 
                 </ul>
+            </div>
+        </div>
+        <!-- DIALOG Aggiornamento Rifornimento -->
+        <div data-role="dialog" id="dlgAggiornaRifornimento" data-title="Ciclope - Aggiornamento quantità materiale">
+            <div data-role="header" data-position="fixed">
+                <h1 id="titleRifornimenti">Ciclope - Inserisci rifornimento materiale</h1>
+                <a data-role="button" href="#pgRifornimenti" data-rel="back" data-icon="back">Annulla</a>
+            </div>
+            <div data-role="content">
+                <form>
+                    <label for="quantita_da_rifornire" id="title_rifornimento_corrente">Rifornimento attuale: </label>
+                    <input type="hidden" name="codiceMaterialeRif" id="codiceMaterialeRif" value="">
+                    <input type="hidden" name="rifornimento_corrente" id="rifornimento_corrente" value="">
+                    <input type="number" id="quantita_da_rifornire" name="quantita_da_rifornire" value="">
+                    <input type="button" onClick="AggiornaRifornimentoDlg()" value="Aggiungi" data-icon="check">
+                </form>
             </div>
         </div>
         <!-- DIALOG Aggiornamento Approvvigionamenti -->
