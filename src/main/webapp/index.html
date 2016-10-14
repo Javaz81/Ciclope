@@ -219,12 +219,12 @@
             function cleanUpdateApprovvigionamentoLoader(data) {
                 $.mobile.loading("hide");
                 $("#title_approvvigionamento_corrente").text("Approvvigionamento attuale: " + data.qty);
-                $('input[name="approvvigionamento_corrente"]').val(qty);
+                $('input[name="approvvigionamento_corrente"]').val(data.qty);
             }
             function cleanUpdateRifornimentoLoader(data) {
                 $.mobile.loading("hide");
                 $("#title_rifornimento_corrente").text("Rifornimento attuale: " + data.qty);
-                $('input[name="rifornimento_corrente"]').val(qty);
+                $('input[name="rifornimento_corrente"]').val(data.qty);
             }
             function AggiornaApprovvigionamentoDlg() {
                 var _p1 = $('input[name="codiceMateriale"]').val();
@@ -712,15 +712,23 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 }
             });
             // Initialize/deinitialize BARCODE SCANNING
-            $(document).on('pagecontainerhide', '#pgMaterialeUtilizzato', function (event, ui) {
-                $("#lista_materiale").empty();
-                $(document).scannerDetection(false);
+            $(document).on('pagecontainerhide', function (event, ui) {
+                if (ui.prevPage[0].id === 'pgRifornimenti') {
+                    console.log("Hide pgRifornimenti");
+                    $("#lista_rifornimenti").empty();
+                    $(document).scannerDetection(false);
+                }
+                if (ui.prevPage[0].id === 'pgApprovvigionamenti') {
+                    console.log("Hide pgApprovvigionamenti");
+                    $("#lista_approvvigionamenti").empty();
+                    $(document).scannerDetection(false);
+                }
+                if (ui.prevPage[0].id === 'pgMaterialeUtilizzato') {
+                    console.log("Hide pgMaterialeUtilizzato");
+                    $("#lista_materiale").empty();
+                    $(document).scannerDetection(false);
+                }
             });
-            $(document).on('pagecontainerhide', '#pgApprovvigionamenti', function (event, ui) {
-                $("#lista_approvvigionamenti").empty();
-                $(document).scannerDetection(false);
-            });
-
             $(document).on("pagecontainershow", function (event, ui)
             {
                 if (ui.toPage[0].id === 'pgSelezioneEntrate')
@@ -910,8 +918,10 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
+                                console.log('NUOVO ' + barcode);
                                 addMaterialePratica(barcode);
                             } else {
+                                console.log('INCREMENTA ' + barcode);
                                 var count = parseInt($("#" + barcode + " .ui-li-count").text());
                                 $("#" + barcode + " .ui-li-count").text(count + 1);
                                 AggiornaQuantitaMateriale(barcode.toString(), count.toString());
@@ -1056,6 +1066,85 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             $.mobile.loading("hide");
                         }
                     });
+                } else if (ui.toPage[0].id === 'pgRifornimenti') {
+                    //Initialize BARCODE
+                    $(document).scannerDetection({
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+                        startChar: [], // Prefix character for the cabled scanner (OPL6845R)
+                        endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+                        minLength: 4,
+                        onComplete: function (barcode, qty) {
+                            console.log('Barcode: ' + barcode);
+                            var element = $("#" + barcode);
+                            if (this.getElementById(barcode) === null) {
+                                $.mobile.loading('show', {
+                                    text: 'Nessun materiale con questo codice trovato...',
+                                    textVisible: true,
+                                    theme: 'z',
+                                    html: ""
+                                });
+                                setTimeout(function () {
+                                    $.mobile.loading("hide");
+                                }, 1500);
+                            } else {
+                                ciclope = $("#" + idMateriale).text();
+                                var pos = materialeAggiornato.lastIndexOf(" ");
+                                var dlgTitolo = materialeAggiornato.slice(0, pos);
+                                $("#filterRifornimenti").val(barcode);
+                                $("#lista_rifornimenti").listview("refresh");
+                            }
+                        },
+                        onError: function (string) {
+                            console.log('Errore: ' + string);
+                        }
+                    });
+                    $("#lista_rifornimenti").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetRifornimenti",
+                        cache: false,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li><a href="#dlgAggiornaRifornimento" \n\
+                     onClick="updateRifornimentoName(this.id,' + data[i].rimanenza + ')" id="' + data[i].codice + '">'
+                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - APPROVVIGIONAMENTO (pz/mt):' + data[i].approvvigionamento + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].rimanenza + '</div>' + '</a></li>');
+                            }
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $("#lista_rifornimenti").empty();
+                            $("#lista_rifornimenti").html(items);
+                            $("#lista_rifornimenti").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
                 }
             });
             $('.ui-btn').css('font-size', '30px !important');
@@ -1075,7 +1164,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
             <div data-role="content">
                 <div id="main_content">
                     <div class="ui-grid-solo">
-                        <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Magazzino</a>
+                        <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Pratiche Attive</a>
                     </div>
                     <div class="ui-grid-solo">
                         <a data-role="button" href="#pgOreLavorate-main">Segna-Ore</a>
@@ -1084,7 +1173,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         <a data-role="button" href="#pgRifornimenti">Rifornimenti</a>
                     </div>
                     <div class="ui-grid-solo">
-                        <a data-role="button" href="#pgApprovvigionamenti">Approvvigionamenti</a>
+                        <a data-role="button" href="#pgApprovvigionamenti">Ordinazioni</a>
                         <canvas id="myCanvas" height="100" width="100"></canvas>
                     </div>
                 </div>
@@ -1220,6 +1309,26 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </ul>
             </div>
         </div>
+
+        <div data-role="page" id="pgRifornimenti" data-title="Ciclope - Rifornimenti">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Lista Rifornimenti</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh"  onClick="reload()" href="#pgRifornimenti">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <form class="ui-filterable">
+                    <input id="filterRifornimenti" data-type="search">
+                </form>
+
+                <ul data-role="listview" id="lista_rifornimenti" data-inset="true"
+                    data-input="#filterRifornimenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
+
+                </ul>
+            </div>
+        </div>
+
         <!-- DIALOG Aggiornamento Rifornimento -->
         <div data-role="dialog" id="dlgAggiornaRifornimento" data-title="Ciclope - Aggiornamento quantità materiale">
             <div data-role="header" data-position="fixed">
