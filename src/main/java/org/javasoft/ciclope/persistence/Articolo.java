@@ -2,6 +2,7 @@ package org.javasoft.ciclope.persistence;
 // Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,24 +14,24 @@ public class Articolo  implements java.io.Serializable {
 
      private int idArticolo;
      private String descrizione;
-     private int scortaRimanente;
-     private int scortaMinima;
+     private BigDecimal scortaRimanente;
+     private BigDecimal scortaMinima;
      private String unitaDiMisura;
-     private Integer approvvigionamento;
+     private BigDecimal approvvigionamento;
      private Set materialepraticas = new HashSet(0);
 
     public Articolo() {
     }
 
 	
-    public Articolo(int idArticolo, String descrizione, int scortaRimanente, int scortaMinima, String unitaDiMisura) {
+    public Articolo(int idArticolo, String descrizione, BigDecimal scortaRimanente, BigDecimal scortaMinima, String unitaDiMisura) {
         this.idArticolo = idArticolo;
         this.descrizione = descrizione;
         this.scortaRimanente = scortaRimanente;
         this.scortaMinima = scortaMinima;
         this.unitaDiMisura = unitaDiMisura;
     }
-    public Articolo(int idArticolo, String descrizione, int scortaRimanente, int scortaMinima, String unitaDiMisura, Integer approvvigionamento, Set materialepraticas) {
+    public Articolo(int idArticolo, String descrizione, BigDecimal scortaRimanente, BigDecimal scortaMinima, String unitaDiMisura, BigDecimal approvvigionamento, Set materialepraticas) {
        this.idArticolo = idArticolo;
        this.descrizione = descrizione;
        this.scortaRimanente = scortaRimanente;
@@ -54,18 +55,18 @@ public class Articolo  implements java.io.Serializable {
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
     }
-    public int getScortaRimanente() {
+    public BigDecimal getScortaRimanente() {
         return this.scortaRimanente;
     }
     
-    public void setScortaRimanente(int scortaRimanente) {
+    public void setScortaRimanente(BigDecimal scortaRimanente) {
         this.scortaRimanente = scortaRimanente;
     }
-    public int getScortaMinima() {
+    public BigDecimal getScortaMinima() {
         return this.scortaMinima;
     }
     
-    public void setScortaMinima(int scortaMinima) {
+    public void setScortaMinima(BigDecimal scortaMinima) {
         this.scortaMinima = scortaMinima;
     }
     public String getUnitaDiMisura() {
@@ -75,11 +76,11 @@ public class Articolo  implements java.io.Serializable {
     public void setUnitaDiMisura(String unitaDiMisura) {
         this.unitaDiMisura = unitaDiMisura;
     }
-    public Integer getApprovvigionamento() {
+    public BigDecimal getApprovvigionamento() {
         return this.approvvigionamento;
     }
     
-    public void setApprovvigionamento(Integer approvvigionamento) {
+    public void setApprovvigionamento(BigDecimal approvvigionamento) {
         this.approvvigionamento = approvvigionamento;
     }
     public Set getMaterialepraticas() {

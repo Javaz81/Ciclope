@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -64,7 +65,7 @@ public class GetRifornimenti extends HttpServlet {
                 jo.put("scorta_minima",ob.getScortaRimanente());
                 jo.put("unita_di_misura", ob.getUnitaDiMisura());
                 jo.put("approvvigionamento",ob.getApprovvigionamento());
-                jo.put("color", ob.getScortaRimanente()-ob.getScortaMinima()<0?"red":"blue");
+                jo.put("color", (ob.getScortaRimanente().doubleValue() - ob.getScortaMinima().doubleValue()) < 0 ? "red":"blue");
                 array.add(jo);
             }
             out.println(array.toJSONString());

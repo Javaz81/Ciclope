@@ -64,7 +64,7 @@ public class GetApprovvigionamenti extends HttpServlet {
                 jo.put("scorta_minima",ob.getScortaRimanente());
                 jo.put("unita_di_misura", ob.getUnitaDiMisura());
                 jo.put("approvvigionamento",ob.getApprovvigionamento());
-                jo.put("color", ob.getScortaRimanente()-ob.getScortaMinima()<0?"red":"blue");
+                jo.put("color", (ob.getScortaRimanente().doubleValue() - ob.getScortaMinima().doubleValue()) < 0 ?"red":"blue");
                 array.add(jo);
             }
             out.println(array.toJSONString());

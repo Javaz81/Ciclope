@@ -11,10 +11,10 @@
         <property name="descrizione" type="string">
             <column name="descrizione" length="100" not-null="true" />
         </property>
-        <property name="scortaRimanente" type="int">
+        <property name="scortaRimanente" type="java.math.BigDecimal">
             <column name="scorta_rimanente" not-null="true" />
         </property>
-        <property name="scortaMinima" type="int">
+        <property name="scortaMinima" type="java.math.BigDecimal">
             <column name="scorta_minima" not-null="true">
                 <comment>serve per sapere quando segnalare l'allarme</comment>
             </column>
@@ -22,7 +22,7 @@
         <property name="unitaDiMisura" type="string">
             <column name="unita_di_misura" length="3" not-null="true" />
         </property>
-        <property name="approvvigionamento" type="java.lang.Integer">
+        <property name="approvvigionamento" type="java.math.BigDecimal">
             <column name="approvvigionamento">
                 <comment>quantit&#224; cumulativa per approvvigionamento. Di solito indica qual'&#232; la quantit&#224; di un certo articolo che deve essere ordinata
                 nell'immediato futuro.L'amministrazione o chi di dovere provvede a ordinare e poi a riazzerare tale quantit&#224;, sommandola contemporaneamente al valore del
