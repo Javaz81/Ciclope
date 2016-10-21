@@ -24,12 +24,14 @@ public class DateUtils {
     }
     
     private static final Set<Holiday> HOLYDAYS = HolidayManager.getInstance().getHolidays(GetLocalCalendar().get(Calendar.YEAR), "it");
-    /**
-     * 
-     * @param date
-     * @param locale
-     * @return 
-     */
+  
+      public static String formatDateToAdminHTML(Date date, Locale locale){
+        if(date == null || locale == null)
+            throw new IllegalArgumentException("The date or locale must not be null");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",locale);
+        return sdf.format(date);
+    }
+      
     public static String formatDate(Date date, Locale locale){
         if(date == null || locale == null)
             throw new IllegalArgumentException("The date or locale must not be null");
@@ -382,6 +384,10 @@ public class DateUtils {
         //add today
         result.add(startCalendar.getTime());
         return result;
+    }
+
+    private static boolean ApplicationValidDate(Calendar parsedCal) {
+        return parsedCal.get(Calendar.YEAR) < 2016 ;
     }
 }
 

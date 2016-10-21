@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.javasoft.ciclope.servlets.utils.DateUtils;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
+import org.javasoft.ciclope.servlets.utils.TimeStampConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -89,10 +90,11 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                     if(maps.get("columns["+schColIdx+"][search][value]")[0].equals("null")){
                         colNameVal = " IS NULL";
                     }else{
-                        if(name.equalsIgnoreCase(columnNames[7])){                            
-                            colNameVal = " = '"+DateUtils.formatDateMySQL(maps.get("columns["+schColIdx+"][search][value]")[0], Locale.ITALY)+"'";
+                        if(name.equalsIgnoreCase(columnNames[7])){
+                            String tval =  maps.get("columns["+schColIdx+"][search][value]")[0];
+                            colNameVal = TimeStampConverter.commonDateToMySQLDate(tval, "ciclope.pratica.data_arrivo");
                         }else{
-                            colNameVal = " = '"+maps.get("columns["+schColIdx+"][search][value]")[0]+"'";
+                            colNameVal = " LIKE '"+maps.get("columns["+schColIdx+"][search][value]")[0]+"%'";
                         }
                     }
                     if(columnNames[i].equals("nome")){
@@ -100,7 +102,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                                 .append(columnNames[i+1]).append(colNameVal).append(")");
                     }
                     else{
-                        extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"data_arrivo":columnNames[i]).append(colNameVal);
+                        extSearch.append(" AND ").append(columnNames[i].equals("data_pratica")?"":columnNames[i]).append(colNameVal);
                     }
                 }
                 i++;
@@ -125,8 +127,8 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                     + " ciclope.cliente.nome as nome,\n"
                     + " ciclope.cliente.cognome as cognome,\n"
                     + " ciclope.veicolo.marca as marca,\n"
-                    + " ciclope.veicolo.matricola as matricola,\n"
                     + " ciclope.veicolo.targa as targa,\n"
+                    + " ciclope.veicolo.matricola as matricola,\n"
                     + " ciclope.pratica.data_arrivo as data_pratica\n"
                     + " from ciclope.pratica\n"
                     + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
@@ -172,7 +174,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                 row.add(ob[4].toString());
                 row.add(ob[5].toString());
                 row.add(ob[6].toString());
-                row.add(DateUtils.isToday((Date) ob[7]) ? "Oggi" : DateUtils.formatDate((Date) ob[7], Locale.ITALY));
+                row.add(DateUtils.isToday((Date) ob[7]) ? "Oggi" : DateUtils.formatDateToAdminHTML((Date) ob[7], Locale.ITALY));
                 arraytop.add(row);
             }
             jo1.put("data", arraytop);

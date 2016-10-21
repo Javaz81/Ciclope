@@ -62,7 +62,55 @@ and open the template in the editor.
             //events
             $(document).ready(function () {
                 // DataTable
+                /*
+                 var table = $('#dataTables-pratiche').DataTable({
+                 responsive: true,
+                 processing: true,
+                 serverSide: true,
+                 ajax: {
+                 url: "GetPraticheAperteDataTables",
+                 type: "POST",
+                 data: {praticaMode: PRATICHE_APERTE}
+                 },
+                 sDom: 'lrtip', //to hide global search input box.
+                 initComplete: function () {
+                 this.api().columns().every(function () {
+                 var column = this;
+                 var select = $('<select><option value=""></option></select>')
+                 .appendTo($(column.footer()).empty())
+                 .on('change', function () {
+                 var val = $.fn.dataTable.util.escapeRegex(
+                 $(this).val()
+                 );
+                 column
+                 .search(val)
+                 .draw();
+                 });
+                 column.data().unique().sort().each(function (d, j) {
+                 select.append('<option value="' + d + '">' + d + '</option>');
+                 });
+                 });
+                 }
+                 });
+                 $('#dataTables-pratiche tbody').on('click', 'tr', function () {
+                 var data = table.row(this).data();
+                 var loc = 'gestisci_pratica.jsp?newPratice=false&praticaId=' + (data[0].toString());
+                 location.assign(loc);
+                 });
+                 */
+                // DataTable
+                $('#dataTables-pratiche tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                });
                 var table = $('#dataTables-pratiche').DataTable({
+                    language: {
+                        lengthMenu: "Mostra _MENU_ elementi per pagina",
+                        zeroRecords: "Nessuna corrispondenza - spiacente",
+                        info: "Pagina numero _PAGE_ di _PAGES_",
+                        infoEmpty: "Nessun elemento presente",
+                        infoFiltered: "(filtrato da _MAX_ elementi totali)"
+                    },
                     responsive: true,
                     processing: true,
                     serverSide: true,
@@ -74,19 +122,13 @@ and open the template in the editor.
                     sDom: 'lrtip', //to hide global search input box.
                     initComplete: function () {
                         this.api().columns().every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                    .appendTo($(column.footer()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                                $(this).val()
-                                                );
-                                        column
-                                                .search(val)
-                                                .draw();
-                                    });
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>');
+                            var that = this;
+                            $('input', this.footer()).on('keyup change', function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                            .search(this.value)
+                                            .draw();
+                                }
                             });
                         });
                     }
@@ -99,6 +141,13 @@ and open the template in the editor.
             });
 
         </script>
+        <style>
+            tfoot input {
+                width: 100%;
+                padding: 3px;
+                box-sizing: border-box;
+            }
+        </style>
     </head>
     <body>
         <div id="wrapper">
