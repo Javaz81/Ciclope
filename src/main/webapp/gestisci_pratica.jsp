@@ -408,7 +408,7 @@
                     CLIENTE_DATATABLE.clear();
                     CLIENTE_DATATABLE.ajax.reload();
                 });
-                 $('#clienteTableSelection tfoot th').each(function () {
+                $('#clienteTableSelection tfoot th').each(function () {
                     var title = $(this).text();
                     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
                 });
@@ -877,6 +877,36 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <i class="fa fa-file fw"></i>
+                                    <a style="margin-left:1em"data-toggle="collapse"
+                                       href="#collapseDatiAggiuntiviPratica">Dati del veicolo per questa pratica</a>
+                                </div>                                    
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-collapse collapse in" id="collapseDatiAggiuntiviPratica">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-lg-6">
+                                                <label>Kilometraggio</label>
+                                                <input class="form-control" id="kilometraggio"  <% out.print("value=\"" + praticaInfos.get(0).getKilometraggioVeicolo() + "\""); %> >
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label>Ore</label>
+                                                <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
+                                            </div>                  
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>                                 
+                                </div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>                           
+                    </div>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="panel panel-primary">
@@ -987,9 +1017,7 @@
                                             <label>Modello</label>
                                             <input class="form-control" id="modello"  <% out.print("value=\"" + praticaInfos.get(0).getModelloVeicolo() + "\""); %> >
                                             <label>Targa</label>
-                                            <input class="form-control" id="targa"  <% out.print("value=\"" + praticaInfos.get(0).getTargaVeicolo() + "\""); %> >
-                                            <label>Kilometraggio</label>
-                                            <input class="form-control" id="kilometraggio"  <% out.print("value=\"" + praticaInfos.get(0).getKilometraggioVeicolo() + "\""); %> >
+                                            <input class="form-control" id="targa"  <% out.print("value=\"" + praticaInfos.get(0).getTargaVeicolo() + "\""); %> >                                       
                                             <label>Anno</label>
                                             <input class="form-control" id="anno"  <% out.print("value=\"" + praticaInfos.get(0).getAnnoVeicolo() + "\""); %> >
                                             <script>
@@ -1012,10 +1040,7 @@
                                                 </label>
                                             </div>
                                             <label>Matricola</label>
-                                            <input class="form-control" id="matricola" <% out.print("value=\"" + praticaInfos.get(0).getMatricolaVeicolo() + "\""); %> >
-                                            <label>Ore</label>
-                                            <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
-                                        </div>
+                                            <input class="form-control" id="matricola" <% out.print("value=\"" + praticaInfos.get(0).getMatricolaVeicolo() + "\""); %> >                                                                                   </div>
                                         <!-- /.row -->
                                     </div> 
                                 </div>                                                              

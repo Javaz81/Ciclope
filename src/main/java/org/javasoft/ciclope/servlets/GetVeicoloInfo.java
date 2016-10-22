@@ -84,15 +84,11 @@ public class GetVeicoloInfo extends HttpServlet {
                         .append("#")
                         .append(v.getTarga() == null?"":v.getTarga())
                         .append("#")
-                        .append(v.getKilometraggio() == null ? "":v.getKilometraggio())
-                        .append("#")
                         .append(v.getAnno() == null ? "" : v.getAnno())
                         .append("#")
                         .append(v.getTipo() == null ? "" : v.getTipo())
                         .append("#")
-                        .append(v.getMatricola() == null ? "" : v.getMatricola())
-                        .append("#")
-                        .append(v.getOre() == null ? "" : v.getOre());
+                        .append(v.getMatricola() == null ? "" : v.getMatricola());
                 resMap.put("row", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {

@@ -79,19 +79,19 @@ public class AmministrazioneUtils {
                 c.setCollaudo_usl_data(ob[14] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[14]), Locale.ITALY));
                 c.setRegistro_di_controllo_data(ob[15] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[15]), Locale.ITALY));
                 c.setIdCliente(ob[16] == null ? "" : ob[16].toString());
-                c.setNomeCliente(ob[19] == null ? "" : ob[19].toString());
-                c.setCognomeCliente(ob[20] == null ? "" : ob[20].toString());
-                c.setCellulareCliente(ob[21] == null ? "" : ob[21].toString());
-                c.setLocalitaCliente(ob[22] == null ? "" : ob[22].toString());
-                c.setIdVeicolo(ob[23] == null ? "" : ob[23].toString());
-                c.setMarcaVeicolo(ob[24] == null ? "" : ob[24].toString());
-                c.setModelloVeicolo(ob[25] == null ? "" : ob[25].toString());
-                c.setTargaVeicolo(ob[26] == null ? "" : ob[26].toString());
-                c.setKilometraggioVeicolo(ob[27] == null ? "" : ob[27].toString());
-                c.setAnnoVeicolo(ob[28] == null ? "" : ob[28].toString());
-                c.setTipoVeicolo(ob[29] == null ? "" : ob[29].toString());
-                c.setMatricolaVeicolo(ob[30] == null ? "" : ob[30].toString());
-                c.setOreVeicolo(ob[31] == null ? "" : ob[31].toString());
+                c.setIdVeicolo(ob[17] == null ? "" : ob[17].toString());
+                c.setOreVeicolo(ob[18] == null ? "" : ob[18].toString());
+                c.setKilometraggioVeicolo(ob[19] == null ? "" : ob[19].toString());
+                c.setNomeCliente(ob[21] == null ? "" : ob[21].toString());
+                c.setCognomeCliente(ob[22] == null ? "" : ob[22].toString());
+                c.setCellulareCliente(ob[23] == null ? "" : ob[23].toString());
+                c.setLocalitaCliente(ob[24] == null ? "" : ob[24].toString());
+                c.setMarcaVeicolo(ob[26] == null ? "" : ob[26].toString());
+                c.setModelloVeicolo(ob[27] == null ? "" : ob[27].toString());
+                c.setTargaVeicolo(ob[28] == null ? "" : ob[28].toString());
+                c.setAnnoVeicolo(ob[29] == null ? "" : ob[29].toString());
+                c.setTipoVeicolo(ob[30] == null ? "" : ob[30].toString());
+                c.setMatricolaVeicolo(ob[31] == null ? "" : ob[31].toString());
                 praticaInfos.add(c);
             }
         } catch (Exception ex) {

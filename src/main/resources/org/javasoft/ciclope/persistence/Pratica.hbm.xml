@@ -56,6 +56,12 @@
         <property name="registroDiControlloData" type="date">
             <column name="registro_di_controllo_data" length="10" />
         </property>
+        <property name="ore" type="java.lang.Integer">
+            <column name="ore" />
+        </property>
+        <property name="kilometraggio" type="java.lang.Integer">
+            <column name="kilometraggio" />
+        </property>
         <set name="orelavorates" table="orelavorate" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="pratica" not-null="true" />

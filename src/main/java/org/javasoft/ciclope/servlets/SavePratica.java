@@ -143,11 +143,9 @@ public class SavePratica extends HttpServlet {
                             + "marca=" + marca + ", "
                             + "modello=" + modello + ", "
                             + "targa=" + targa + ", "
-                            + "kilometraggio=" + kilometraggio + ", "
                             + "anno=" + formatAdminYearForMySQL(anno, Locale.ITALY) + ", "
                             + "tipo=" + tipo + ", "
-                            + "matricola=" + matricola + ", "
-                            + "ore=" + ore + " "
+                            + "matricola=" + matricola + " "
                             + "WHERE idVeicolo" + (veicoloId.contains("NULL") ? " IS " : " = ") + veicoloId);
                     int n_row = q.executeUpdate();
                     if (n_row != 1) {
@@ -207,7 +205,9 @@ public class SavePratica extends HttpServlet {
                             + "registro_di_controllo,"
                             + "lavori_segnalati,"
                             + "Cliente_idCliente,"
-                            + "Veicolo"
+                            + "Veicolo,"
+                            + "ore,"
+                            + "kilometraggio"
                             + ")"
                             + "VALUES "
                             + "("
@@ -224,7 +224,9 @@ public class SavePratica extends HttpServlet {
                             + registro_di_controllo + ","
                             + lavori_segnalati + ","
                             + idCliente + ","
-                            + veicoloId
+                            + veicoloId +","
+                            + ore+","
+                            + kilometraggio
                             + ")");
                     int n_row = q.executeUpdate();
                     if (n_row != 1) {
@@ -252,7 +254,9 @@ public class SavePratica extends HttpServlet {
                             + "registro_di_controllo=" + parseBooleanParam(registro_di_controllo) + ", "
                             + "lavori_segnalati=" + lavori_segnalati + ", "
                             + "Cliente_idCliente=" + idCliente + ", "
-                            + "veicolo=" + veicoloId + " "
+                            + "veicolo=" + veicoloId + ", "
+                            + "ore=" + ore + ", "
+                            + "kilometraggio="+ kilometraggio + " "
                             + "WHERE ciclope.pratica.idPratica" + (praticaId.contains("NULL") ? " IS " : " = ") + praticaId);
                     int n_row = q.executeUpdate();
                     if (n_row != 1) {

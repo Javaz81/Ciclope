@@ -62,35 +62,29 @@ public class AddVeicolo extends HttpServlet {
             String marca = (String) ((JSONObject) obj).get("marca");
             String modello = (String) ((JSONObject) obj).get("modello");
             String targa = ((String) ((JSONObject) obj).get("targa"));
-            String kilometraggio = (String) ((JSONObject) obj).get("kilometraggio");
             String anno = (String) ((JSONObject) obj).get("anno");
             String tipo = ((String) ((JSONObject) obj).get("tipo"));
             String matricola = (String) ((JSONObject) obj).get("matricola");
-            String ore = (String) ((JSONObject) obj).get("ore");
             
             //Sanitizing string
             marca = marca.replace("'", "''");
             modello = modello.replace("'", "''");
             targa = targa.replace("'", "''");
-            kilometraggio = kilometraggio.replace("'", "''");
             anno = anno.replace("'", "''");
             tipo = tipo.replace("'", "''");
             matricola = matricola.replace("'", "''");
-            ore = ore.replace("'", "''");
             
             Session s = SessionUtils.getCiclopeSession();
             Transaction t= s.getTransaction();
             try {
                 t.begin();
-                String qs = "INSERT INTO ciclope.veicolo ( marca, modello, targa, kilometraggio, anno, tipo, matricola, ore) "
+                String qs = "INSERT INTO ciclope.veicolo ( marca, modello, targa, anno, tipo, matricola) "
                         + "VALUES (" + parseParam(marca) + ","
                         + parseParam(modello) + ","
                         + parseParam(targa) + ","
-                        + parseParam(kilometraggio) + ","
                         + parseParam(anno) + ","
                         + parseParam(tipo) + ","
-                        + parseParam(matricola) + ","
-                        + parseParam(ore)
+                        + parseParam(matricola)
                         + ")";
                 Query q = s.createSQLQuery(qs);
                 int rows = q.executeUpdate();
@@ -101,11 +95,10 @@ public class AddVeicolo extends HttpServlet {
                         + "marca " + parseParamForQuery(marca) + " AND "
                         + "modello " + parseParamForQuery(modello) + " AND "
                         + "targa " + parseParamForQuery(targa) + " AND "
-                        + "kilometraggio " + parseParamForQuery(kilometraggio) + " AND "
                         + "anno " + parseParamForQuery(anno) + " AND "
                         + "tipo " + parseParamForQuery(tipo) + " AND "
-                        + "matricola " + parseParamForQuery(matricola) + " AND "
-                        + "ore " + parseParamForQuery(ore);
+                        + "matricola " + parseParamForQuery(matricola);
+                
                 q = s.createSQLQuery(qs).addEntity(Veicolo.class);
                 ArrayList<Veicolo> veicolo = (ArrayList<Veicolo>) q.list();
                 if (veicolo.size() != 1) {
@@ -124,15 +117,11 @@ public class AddVeicolo extends HttpServlet {
                         .append("#")
                         .append(v.getTarga() == null ? "" : v.getTarga().replace("''", "'"))
                         .append("#")
-                        .append(v.getKilometraggio() == null ? "" : v.getKilometraggio().toString().replace("''", "'"))
-                        .append("#")
                         .append(v.getAnno() == null ? "" : v.getAnno().toString().replace("''", "'"))
                         .append("#")
                         .append(v.getTipo() == null ? "" : v.getTipo().replace("''", "'"))
                         .append("#")
-                        .append(v.getMatricola() == null ? "" : v.getMatricola().replace("''", "'"))
-                        .append("#")
-                        .append(v.getOre() == null ? "" : v.getOre().toString().replace("''", "'"));
+                        .append(v.getMatricola() == null ? "" : v.getMatricola().replace("''", "'"));
                 resMap.put("veicolo", sb.toString());
                 out.println(JSONObject.toJSONString(resMap));
             } catch (Exception ex) {

@@ -17,17 +17,11 @@
         <property name="targa" type="string">
             <column name="targa" length="10" unique="true" />
         </property>
-        <property name="kilometraggio" type="java.lang.Integer">
-            <column name="kilometraggio" />
-        </property>
         <property name="anno" type="java.lang.Integer">
             <column name="anno" />
         </property>
         <property name="tipo" type="string">
             <column name="tipo" length="7" />
-        </property>
-        <property name="ore" type="java.lang.Integer">
-            <column name="ore" />
         </property>
         <property name="matricola" type="string">
             <column name="matricola" length="30" not-null="true" unique="true" />

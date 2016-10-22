@@ -13,10 +13,8 @@ public class Veicolo  implements java.io.Serializable {
      private String marca;
      private String modello;
      private String targa;
-     private Integer kilometraggio;
      private Integer anno;
      private String tipo;
-     private Integer ore;
      private String matricola;
 
     public Veicolo() {
@@ -26,14 +24,12 @@ public class Veicolo  implements java.io.Serializable {
     public Veicolo(String matricola) {
         this.matricola = matricola;
     }
-    public Veicolo(String marca, String modello, String targa, Integer kilometraggio, Integer anno, String tipo, Integer ore, String matricola) {
+    public Veicolo(String marca, String modello, String targa, Integer anno, String tipo, String matricola) {
        this.marca = marca;
        this.modello = modello;
        this.targa = targa;
-       this.kilometraggio = kilometraggio;
        this.anno = anno;
        this.tipo = tipo;
-       this.ore = ore;
        this.matricola = matricola;
     }
    
@@ -65,13 +61,6 @@ public class Veicolo  implements java.io.Serializable {
     public void setTarga(String targa) {
         this.targa = targa;
     }
-    public Integer getKilometraggio() {
-        return this.kilometraggio;
-    }
-    
-    public void setKilometraggio(Integer kilometraggio) {
-        this.kilometraggio = kilometraggio;
-    }
     public Integer getAnno() {
         return this.anno;
     }
@@ -86,13 +75,6 @@ public class Veicolo  implements java.io.Serializable {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-    public Integer getOre() {
-        return this.ore;
-    }
-    
-    public void setOre(Integer ore) {
-        this.ore = ore;
-    }
     public String getMatricola() {
         return this.matricola;
     }
@@ -100,10 +82,6 @@ public class Veicolo  implements java.io.Serializable {
     public void setMatricola(String matricola) {
         this.matricola = matricola;
     }
-
-
-
-
 }
 
 

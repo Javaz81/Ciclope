@@ -29,6 +29,8 @@ public class Pratica  implements java.io.Serializable {
      private Date revisioneMctcData;
      private Date collaudoUslData;
      private Date registroDiControlloData;
+     private Integer ore;
+     private Integer kilometraggio;
      private Set orelavorates = new HashSet(0);
      private Set lavoropraticas = new HashSet(0);
      private Set materialepraticas = new HashSet(0);
@@ -41,7 +43,7 @@ public class Pratica  implements java.io.Serializable {
         this.idPratica = idPratica;
         this.cliente = cliente;
     }
-    public Pratica(int idPratica, Cliente cliente, String arrivo, Date dataArrivo, String uscita, Date dataUscita, String lavoriSegnalati, String numeroFattura, Date dataFattura, Boolean preventivoLavori, Boolean revisioneMctc, Boolean collaudoUsl, Boolean registroDiControllo, Date preventivoLavoriData, Date revisioneMctcData, Date collaudoUslData, Date registroDiControlloData, Set orelavorates, Set lavoropraticas, Set materialepraticas) {
+    public Pratica(int idPratica, Cliente cliente, String arrivo, Date dataArrivo, String uscita, Date dataUscita, String lavoriSegnalati, String numeroFattura, Date dataFattura, Boolean preventivoLavori, Boolean revisioneMctc, Boolean collaudoUsl, Boolean registroDiControllo, Date preventivoLavoriData, Date revisioneMctcData, Date collaudoUslData, Date registroDiControlloData, Set orelavorates, Set lavoropraticas, Set materialepraticas, Integer ore, Integer kilometraggio) {
        this.idPratica = idPratica;
        this.cliente = cliente;
        this.arrivo = arrivo;
@@ -62,6 +64,8 @@ public class Pratica  implements java.io.Serializable {
        this.orelavorates = orelavorates;
        this.lavoropraticas = lavoropraticas;
        this.materialepraticas = materialepraticas;
+       this.ore = ore;
+       this.kilometraggio = kilometraggio;
     }
    
     public int getIdPratica() {
@@ -204,10 +208,23 @@ public class Pratica  implements java.io.Serializable {
     public void setMaterialepraticas(Set materialepraticas) {
         this.materialepraticas = materialepraticas;
     }
-
-
-
-
+    
+    public void setOre(Integer ore) {
+        this.ore = ore;
+    }
+    
+    public Integer getOre() {
+        return this.ore;
+    }
+    
+    public void setKilometraggio(Integer kilometraggio){
+        this.kilometraggio = kilometraggio;
+    }
+    
+    public Integer getKilometraggio(){
+        return this.kilometraggio;
+    }
+    
 }
 
 
