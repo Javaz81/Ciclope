@@ -109,6 +109,13 @@
                     $(this).toggleClass('selected');
                 });
                 STANDARD_JOBS_DATATABLE = $('#standardJobTableSelection').DataTable({
+                    language: {
+                        lengthMenu: "Mostra _MENU_ elementi per pagina",
+                        zeroRecords: "Nessuna corrispondenza - spiacente",
+                        info: "Pagina numero _PAGE_ di _PAGES_",
+                        infoEmpty: "Nessun elemento presente",
+                        infoFiltered: "(filtrato da _MAX_ elementi totali)"
+                    },
                     responsive: true,
                     processing: true,
                     serverSide: true,
@@ -271,7 +278,18 @@
                     VEICOLO_DATATABLE.clear();
                     VEICOLO_DATATABLE.ajax.reload();
                 });
+                $('#veicoloTableSelection tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                });
                 VEICOLO_DATATABLE = $('#veicoloTableSelection').DataTable({
+                    language: {
+                        lengthMenu: "Mostra _MENU_ elementi per pagina",
+                        zeroRecords: "Nessuna corrispondenza - spiacente",
+                        info: "Pagina numero _PAGE_ di _PAGES_",
+                        infoEmpty: "Nessun elemento presente",
+                        infoFiltered: "(filtrato da _MAX_ elementi totali)"
+                    },
                     responsive: true,
                     processing: true,
                     serverSide: true,
@@ -283,19 +301,13 @@
 
                     initComplete: function () {
                         this.api().columns().every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                    .appendTo($(column.footer()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                                $(this).val()
-                                                );
-                                        column
-                                                .search(val)
-                                                .draw();
-                                    });
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>');
+                            var that = this;
+                            $('input', this.footer()).on('keyup change', function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                            .search(this.value)
+                                            .draw();
+                                }
                             });
                         });
                     }
@@ -396,6 +408,10 @@
                     CLIENTE_DATATABLE.clear();
                     CLIENTE_DATATABLE.ajax.reload();
                 });
+                 $('#clienteTableSelection tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                });
                 CLIENTE_DATATABLE = $('#clienteTableSelection').DataTable({
                     responsive: true,
                     processing: true,
@@ -408,24 +424,17 @@
 
                     initComplete: function () {
                         this.api().columns().every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                    .appendTo($(column.footer()).empty())
-                                    .on('change', function () {
-                                        var val = $.fn.dataTable.util.escapeRegex(
-                                                $(this).val()
-                                                );
-                                        column
-                                                .search(val)
-                                                .draw();
-                                    });
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>');
+                            var that = this;
+                            $('input', this.footer()).on('keyup change', function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                            .search(this.value)
+                                            .draw();
+                                }
                             });
                         });
                     }
                 });
-
 
                 //MAin and standard Jobs handlers
                 $('#deleteJobButton').click(function (event) {
@@ -769,7 +778,10 @@
         opened.    
         -->
         <style>
-
+            tfoot input {
+                width: 100%;
+                box-sizing: border-box;
+            }
             body.modal-open {
                 overflow: visible;
             }
@@ -1405,7 +1417,7 @@
                     </div>
                     <div class="modal-body">
                         <p style="text-align:center; margin:1em " >Seleziona il veicolo da inserire nella pratica</p>
-                        <table id="veicoloTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
+                        <table id="veicoloTableSelection" class="table table-striped table-bordered" cellspacing='0' width="100%">
                             <thead>
                                 <tr>
                                     <th>Id</th>
@@ -1503,7 +1515,7 @@
                     </div>
                     <div class="modal-body">
                         <p style="text-align:center; margin:1em " >Seleziona il cliente da inserire nella pratica</p>
-                        <table id="clienteTableSelection" class="table table-striped table-bordered" cellspacing='0' width="50%">
+                        <table id="clienteTableSelection" class="table table-striped table-bordered" cellspacing='2' width="100%">
                             <thead>
                                 <tr>
                                     <th>Id</th>

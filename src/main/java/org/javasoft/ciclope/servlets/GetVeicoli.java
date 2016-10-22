@@ -71,11 +71,10 @@ public class GetVeicoli extends HttpServlet {
                         extSearch.append("");
                     } else {
                         extSearch.
-                                append(i != 0 ? columnNames[i] : "idVeicolo").
-                                append(" = ").
-                                append("\"").
-                                append(e.getValue()[0]).
-                                append("\"");
+                                append(i != 0 ? columnNames[i] : "idVeicolo")
+                                .append(" LIKE '")
+                                .append(e.getValue()[0])
+                                .append("%'");
                         extSearch.append(" AND ");
                     }
                     i++;

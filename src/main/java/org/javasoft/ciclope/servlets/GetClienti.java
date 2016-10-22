@@ -70,12 +70,10 @@ public class GetClienti extends HttpServlet {
                     if (e.getValue()[0].equalsIgnoreCase("") || e.getValue()[0].equalsIgnoreCase("null")) {
                         extSearch.append("");
                     } else {
-                        extSearch.
-                                append(i != 0 ? columnNames[i] : "idCliente").
-                                append(" = ").
-                                append("\"").
-                                append(e.getValue()[0]).
-                                append("\"");
+                        extSearch.append(i != 0 ? columnNames[i] : "idCliente")
+                                .append(" LIKE '")
+                                .append(e.getValue()[0])
+                                .append("%'");
                         extSearch.append(" AND ");
                     }
                     i++;
