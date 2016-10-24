@@ -785,6 +785,12 @@
             body.modal-open {
                 overflow: visible;
             }
+            #wrapper {
+                background-color: #ccccbe
+            }
+            #page-wrapper{
+                background-color: #e9e3e4
+            }
         </style>
     </head>
     <body>
@@ -800,7 +806,7 @@
         <div id="wrapper">
 
             <!-- Navigation -->
-            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <nav id="navigation" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="index.html"> Ciclope - SuperAssistenza</a>
                 </div>
@@ -877,35 +883,37 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <div class="panel-title">
-                                    <i class="fa fa-file fw"></i>
-                                    <a style="margin-left:1em"data-toggle="collapse"
-                                       href="#collapseDatiAggiuntiviPratica">Dati del veicolo per questa pratica</a>
-                                </div>                                    
-                            </div>
-                            <!-- /.panel-heading -->
-                            <div class="panel-collapse collapse in" id="collapseDatiAggiuntiviPratica">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="form-group">
-                                            <div class="col-lg-6">
-                                                <label>Kilometraggio</label>
-                                                <input class="form-control" id="kilometraggio"  <% out.print("value=\"" + praticaInfos.get(0).getKilometraggioVeicolo() + "\""); %> >
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label>Ore</label>
-                                                <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
-                                            </div>                  
-                                        </div>
-                                        <!-- /.row -->
-                                    </div>                                 
+                    <div class="row">
+                        <div class="col-lg-12 ">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <i class="fa fa-file fw"></i>
+                                        <a style="margin-left:1em"data-toggle="collapse"
+                                           href="#collapseDatiAggiuntiviPratica">Dati del veicolo per questa pratica</a>
+                                    </div>                                    
                                 </div>
-                            </div>
-                            <!-- /.panel-body -->
-                        </div>                           
+                                <!-- /.panel-heading -->
+                                <div class="panel-collapse collapse in" id="collapseDatiAggiuntiviPratica">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-lg-6">
+                                                    <label>Kilometraggio</label>
+                                                    <input class="form-control" id="kilometraggio"  <% out.print("value=\"" + praticaInfos.get(0).getKilometraggioVeicolo() + "\""); %> >
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>Ore</label>
+                                                    <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
+                                                </div>                  
+                                            </div>
+                                            <!-- /.row -->
+                                        </div>                                 
+                                    </div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>                           
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-6">
@@ -1007,7 +1015,7 @@
                                     </div>                                    
                                 </div>
                                 <!-- /.panel-heading -->
-                                <div class="panel-collapse collapse out" id="collapseOggettoRiparazione">
+                                <div class="panel-collapse collapse in" id="collapseOggettoRiparazione">
                                     <div class="panel-body">
 
                                         <div class="form-group">
@@ -1071,7 +1079,7 @@
                                     </div>                                   
                                 </div>
                                 <!-- /.panel-heading -->
-                                <div id="collapseCliente" class="panel-collapse collapse out">
+                                <div id="collapseCliente" class="panel-collapse collapse in">
                                     <div class="panel-body">
                                         <div class="form-group">
                                             <input type="hidden" name="idCliente" id="idCliente" <% out.print("value=\"" + praticaInfos.get(0).getIdCliente() + "\""); %>>
@@ -1101,7 +1109,7 @@
                                     </div>
                                 </div>
                                 <!-- /.panel-heading -->
-                                <div id="collapseControlliAccettazione" class="panel-collapse collapse out">
+                                <div id="collapseControlliAccettazione" class="panel-collapse collapse in">
                                     <div class="panel-body">
 
                                         <div class="form-group">
