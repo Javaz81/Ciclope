@@ -574,7 +574,7 @@
                         } else {
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
-                data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
+                data-position-to="window" data-transition="slidefade" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
                                         + data[i].marca + " " + data[i].modello + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
                 <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
 onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
@@ -595,6 +595,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         $("#lstUltimePratiche").empty();
                         $("#lstUltimePratiche").html(items);
                         $("#lstUltimePratiche").listview("refresh");
+                        $("#ore_totali").html('<label>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</label>');
                         $.mobile.loading("hide");
                     },
                     error: function (xhttpjqr, err, data) {
@@ -896,6 +897,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             $("#lstUltimePratiche").empty();
                             $("#lstUltimePratiche").html(items);
                             $("#lstUltimePratiche").listview("refresh");
+                            $("#ore_totali").html('<label>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</label>');
                             $.mobile.loading("hide");
                         },
                         error: function (xhttpjqr, err, data) {
@@ -1207,7 +1209,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
                     </div>
                     <div class="ui-block-b">  
-
+                        <div id="ore_totali">
+                            BORDa
+                        </div>
                         <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
                            href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
                            data-transition="pop">Aggiungi pratica lavorata</a>
@@ -1257,6 +1261,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </div>
             </div>
         </div>
+        <!-- Selezione delle pratiche attive --> 
         <div data-role="page" id="pgSelezioneEntrate" data-title="Magazzino - Selezione Veicolo\Piattaforma">
             <div data-role="header" data-position="fixed">
                 <h1>Seleziona Veicolo/Piattaforma</h1>
@@ -1272,7 +1277,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </div>
             </div>
         </div>
-
+     <!-- Materiale Utilizzato nelle pratiche -->
         <div data-role="page" id="pgMaterialeUtilizzato" data-title="Ciclope - materiale utilizzato per riparazioni.">
             <div data-role="header" data-position="fixed">
                 <h1>Materiale Utilizzato per la Riparazione</h1>
@@ -1290,7 +1295,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </ol>
             </div>
         </div>
-
+     <!-- Approvvigionamenti -->
         <div data-role="page" id="pgApprovvigionamenti" data-title="Ciclope - Approvvigionamenti">
             <div data-role="header" data-position="fixed">
                 <h1>Ciclope - Lista Approvvigionamenti</h1>
@@ -1309,7 +1314,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </ul>
             </div>
         </div>
-
+        <!-- Rifornimenti -->
         <div data-role="page" id="pgRifornimenti" data-title="Ciclope - Rifornimenti">
             <div data-role="header" data-position="fixed">
                 <h1>Ciclope - Lista Rifornimenti</h1>
