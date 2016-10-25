@@ -111,7 +111,7 @@ public class GetOreLavorate extends HttpServlet {
                 jo.put("ore", ob[6].toString());
                 jo.put("praticaId",ob[7].toString());
                 jo.put("IdOreLavorate", ob[8].toString());
-                jo.put("oreTotali", aicrecs2.get(0).toString());
+                jo.put("oreTotali", aicrecs2.get(0) == null?"0":aicrecs2.get(0).toString());
                 array.add(jo);
             }
             out.println(array.toJSONString());

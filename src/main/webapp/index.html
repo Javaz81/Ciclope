@@ -591,11 +591,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 }
                                 return 0;
                             });
+                            $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</span></h2>');
                         }
                         $("#lstUltimePratiche").empty();
                         $("#lstUltimePratiche").html(items);
                         $("#lstUltimePratiche").listview("refresh");
-                        $("#ore_totali").html('<label>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</label>');
+                        
                         $.mobile.loading("hide");
                     },
                     error: function (xhttpjqr, err, data) {
@@ -893,11 +894,11 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     }
                                     return 0;
                                 });
+                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</span></h2>');
                             }
                             $("#lstUltimePratiche").empty();
                             $("#lstUltimePratiche").html(items);
                             $("#lstUltimePratiche").listview("refresh");
-                            $("#ore_totali").html('<label>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</label>');
                             $.mobile.loading("hide");
                         },
                         error: function (xhttpjqr, err, data) {
@@ -1210,7 +1211,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     </div>
                     <div class="ui-block-b">  
                         <div id="ore_totali">
-                            BORDa
+                            <h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>
                         </div>
                         <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
                            href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
