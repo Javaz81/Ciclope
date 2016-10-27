@@ -52,6 +52,76 @@
         <script src="js/libs/canvasjs/jquery.canvasjs.js" type="text/javascript"></script>
         <!-- Custom theme JS -->
         <script src="js/libs/startbootstrap-sb-admin-2/js/sb-admin-2.js"></script>
+        <script type="text/javascript">
+            function aggiornaSommario() {
+                var value = $("#giorni_selezionati option:selected").text();
+                var p = {lastDays: value};
+                requestJson = JSON.stringify(p);
+                $.ajax({
+                    url: "GetLastWorkedDaysStatus",
+                    cache: false,
+                    dataType: 'json',
+                    data: requestJson,
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $("#worked_days_resume").empty();
+                        if (data !== undefined) {
+                            for (var i = 0; i < data.length; i++) {
+                                var html = $("#worked_days_resume").append(data[i].panel);
+                            }
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        alert(err);
+                        $("#worked_days_resume").text("Errore nel reperire i dati");
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            function aggiornaDettaglioGiorniNonCompleti(opId) {
+                var value = $("#giorni_selezionati option:selected").text();
+                var operatore = opId === undefined ? '-1' : opId;
+                var p = {lastDays: value, idOperatore: operatore};
+                requestJson = JSON.stringify(p);
+                $.ajax({
+                    url: "GetCopertureOrarieNonRegistrate",
+                    cache: false,
+                    dataType: 'json',
+                    data: requestJson,
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $("#editing_ore_lavorate").empty();
+                        if (data !== undefined) {
+                            $("#editing_ore_lavorate").append('<div class="list-group">');
+                            for (var i = 0; i < data.length; i++) {                                
+                                $("#editing_ore_lavorate").html('<li><a href = "#"><div><i class="fa fa-twitter fa-fw"></i>' + data[i].operatore + ' ' + data[i].day);
+                                $("#editing_ore_lavorate").append('<span class="pull-right text-muted small" >' + data[i].hours + '</span>');
+                                $("#editing_ore_lavorate").append('< /div>< /a>< /li>< li class = "divider" > < /li>');
+                            }
+                            $("#editing_ore_lavorate").append('</div>');
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        alert(err);
+                        $("#editing_ore_lavorate").append("<div class='alert alert-danger'>Errore nel reperire i dati</div>");
+                    },
+                    complete: function (xhttpjqr, evtobj, data) {
+                    }
+                });
+            }
+            $(document).ready(function () {
+                aggiornaSommario();
+                aggiornaDettaglioGiorniNonCompleti();
+                $("#giorni_selezionati").change(function () {
+                    aggiornaSommario();
+                    aggiornaDettaglioGiorniNonCompleti();
+                });
+            });
+
+        </script>
     </head>
     <body>
         <div id="wrapper">
@@ -100,86 +170,103 @@
                         <div class="h3">Ore Lavorate</div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-bottom:1em">
                     <div class="col-lg-12">
                         <span style="display: inline-block">Ore non segnate negli utlimi:</span>
                         <span style="display: inline-block">
-                            <select class="form-control">
+                            <select style="font-weight: bold; display:inline-block" class="form-control" id="giorni_selezionati">
                                 <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>5</option>  
-                                <option>12</option>
+                                <option selected>7</option>
+                                <option>14</option>
+                                <option>34</option>  
+                                <option>60</option>
                             </select>
                         </span>
                         <span style="display: inline-block">giorni.</span>
                     </div>
                 </div>
-                <div class="row">                           
-                    <%
-                        DayHours todayDh = new DayHours(new Date(), 0f);
-                        float todayHours = 0f;
-                        boolean onlyTodayNotComplete = false;
-                        for (Personale personale : AmministrazioneUtils.GetAllOperatori()) {
-                            todayHours = 0;
-                            List<DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), 30);
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
-                            int count = 0;
-                            for (DayHours d : thswpd) {
-                                if (d.getHours() != 8f) {
-                                    count++;
-                                }
-                                if (d.equals(todayDh)) {
-                                    todayHours = d.getHours();
-                                }
-                            }
-                            out.println("<div class=\"col-lg-3 col-md-4\">");
-                            //Se hai lavorato poco solo oggi allora fai solo un warning
-                            onlyTodayNotComplete = todayHours != 8f && count == 1;
-                            if (onlyTodayNotComplete) {
-                                out.println("<div class=\"panel panel-green\">");
-                            } else {
-                                out.println("<div class=\"panel " + (count <= 1 ? "panel-green" : "panel-red") + "\">");
-                            }
-                            out.println("<div class=\"panel-heading\">");
-                            out.println("<div class=\"row\">");
-                            out.println("<div class=\"col-xs-3\">");
-                            out.println("<div>" + personale.getCognome().toUpperCase() + "</div>");
-                            out.println("<i class=\"fa fa-user fa-4x\"></i>");
-                            out.println("</div>");
-                            out.println("<div class=\"col-xs-9 text-right\">");
-                            if (onlyTodayNotComplete) {
-                                out.println("<div class=\"huge\">" + todayHours + "</div>");
-                                out.println("<div>ORE LAVORATE OGGI</div>");
-                            } else if (count > 1) {
-                                out.println("<div class=\"huge\">" + Integer.toString(count) + "</div>");
-                                out.println("<div>GIORNI NON COMPLETATI</div>");
-                            } else {
-                                out.println("<div class=\"huge\"> OK </div>");
-                                out.println("<div>TUTTO SEGNATO</div>");
-                            }
-                            out.println("</div>");
-                            out.println("</div>");
-                            out.println("</div>");
-                            out.println("<a href=\"#\">");
-                            out.println("<div class=\"panel-footer\">");
-                            out.println("<span class=\"pull-left\">Vai ai dettagli</span>");
-                            out.println("<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>");
-                            out.println("<div class=\"clearfix\"></div>");
-                            out.println("</div>");
-                            out.println("</a>");
-                            out.println("</div>");
-                            out.println("</div>");
-                        }
-                    %>
+                <div class="row" id="worked_days_resume">
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="h3">Ciao</h2>
+                <div class="row" id="borda">
+                    <div class="col-lg-12">
+                        <a data-toggle='modal' data-target='#add_new_pratiche' href=""><button type="button" class="btn btn-default btn-outline">Borda</button></a>
+                    </div>
+                </div>
+
+                <div class="row" >
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Giornate non completate
+                            </div>
+                            <div class="panel-body" id="editing_ore_lavorate">
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+        <div class="modal fade" id="add_new_pratiche" tabindex="-1" role="dialog" aria-labelledby="addNewPraticheLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="addNewPraticaLabel" >COPERTURA ORARIA di <span id="nome_operatore">NOME COGNOME</span> del <span id="giorno_pratica">DD/MM/YYYY</span></h3>
+                    </div>
+                    <div class="modal-body">                        
+                        <p style="text-align:center; margin:1em " >Seleziona la pratica e inserisci le ore lavorate:</p>
+                        <table id="clienteTableSelection" class="table table-striped table-bordered" cellspacing='2' width="100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pratica</th>
+                                    <th>Cliente</th>
+                                    <th>Marca</th>
+                                    <th>Targa</th>
+                                    <th>Matricola</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pratica</th>
+                                    <th>Cliente</th>
+                                    <th>Marca</th>
+                                    <th>Targa</th>
+                                    <th>Matricola</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr>
+                                    <td>NN1</td>
+                                    <td>NN2</td>
+                                    <td>NN3</td>
+                                    <td>NN4</td>
+                                    <td>NN5</td>
+                                    <td>NN6</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <label>Assegna le ore:</label><input type="number" style="display: inline-block" class="form-control" value="1.0"/>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
+                                <button type="button" id="addNewPraticaButton" class="btn btn-primary" data-dismiss="modal">Assegna</button>
+                            </div>                          
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                            </div>                          
+                        </div>                       
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </body>
 </html>
