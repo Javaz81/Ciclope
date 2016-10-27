@@ -95,11 +95,13 @@
                     success: function (data) {
                         $("#editing_ore_lavorate").empty();
                         if (data !== undefined) {
-                            $("#editing_ore_lavorate").append('<div class="list-group">');
-                            for (var i = 0; i < data.length; i++) {                                
-                                $("#editing_ore_lavorate").html('<li><a href = "#"><div><i class="fa fa-twitter fa-fw"></i>' + data[i].operatore + ' ' + data[i].day);
-                                $("#editing_ore_lavorate").append('<span class="pull-right text-muted small" >' + data[i].hours + '</span>');
-                                $("#editing_ore_lavorate").append('< /div>< /a>< /li>< li class = "divider" > < /li>');
+                            $("#editing_ore_lavorate").append('<div class="list-group" id="lista_editing">');
+                            for (var i = 0; i < data.length; i++) {
+                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" href="#" class="list-group-item">\n\
+                <i class="fa fa-comment fa-fw"></i>' + data[i].operatore + ' ' + data[i].day + '<span class="pull-right text-muted small">\n\
+<em>' + data[i].hours + '</em>\n\
+</span>\n\
+</a>');
                             }
                             $("#editing_ore_lavorate").append('</div>');
                         }

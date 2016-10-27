@@ -84,7 +84,7 @@ public class GetCopertureOrarieNonRegistrate extends HttpServlet {
                     }
                 }
             }
-            ja.toJSONString();
+            out.println(ja.toJSONString());
         }
     }
 
