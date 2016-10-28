@@ -71,9 +71,8 @@ public class GetCopertureOrarieNonRegistrate extends HttpServlet {
                 for (AmministrazioneUtils.DayHours d : thswpd) {
                     if (d.getHours() < 8f) {
                         jo = new JSONObject();
-                        infoOperatore.append(personale.getIdPersonale().toString())
-                                .append(" - ")
-                                .append(personale.getNome())
+                        jo.put("operatoreId",personale.getIdPersonale().toString());
+                        infoOperatore.append(personale.getNome())
                                 .append(" ")
                                 .append(personale.getCognome());
                         jo.put("operatore", infoOperatore.toString());

@@ -5,8 +5,10 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
+import com.sun.istack.internal.logging.Logger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -41,6 +43,19 @@ public class TimeStampConverter {
         COMMONDATE_PATTERNS[5] = COMMONDATE_PATTERN_5;
     }
 
+    /**
+     * Converte una stringa common date ad una di tipo mysql
+     * @param commonDate la stringa contenente una common date.
+     * @return Una stringa contenente una data MySqL.
+     */
+    public static String commonDateToMySQLDirectConversion(String commonDate){
+        try{
+            return MYSQL_COMMONDATE_FORMAT.format(COMMONDATE_FORMAT.parse(commonDate));
+        }catch(ParseException pe){
+            Logger.getLogger(TimeStampConverter.class).log(Level.SEVERE, commonDate);
+            return "";
+        }
+    }
     /**
      * Cerca di creare una stringa rappresentante le condizioni di match in base
      * al parametro commonDate che può essere in un qualsiasi formato. Il

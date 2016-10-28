@@ -97,8 +97,10 @@
                         if (data !== undefined) {
                             $("#editing_ore_lavorate").append('<div class="list-group" id="lista_editing">');
                             for (var i = 0; i < data.length; i++) {
-                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" href="#" class="list-group-item">\n\
-                <i class="fa fa-comment fa-fw"></i>' + data[i].operatore + ' ' + data[i].day + '<span class="pull-right text-muted small">\n\
+                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" href="" class="list-group-item">\n\
+                                <span class="operatore" style="display:none">'+data[i].operatoreId+'</span><span class="giornata" style="display: none">'+data[i].day+'</span>\n\
+                <span style="font-weight:bold">' +data[i].operatore+'</span><span style="margin-left:2em">'+ data[i].day + '</span>\n\
+<span class="pull-right text-muted small">\n\
 <em>' + data[i].hours + '</em>\n\
 </span>\n\
 </a>');
@@ -114,6 +116,10 @@
                     }
                 });
             }
+            var GIORNATE_NON_COPERTE_DATATABLE;
+            var OPERATORE_SELEZIONATO, GIORNO_SELEZIONATO, FILTRO_ATTIVATO;
+            OPERATORE_SELEZIONATO = -1;
+            GIORNO_SELEZIONATO = -1;
             $(document).ready(function () {
                 aggiornaSommario();
                 aggiornaDettaglioGiorniNonCompleti();
@@ -121,9 +127,66 @@
                     aggiornaSommario();
                     aggiornaDettaglioGiorniNonCompleti();
                 });
+                //Giornate NON coperte DataTable section
+                $('#giornateNonCoperteTable tfoot th').each(function () {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                });
+                GIORNATE_NON_COPERTE_DATATABLE = $('#giornateNonCoperteTable').DataTable({
+                    language: {
+                        lengthMenu: "Mostra _MENU_ elementi per pagina",
+                        zeroRecords: "Nessuna corrispondenza - spiacente",
+                        info: "Pagina numero _PAGE_ di _PAGES_",
+                        infoEmpty: "Nessun elemento presente",
+                        infoFiltered: "(filtrato da _MAX_ elementi totali)"
+                    },
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "GetPraticheLavorabiliCoperturaOrario",
+                        type: "POST",
+                        data: {id_operatore: OPERATORE_SELEZIONATO , data_selezionata:GIORNO_SELEZIONATO}
+                    },
+                    sDom: 'lrtip', //to hide global search input box.
+                    initComplete: function () {
+                        this.api().columns().every(function () {
+                            var that = this;
+                            $('input', this.footer()).on('keyup change', function () {
+                                if (that.search() !== this.value) {
+                                    that.search(this.value).draw();
+                                }
+                            });
+                        });
+                    }
+                });
+                $('#giornateNonCoperteTable tbody').on('click', 'tr', function () {
+                    $(this).toggleClass('selected');
+                });
+                $(".list-group-item").on('click',function(){
+                    OPERATORE_SELEZIONATO = $(this).find("span.operatore").text();
+                    GIORNO_SELEZIONATO = $(this).find("span.giornata").text();
+                });
+                $("#add_new_pratiche").on('shown.bs.modal', function () {
+                    GIORNATE_NON_COPERTE_DATATABLE.clear();
+                    GIORNATE_NON_COPERTE_DATATABLE.ajax.reload();
+                });
+                $('#giornateNonCoperteTable').on('preXhr.dt', function (e, settings, data) {
+                    data.id_operatore = OPERATORE_SELEZIONATO;
+                    data.data_selezionata = GIORNO_SELEZIONATO;
+                });
             });
 
         </script>
+        <style>
+            tfoot input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            body.modal-open {
+                overflow: visible;
+            }
+        </style>
     </head>
     <body>
         <div id="wrapper">
@@ -149,9 +212,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="pannello_di_controllo.jsp">
+                                <a href="pannello_delle_ore.jsp">
                                     <i class="fa fa-dashboard fa-fw"></i>
-                                    Pannello di controllo
+                                    Pannello delle ore
                                 </a>
                             </li>
                         </ul>
@@ -164,7 +227,7 @@
             <div id="page-wrapper">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Pannello di controllo</h1>
+                        <h1 class="page-header">Pannello delle ore</h1>
                     </div>
                 </div>
                 <div class="row">
@@ -189,12 +252,6 @@
                 </div>
                 <div class="row" id="worked_days_resume">
                 </div>
-                <div class="row" id="borda">
-                    <div class="col-lg-12">
-                        <a data-toggle='modal' data-target='#add_new_pratiche' href=""><button type="button" class="btn btn-default btn-outline">Borda</button></a>
-                    </div>
-                </div>
-
                 <div class="row" >
                     <div class="col-lg-12">
                         <div class="panel panel-default">
@@ -218,7 +275,7 @@
                     </div>
                     <div class="modal-body">                        
                         <p style="text-align:center; margin:1em " >Seleziona la pratica e inserisci le ore lavorate:</p>
-                        <table id="clienteTableSelection" class="table table-striped table-bordered" cellspacing='2' width="100%">
+                        <table id="giornateNonCoperteTable" class="table table-striped table-bordered" cellspacing='2' width="100%">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -250,7 +307,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <label>Assegna le ore:</label><input type="number" style="display: inline-block" class="form-control" value="1.0"/>
+                        <label>Assegna le ore:</label><input id="ore_assengate" type="number" style="display: inline-block" class="form-control" value="1.0"/>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
@@ -258,12 +315,7 @@
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Indietro</button>
                                 <button type="button" id="addNewPraticaButton" class="btn btn-primary" data-dismiss="modal">Assegna</button>
                             </div>                          
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-
-                            </div>                          
-                        </div>                       
+                        </div>                  
                     </div>
                 </div>
                 <!-- /.modal-content -->

@@ -571,6 +571,7 @@
                         var items = [];
                         if (data.length === 0) {
                             items.push('<li>Nessuna pratica presente...</li>');
+                            $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
                         } else {
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
@@ -874,6 +875,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             var items = [];
                             if (data.length === 0) {
                                 items.push('<li>Nessuna pratica presente...</li>');
+                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
                                     items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\

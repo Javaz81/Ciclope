@@ -826,6 +826,12 @@
                                     Pratiche Chiuse
                                 </a>
                             </li>
+                            <li>
+                                <a href="pannello_delle_ore.jsp">
+                                    <i class="fa fa-dashboard fa-fw"></i>
+                                    Pannello delle ore
+                                </a>
+                            </li>
                         </ul>
                     </div>
                     <!-- /.sidebar-collapse -->
