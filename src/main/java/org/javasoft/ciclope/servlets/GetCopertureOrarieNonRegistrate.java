@@ -62,8 +62,21 @@ public class GetCopertureOrarieNonRegistrate extends HttpServlet {
             lastDays = ((JSONObject) obj).get("lastDays").toString();
             JSONArray ja = new JSONArray();
             JSONObject jo;
-            StringBuilder infoOperatore = new StringBuilder(200); 
+            StringBuilder infoOperatore = new StringBuilder(200);
+            boolean activeFilter = false;
+            if(idOperatore != null){
+                if (!idOperatore.trim().equals("")){
+                    try{
+                    activeFilter = Integer.parseInt(idOperatore) >= 0;
+                    }catch(NumberFormatException nfe){
+                        activeFilter = false;
+                    }
+                }      
+            }
             for (Personale personale : AmministrazioneUtils.GetAllOperatori()) {
+                if(activeFilter)
+                    if(!(idOperatore.equalsIgnoreCase(personale.getIdPersonale().toString())))
+                        continue;
                 List<AmministrazioneUtils.DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), Integer.parseInt(lastDays));
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 int count = 0;

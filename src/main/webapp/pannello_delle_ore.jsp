@@ -128,7 +128,13 @@
                     }
                 });
             }
-
+            function filterOperatore(opId){
+                if(OPERATORE_SELEZIONATO === opId)
+                    OPERATORE_SELEZIONATO = '-1';
+                else
+                    OPERATORE_SELEZIONATO = opId;
+                aggiornaDettaglioGiorniNonCompleti(OPERATORE_SELEZIONATO);
+            }
             $(document).ready(function () {
                 aggiornaSommario();
                 aggiornaDettaglioGiorniNonCompleti();
@@ -136,6 +142,7 @@
                     aggiornaSommario();
                     aggiornaDettaglioGiorniNonCompleti();
                 });
+               
                 //Giornate NON coperte DataTable section
                 $('#giornateNonCoperteTable tfoot th').each(function () {
                     var title = $(this).text();

@@ -111,7 +111,7 @@ public class GetLastWorkedDaysStatus extends HttpServlet {
                 sb.append("               </div>").append("\n");
                 sb.append("           </div>").append("\n");
                 sb.append("       </div>").append("\n");
-                sb.append("       <a href=\"#\">").append("\n");
+                sb.append("       <a onClick='filterOperatore(").append(personale.getIdPersonale().toString()).append(")' href=\"#\">").append("\n");
                 sb.append("           <div class=\"panel-footer\">").append("\n");
                 sb.append("               <span class=\"pull-left\">Vedi solo questo utente</span>").append("\n");
                 sb.append("               <span class=\"pull-right\"><i class=\"fa fa-search-plus\"></i></span>").append("\n");
