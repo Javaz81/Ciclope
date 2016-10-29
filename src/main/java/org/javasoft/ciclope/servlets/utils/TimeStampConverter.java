@@ -5,10 +5,9 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
-import com.sun.istack.internal.logging.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -52,7 +51,7 @@ public class TimeStampConverter {
         try{
             return MYSQL_COMMONDATE_FORMAT.format(COMMONDATE_FORMAT.parse(commonDate));
         }catch(ParseException pe){
-            Logger.getLogger(TimeStampConverter.class).log(Level.SEVERE, commonDate);
+            pe.printStackTrace();
             return "";
         }
     }

@@ -53,6 +53,10 @@
         <!-- Custom theme JS -->
         <script src="js/libs/startbootstrap-sb-admin-2/js/sb-admin-2.js"></script>
         <script type="text/javascript">
+            var GIORNATE_NON_COPERTE_DATATABLE;
+            var OPERATORE_SELEZIONATO, GIORNO_SELEZIONATO, FILTRO_ATTIVATO;
+            OPERATORE_SELEZIONATO = -1;
+            GIORNO_SELEZIONATO = -1;
             function aggiornaSommario() {
                 var value = $("#giorni_selezionati option:selected").text();
                 var p = {lastDays: value};
@@ -80,6 +84,14 @@
                     }
                 });
             }
+            function updateData(opId, giorno, nome_operatore) {
+                OPERATORE_SELEZIONATO = opId;
+                GIORNO_SELEZIONATO = giorno;
+                $("#nome_operatore").empty();
+                $("#giorno_pratica").empty();
+                $("#nome_operatore").text(nome_operatore);
+                $("#giorno_pratica").text(giorno);
+            }
             function aggiornaDettaglioGiorniNonCompleti(opId) {
                 var value = $("#giorni_selezionati option:selected").text();
                 var operatore = opId === undefined ? '-1' : opId;
@@ -97,9 +109,9 @@
                         if (data !== undefined) {
                             $("#editing_ore_lavorate").append('<div class="list-group" id="lista_editing">');
                             for (var i = 0; i < data.length; i++) {
-                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" href="" class="list-group-item">\n\
-                                <span class="operatore" style="display:none">'+data[i].operatoreId+'</span><span class="giornata" style="display: none">'+data[i].day+'</span>\n\
-                <span style="font-weight:bold">' +data[i].operatore+'</span><span style="margin-left:2em">'+ data[i].day + '</span>\n\
+                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" onClick="updateData(' + data[i].operatoreId + ',\'' + data[i].day + '\',\''+data[i].operatore+'\')" href="" class="list-group-item">\n\
+                                <span class="operatore" style="display:none">' + data[i].operatoreId + '</span><span class="giornata" style="display: none">' + data[i].day + '</span>\n\
+                <span style="font-weight:bold">' + data[i].operatore + '</span><span style="margin-left:2em">' + data[i].day + '</span>\n\
 <span class="pull-right text-muted small">\n\
 <em>' + data[i].hours + '</em>\n\
 </span>\n\
@@ -116,10 +128,7 @@
                     }
                 });
             }
-            var GIORNATE_NON_COPERTE_DATATABLE;
-            var OPERATORE_SELEZIONATO, GIORNO_SELEZIONATO, FILTRO_ATTIVATO;
-            OPERATORE_SELEZIONATO = -1;
-            GIORNO_SELEZIONATO = -1;
+
             $(document).ready(function () {
                 aggiornaSommario();
                 aggiornaDettaglioGiorniNonCompleti();
@@ -146,7 +155,7 @@
                     ajax: {
                         url: "GetPraticheLavorabiliCoperturaOrario",
                         type: "POST",
-                        data: {id_operatore: OPERATORE_SELEZIONATO , data_selezionata:GIORNO_SELEZIONATO}
+                        data: {id_operatore: OPERATORE_SELEZIONATO, data_selezionata: GIORNO_SELEZIONATO}
                     },
                     sDom: 'lrtip', //to hide global search input box.
                     initComplete: function () {
@@ -161,12 +170,17 @@
                     }
                 });
                 $('#giornateNonCoperteTable tbody').on('click', 'tr', function () {
+                    $("#giornateNonCoperteTable tbody tr.selected").each(function (index, value) {
+                        $(value).removeClass('selected');
+                    });
                     $(this).toggleClass('selected');
                 });
-                $(".list-group-item").on('click',function(){
-                    OPERATORE_SELEZIONATO = $(this).find("span.operatore").text();
-                    GIORNO_SELEZIONATO = $(this).find("span.giornata").text();
-                });
+                /*
+                 $("a.list-group-item").click(function(){
+                 OPERATORE_SELEZIONATO = $(this).find("span.operatore").text();
+                 GIORNO_SELEZIONATO = $(this).find("span.giornata").text();
+                 });
+                 */
                 $("#add_new_pratiche").on('shown.bs.modal', function () {
                     GIORNATE_NON_COPERTE_DATATABLE.clear();
                     GIORNATE_NON_COPERTE_DATATABLE.ajax.reload();
@@ -174,6 +188,39 @@
                 $('#giornateNonCoperteTable').on('preXhr.dt', function (e, settings, data) {
                     data.id_operatore = OPERATORE_SELEZIONATO;
                     data.data_selezionata = GIORNO_SELEZIONATO;
+                });
+                $("#addNewPraticaButton").on('click', function () {
+                    praticaId = "-1";
+                    operatore = OPERATORE_SELEZIONATO.toString(); //serve perchè senno la servlet lo interpreta come long
+                    ore = $("#ore_assengate").val();
+                    $("#giornateNonCoperteTable tbody tr.selected").each(function (index, value) {
+                        praticaId = value.childNodes[0].innerText;
+                    });
+                    if (praticaId === "-1") {
+                        return;
+                    } else {
+                        
+                        var p = {"praticaId": praticaId, "giornata": GIORNO_SELEZIONATO, "personale": operatore, "ore":ore};
+                        requestJson = JSON.stringify(p);
+                        $.ajax({
+                            url: "AddPraticaLavorataOdierna",
+                            cache: false,
+                            data: requestJson,
+                            dataType: 'json',
+                            type: 'POST',
+                            async: true,
+                            success: function (data) {
+                                //...passa direttamente alla callback 'complete'
+                            },
+                            error: function (xhttpjqr, err, data) {
+                               alert("Errore: "+err.toLocaleString());
+                            },
+                            complete: function (xhttpjqr, evtobj, data) {
+                                 aggiornaSommario();
+                                 aggiornaDettaglioGiorniNonCompleti();
+                            }
+                        });
+                    }
                 });
             });
 

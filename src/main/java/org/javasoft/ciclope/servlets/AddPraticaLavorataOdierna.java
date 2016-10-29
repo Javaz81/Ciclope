@@ -65,6 +65,7 @@ public class AddPraticaLavorataOdierna extends HttpServlet {
             String praticaId = (String) ((JSONObject) obj).get("praticaId");
             String giornataJs = (String) ((JSONObject) obj).get("giornata");
             String personaleId = (String) ((JSONObject) obj).get("personale");
+            String oreLavorate = (String) ((JSONObject) obj).get("ore");
             String giornata =""; 
             try {
                 giornata = new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("dd/MM/yyyy").parse(giornataJs));
@@ -79,7 +80,7 @@ public class AddPraticaLavorataOdierna extends HttpServlet {
             t.begin();
             //Inserisci il materiale nella pratica ed aggiorna di una quantita.
             Query q = s.createSQLQuery("INSERT INTO ciclope.orelavorate "
-                    + "(ore, personale, pratica, giornata) VALUES ('0','" + personaleId + "',"
+                    + "(ore, personale, pratica, giornata) VALUES ("+(oreLavorate==null?"'0'":"'"+oreLavorate+"'")+",'" + personaleId + "',"
                     + " '" + praticaId + "', '" + giornata + "')");
             int n_row = q.executeUpdate();
             if (n_row != 1) {
