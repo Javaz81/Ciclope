@@ -106,7 +106,7 @@ public class UpdateQuantitaMateriale extends HttpServlet {
             t.commit();
             JSONObject jo = new JSONObject();
             Float res = qty_cur + qty_upd;
-            jo.put("qty", Float.toString(res));
+            jo.put("qty", Float.toString(res));            
             jo.put("result", "ok");
              try (PrintWriter out = response.getWriter()) {
                 out.println(jo.toJSONString());

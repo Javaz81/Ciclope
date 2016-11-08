@@ -1000,7 +1000,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
                         avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                         minLength: 4,
-                        onComplete: function (barcode, qty) {
+                        onComplete: function (barcoderaw, qty) {
+                            var barcode = barcoderaw.replace(".", "");
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
@@ -1014,10 +1015,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     $.mobile.loading("hide");
                                 }, 1500);
                             } else {
-                                ciclope = $("#" + idMateriale).text();
-                                var pos = materialeAggiornato.lastIndexOf(" ");
-                                var dlgTitolo = materialeAggiornato.slice(0, pos);
-                                $("#filterApprovvigionamenti").val(barcode);
+                                var test = $("#"+barcode).text().toString();
+                                var filterCode = test.split("-")[0];
+                                $("#filterApprovvigionamenti").val(filterCode);
                                 $("#lista_approvvigionamenti").listview("refresh");
                             }
                         },
@@ -1079,7 +1079,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
                         avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                         minLength: 4,
-                        onComplete: function (barcode, qty) {
+                        onComplete: function (barcoderaw, qty) {
+                            var barcode = barcoderaw.replace(".", "");
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
@@ -1093,10 +1094,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     $.mobile.loading("hide");
                                 }, 1500);
                             } else {
-                                ciclope = $("#" + idMateriale).text();
-                                var pos = materialeAggiornato.lastIndexOf(" ");
-                                var dlgTitolo = materialeAggiornato.slice(0, pos);
-                                $("#filterRifornimenti").val(barcode);
+                                var test = $("#"+barcode).text().toString();
+                                var filterCode = test.split("-")[0];
+                                $("#filterRifornimenti").val(filterCode);
                                 $("#lista_rifornimenti").listview("refresh");
                             }
                         },
