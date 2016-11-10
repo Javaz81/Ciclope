@@ -44,7 +44,64 @@
             function currentMaterial(idMateriale) {
                 var itemMateriale = $("#lista_materiale.div");
             }
-
+            function creaPraticaTemporanea() {
+                var p = {
+                    "cliente": $("#nome_cliente").val(),
+                    "veicolo": $("#dati_veicolo").val(),
+                    "kilometri": $("#kilometri_correnti").val(),
+                    "lavori": $("#lavori_segnalati").val()
+                };
+                requestJson = encodeURIComponent(JSON.stringify(p));
+                $.mobile.loading('show', {
+                    text: 'Creazione in corso, attendere...',
+                    textVisible: true,
+                    theme: 'b',
+                    html: ""
+                });
+                $.ajax({
+                    url: "CreaPraticaTemporanea",
+                    cache: false,
+                    data: requestJson,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: true,
+                    success: function (data) {
+                        $.mobile.loading("hide");
+                        if (data.result === "ok") {
+                            $.mobile.loading('show', {
+                                text: 'Fatto!',
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            $.mobile.loading("hide");
+                        } else {
+                            $.mobile.loading('show', {
+                                text: data.message,
+                                textVisible: true,
+                                theme: 'b',
+                                html: ""
+                            });
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                                $.mobile.navigate("#pgMagazzino");
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhttpjqr, err, data) {
+                        $.mobile.loading("hide");
+                        $.mobile.loading('show', {
+                            text: 'Errore di comunicazione!',
+                            textVisible: true,
+                            theme: 'b',
+                            html: ""
+                        });
+                        setTimeout(function () {
+                            $.mobile.loading("hide");
+                        }, 1000);
+                    }
+                });
+            }
             function AddPraticaLavorataOdierna(pratica, nome_pratica) {
                 var p = {"praticaId": pratica, "giornata": giornata_corrente, "personale": personale_corrente};
                 requestJson = JSON.stringify(p);
@@ -1190,8 +1247,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     <div class="ui-grid-solo">
                         <a data-role="button" href="#pgApprovvigionamenti">Ordinazioni</a>
                         <canvas id="myCanvas" height="100" width="100"></canvas>
-                    </div>
-
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -1209,17 +1265,14 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     <label for="dati_veicolo">Dati veicolo:</label>
                     <input type="text" name="dati_veicolo" id="dati_veicolo" placeholder="Marca,modello,matricola veicolo o piattaforma..." value="">
                     <span style="display:inline-block">
-                    <label for="kilometri_correnti">Kilometri correnti:</label>
-                    <input type="number" name="kilometri_correnti" id="kilometri_correnti" placeholder="Kilometri del veicolo..." value="">
+                        <label for="kilometri_correnti">Kilometri correnti:</label>
+                        <input type="number" name="kilometri_correnti" id="kilometri_correnti" placeholder="Kilometri del veicolo..." value="">
                     </span>
-                    <fieldset data-role="controlgroup" data-type="horizontal">
-                        <legend>Tipo:</legend>
-                        <input type="radio" name="tipo" id="tipo_ple" value="PLE" checked="checked">
-                        <label for="tipo_ple">PLE</label>
-                        <input type="radio" name="tipo" id="tipo_pv" value="PV">
-                        <label for="tipo_pv">PV</label>
-                    </fieldset>
-                    <input type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
+                    <label for="lavori_segnalati">LAVORI segnalati all'arrivo:</label>
+                    <textarea cols="80" rows="8" name="lavori_segnalati" id="lavori_segnalati"></textarea>
+                    <div style="margin:2em">
+                    <input data-theme="b" type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
+                    </div>
                 </form>
             </div>
         </div>
