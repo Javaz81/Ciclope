@@ -592,12 +592,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 }
                                 return 0;
                             });
-                            $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</span></h2>');
+                            $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">' + data[0].oreTotali + '</span></h2>');
                         }
                         $("#lstUltimePratiche").empty();
                         $("#lstUltimePratiche").html(items);
                         $("#lstUltimePratiche").listview("refresh");
-                        
+
                         $.mobile.loading("hide");
                     },
                     error: function (xhttpjqr, err, data) {
@@ -896,7 +896,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     }
                                     return 0;
                                 });
-                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">'+data[0].oreTotali+'</span></h2>');
+                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">' + data[0].oreTotali + '</span></h2>');
                             }
                             $("#lstUltimePratiche").empty();
                             $("#lstUltimePratiche").html(items);
@@ -1005,6 +1005,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
+                                console.log('NUOVO ' + barcode);
+                                addMaterialePratica(barcode);
+                            } else {
+
+                            }
+                            if (this.getElementById(barcode) === null) {
                                 $.mobile.loading('show', {
                                     text: 'Nessun materiale con questo codice trovato...',
                                     textVisible: true,
@@ -1015,8 +1021,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     $.mobile.loading("hide");
                                 }, 1500);
                             } else {
-                                var test = $("#"+barcode).text().toString();
-                                var filterCode = test.split("-")[0];
+                                console.log('INCREMENTA ' + barcode);
+                                var desc = $("#" + barcode).text().toString();
+                                var filterCode = desc.split("-")[0];
                                 $("#filterApprovvigionamenti").val(filterCode);
                                 $("#lista_approvvigionamenti").listview("refresh");
                             }
@@ -1094,8 +1101,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     $.mobile.loading("hide");
                                 }, 1500);
                             } else {
-                                var test = $("#"+barcode).text().toString();
-                                var filterCode = test.split("-")[0];
+                                var desc = $("#" + barcode).text().toString();
+                                var filterCode = desc.split("-")[0];
                                 $("#filterRifornimenti").val(filterCode);
                                 $("#lista_rifornimenti").listview("refresh");
                             }
@@ -1169,6 +1176,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
             <div data-role="content">
                 <div id="main_content">
                     <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgCreazionePratica">Crea Pratica temporanea</a>
+                    </div>
+                    <div class="ui-grid-solo">
                         <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Pratiche Attive</a>
                     </div>
                     <div class="ui-grid-solo">
@@ -1181,7 +1191,36 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         <a data-role="button" href="#pgApprovvigionamenti">Ordinazioni</a>
                         <canvas id="myCanvas" height="100" width="100"></canvas>
                     </div>
+
                 </div>
+            </div>
+        </div>
+        <!-- Creazione pratica temporanea -->
+        <div data-role="page" id="pgCreazionePratica" data-title="Ciclope - Creazione pratica temporanea">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Creazione lista temporanea</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+            </div>
+            <div data-role="content">
+                <form>
+                    <label for="nome_cliente">Ragione Sociale/Cliente:</label>
+                    <input type="text" name="nome_cliente" id="nome_cliente" placeholder="Nome per il cliente..." value="">
+                    <label for="dati_veicolo">Dati veicolo:</label>
+                    <input type="text" name="dati_veicolo" id="dati_veicolo" placeholder="Marca,modello,matricola veicolo o piattaforma..." value="">
+                    <span style="display:inline-block">
+                    <label for="kilometri_correnti">Kilometri correnti:</label>
+                    <input type="number" name="kilometri_correnti" id="kilometri_correnti" placeholder="Kilometri del veicolo..." value="">
+                    </span>
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>Tipo:</legend>
+                        <input type="radio" name="tipo" id="tipo_ple" value="PLE" checked="checked">
+                        <label for="tipo_ple">PLE</label>
+                        <input type="radio" name="tipo" id="tipo_pv" value="PV">
+                        <label for="tipo_pv">PV</label>
+                    </fieldset>
+                    <input type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
+                </form>
             </div>
         </div>
         <div data-role="page" id="pgOreLavorate-main" data-title="Magazzino - Selezione Operatore">
@@ -1280,7 +1319,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </div>
             </div>
         </div>
-     <!-- Materiale Utilizzato nelle pratiche -->
+        <!-- Materiale Utilizzato nelle pratiche -->
         <div data-role="page" id="pgMaterialeUtilizzato" data-title="Ciclope - materiale utilizzato per riparazioni.">
             <div data-role="header" data-position="fixed">
                 <h1>Materiale Utilizzato per la Riparazione</h1>
@@ -1298,7 +1337,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </ol>
             </div>
         </div>
-     <!-- Approvvigionamenti -->
+        <!-- Approvvigionamenti -->
         <div data-role="page" id="pgApprovvigionamenti" data-title="Ciclope - Approvvigionamenti">
             <div data-role="header" data-position="fixed">
                 <h1>Ciclope - Lista Approvvigionamenti</h1>
@@ -1317,6 +1356,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 </ul>
             </div>
         </div>
+
+
         <!-- Rifornimenti -->
         <div data-role="page" id="pgRifornimenti" data-title="Ciclope - Rifornimenti">
             <div data-role="header" data-position="fixed">
