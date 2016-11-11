@@ -73,6 +73,42 @@
             var TIPO_LAVORO_SELEZIONATO = "";
             var DATATABLE_DATA = {};
             // functions
+
+            function getRandomArrivoCode() {
+                var oggi = new Date();
+                var codice = new String();
+                codice = "TEMPORANEO_".concat(oggi.getTime().toString());
+                return codice;
+            }
+
+            function getDataArrivo() {
+                var oggi = new Date();
+                var day = new String();
+                switch (new Date().getDay()) {
+                    case 0:
+                        day = "Domenica";
+                        break;
+                    case 1:
+                        day = "Lunedi";
+                        break;
+                    case 2:
+                        day = "Martedi";
+                        break;
+                    case 3:
+                        day = "Mercoledi";
+                        break;
+                    case 4:
+                        day = "Giovedi";
+                        break;
+                    case 5:
+                        day = "Venerdi";
+                        break;
+                    case 6:
+                        day = "Sabato";
+                }
+                day = day.concat(" ").concat(oggi.getDate()).concat("-").concat(oggi.getMonth() + 1).concat("-").concat(oggi.getFullYear());
+                return day;
+            }
             function getParameterByName(name, url) {
                 if (!url)
                     url = window.location.href;
@@ -174,14 +210,13 @@
                             if (data !== undefined) {
                                 if (data.result === "ok") {
                                     //compila veicolo
-                                    var values = data.veicolo.split("#");
-                                    var tipo = values[6];
+                                    var values = data.row.split("#");
+                                    var tipo = values[5];
                                     $("#idVeicolo").val(values[0]);
-                                    $("#marca").val(values[1]);
-                                    $("#modello").val(values[2]);
+                                    $("#modello").val(values[1]);
+                                    $("#marca").val(values[2]);
                                     $("#targa").val(values[3]);
-                                    $("#kilometraggio").val(values[4]);
-                                    $("#anno").val(values[5]);
+                                    $("#anno").val(values[4]);
                                     if (tipo === "PLE") {
                                         $("#tipo_ple").prop('checked', true);
                                         $("#tipo_pv").prop('checked', false);
@@ -195,8 +230,7 @@
                                         $("#tipo_pv").prop('checked', false);
                                         $("#tipo_autogru").prop('checked', true);
                                     }
-                                    $("#matricola").val(values[7]);
-                                    $("#ore").val(values[8]);
+                                    $("#matricola").val(values[6]);
                                 } else {
                                     alert("Errore nel DB->" + data.messaggio);
                                 }
@@ -231,13 +265,12 @@
                                     if (data.result === "ok") {
                                         //compila veicolo
                                         var values = data.row.split("#");
-                                        var tipo = values[6];
+                                        var tipo = values[5];
                                         $("#idVeicolo").val(values[0]);
-                                        $("#marca").val(values[1]);
-                                        $("#modello").val(values[2]);
+                                        $("#modello").val(values[1]);
+                                        $("#marca").val(values[2]);
                                         $("#targa").val(values[3]);
-                                        $("#kilometraggio").val(values[4]);
-                                        $("#anno").val(values[5]);
+                                        $("#anno").val(values[4]);
                                         if (tipo === "PLE") {
                                             $("#tipo_ple").prop('checked', true);
                                             $("#tipo_pv").prop('checked', false);
@@ -251,8 +284,7 @@
                                             $("#tipo_pv").prop('checked', false);
                                             $("#tipo_autogru").prop('checked', true);
                                         }
-                                        $("#matricola").val(values[7]);
-                                        $("#ore").val(values[8]);
+                                        $("#matricola").val(values[6]);
                                     } else {
                                         alert("Errore nel DB->" + data.result);
                                     }
@@ -630,23 +662,33 @@
                     var praticaId = $("#idPratica").val();
                     var arrivo = $("#arrivo").val();
                     var data_arrivo = $("#data_arrivo").val();
+                    /*
+                     if (arrivo.trim() === '') {
+                     $("#notification_area").prepend(
+                     "<div class='alert alert-danger alert-dismissable'>\n\
+                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                     La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
+                     </div>"
+                     );
+                     return;
+                     }
+                     if (data_arrivo.trim() === '') {
+                     $("#notification_area").prepend(
+                     "<div class='alert alert-danger alert-dismissable'>\n\
+                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
+                     La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
+                     </div>"
+                     );
+                     return;
+                     }
+                     */
                     if (arrivo.trim() === '') {
-                        $("#notification_area").prepend(
-                                "<div class='alert alert-danger alert-dismissable'>\n\
-                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
-                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
-                                </div>"
-                                );
-                        return;
+                        arrivo = getRandomArrivoCode();
+                        $("#arrivo").val(arrivo);
                     }
                     if (data_arrivo.trim() === '') {
-                        $("#notification_area").prepend(
-                                "<div class='alert alert-danger alert-dismissable'>\n\
-                                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>\n\
-                                    La pratica deve essere inizializzata. Inserire almeno i <b>dati di Arrivo<b/>.\n\
-                                </div>"
-                                );
-                        return;
+                        data_arrivo = getDataArrivo();
+                        $("#data_arrivo").val(data_arrivo);
                     }
                     var uscita = $("#uscita").val();
                     var data_uscita = $("#data_uscita").val();
@@ -690,6 +732,8 @@
                     var collaudo_usl_data = $("#collaudo_usl_data").val();
                     var registro_di_controllo = $("#registro_di_controllo").val();
                     var lavori_segnalati = $("#lavori_segnalati").val();
+                    var fattura = $("#fattura").val();
+                    var fattura_data = $("#fattura_data").val();
 
                     var p = {
                         praticaId: praticaId,
@@ -718,6 +762,8 @@
                         collaudo_usl: collaudo_usl,
                         collaudo_usl_data: collaudo_usl_data,
                         registro_di_controllo: registro_di_controllo,
+                        fattura: fattura,
+                        fattura_data: fattura_data,
                         lavori_segnalati: lavori_segnalati
                     };
                     //l'encoding è necessario a causa del fatto che dei campi

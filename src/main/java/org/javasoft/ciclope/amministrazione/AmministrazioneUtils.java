@@ -70,10 +70,10 @@ public class AmministrazioneUtils {
                 c.setLavori_segnalati(ob[5] == null ? "" : ob[5].toString());
                 c.setNumero_fattura(ob[6] == null ? "" : ob[6].toString());
                 c.setData_fattura(ob[7] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[7]), Locale.ITALY));
-                c.setPreventivo_lavori(ob[8] == null ? "" : ob[8].toString().equals("1") ? "SI" : "NO");
-                c.setRevisione_mctc(ob[9] == null ? "NO" : ob[9].toString().equals("1") ? "SI" : "NO");
-                c.setCollaudo_usl(ob[10] == null ? "NO" : ob[10].toString().equals("1") ? "SI" : "NO");
-                c.setRegistro_di_controllo(ob[11] == null ? "NO" : ob[11].toString().equals("1") ? "SI" : "NO");
+                c.setPreventivo_lavori(ob[8] == null ? "" : (Boolean)ob[8] ? "SI" : "NO");
+                c.setRevisione_mctc(ob[9] == null ? "NO" : (Boolean)ob[9]? "SI" : "NO");
+                c.setCollaudo_usl(ob[10] == null ? "NO" :(Boolean) ob[10] ? "SI" : "NO");
+                c.setRegistro_di_controllo(ob[11] == null ? "NO" :(Boolean) ob[11] ? "SI" : "NO");
                 c.setPreventivo_lavori_data(ob[12] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[12]), Locale.ITALY));
                 c.setRevisione_mctc_data(ob[13] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[13]), Locale.ITALY));
                 c.setCollaudo_usl_data(ob[14] == null ? "" : DateUtils.formatDateForAdministration(((Date) ob[14]), Locale.ITALY));

@@ -26,9 +26,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.javasoft.ciclope.servlets.utils.DateUtils;
-import static org.javasoft.ciclope.servlets.utils.DateUtils.formatAdminYearForMySQL;
-import static org.javasoft.ciclope.servlets.utils.DateUtils.formatExtendedDateFromAdministrator;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -52,7 +49,7 @@ public class CreaPraticaTemporanea extends HttpServlet {
     private String parseBooleanParam(String param) {
         if (param.equalsIgnoreCase("NULL") || param.equalsIgnoreCase("")) {
             return "'0'";
-        } else if (param.equalsIgnoreCase("SI")) {
+        } else if (param.equalsIgnoreCase("SI") || param.equalsIgnoreCase("'1'")) {
             return "'1'";
         } else {
             return "'0'";

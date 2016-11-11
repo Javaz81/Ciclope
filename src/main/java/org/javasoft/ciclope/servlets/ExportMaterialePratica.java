@@ -249,20 +249,22 @@ public class ExportMaterialePratica extends HttpServlet {
             for (Object[] objs : rows) {
                 Row row = sheet.createRow(rid++);
                 int cellnum = 0;
-                for (Object obj : objs) {
-                    Cell cell = row.createCell(cellnum++);
-                    //sets left alignement
-                    cell.setCellStyle(defStyle);
-                    if (obj instanceof String) {
-                        cell.setCellValue((String) obj);
-                    } else if (obj instanceof Float) {
-                        cell.setCellValue((Float) obj);
-                    } else if (obj instanceof Integer) {
-                        cell.setCellValue((Integer) obj);
-                    } else if (obj instanceof BigDecimal) {
-                        cell.setCellValue(((BigDecimal) obj).floatValue());
-                    } else if (obj instanceof Date) {
-                        cell.setCellValue(sdf.format((Date) obj));
+                if (objs != null) {
+                    for (Object obj : objs) {
+                        Cell cell = row.createCell(cellnum++);
+                        //sets left alignement
+                        cell.setCellStyle(defStyle);
+                        if (obj instanceof String) {
+                            cell.setCellValue((String) obj);
+                        } else if (obj instanceof Float) {
+                            cell.setCellValue((Float) obj);
+                        } else if (obj instanceof Integer) {
+                            cell.setCellValue((Integer) obj);
+                        } else if (obj instanceof BigDecimal) {
+                            cell.setCellValue(((BigDecimal) obj).floatValue());
+                        } else if (obj instanceof Date) {
+                            cell.setCellValue(sdf.format((Date) obj));
+                        }
                     }
                 }
             }

@@ -120,6 +120,8 @@ public class SavePratica extends HttpServlet {
                 String collaudo_usl = parseBooleanParam(((JSONObject) obj).get("collaudo_usl").toString().replace("'", "''"));
                 String collaudo_usl_data = parseParam(((JSONObject) obj).get("collaudo_usl_data").toString().replace("'", "''"));
                 String registro_di_controllo = parseBooleanParam(((JSONObject) obj).get("registro_di_controllo").toString().replace("'", "''"));
+                String fattura = parseParam(((JSONObject) obj).get("fattura").toString().replace("'", "''"));
+                String fattura_data = parseParam(((JSONObject) obj).get("fattura_data").toString().replace("'", "''"));
                 String lavori_segnalati = parseParam(((JSONObject) obj).get("lavori_segnalati").toString().replace("'", "''"));
 
                 boolean nuovaPratica = false;
@@ -203,6 +205,8 @@ public class SavePratica extends HttpServlet {
                             + "collaudo_usl,"
                             + "collaudo_usl_data,"
                             + "registro_di_controllo,"
+                            + "numero_fattura,"
+                            + "data_fattura,"
                             + "lavori_segnalati,"
                             + "Cliente_idCliente,"
                             + "Veicolo,"
@@ -220,8 +224,10 @@ public class SavePratica extends HttpServlet {
                             + revisione_mctc + ","
                             + DateUtils.formatDateForAdministration(revisione_mctc_data, Locale.ITALY) + ","
                             + collaudo_usl + ","
-                            + DateUtils.formatDateForAdministration(collaudo_usl_data, Locale.ITALY) + ","
+                            + DateUtils.formatDateForAdministration(collaudo_usl_data, Locale.ITALY) + ","                           
                             + registro_di_controllo + ","
+                            + fattura + ","
+                            + DateUtils.formatDateForAdministration(fattura_data, Locale.ITALY) + ","
                             + lavori_segnalati + ","
                             + idCliente + ","
                             + veicoloId +","
@@ -252,6 +258,8 @@ public class SavePratica extends HttpServlet {
                             + "collaudo_usl=" + parseBooleanParam(collaudo_usl) + ", "
                             + "collaudo_usl_data=" + formatExtendedDateFromAdministrator(collaudo_usl_data) + ", "
                             + "registro_di_controllo=" + parseBooleanParam(registro_di_controllo) + ", "
+                            + "numero_fattura=" + fattura + ", "                                     
+                            + "data_fattura="+DateUtils.formatDateForAdministration(fattura_data, Locale.ITALY) + ", "
                             + "lavori_segnalati=" + lavori_segnalati + ", "
                             + "Cliente_idCliente=" + idCliente + ", "
                             + "veicolo=" + veicoloId + ", "
@@ -338,7 +346,7 @@ public class SavePratica extends HttpServlet {
     private String parseBooleanParam(String param) {
         if (param.equalsIgnoreCase("NULL") || param.equalsIgnoreCase("")) {
             return "'0'";
-        } else if (param.equalsIgnoreCase("SI")) {
+        } else if (param.equalsIgnoreCase("SI") || param.equalsIgnoreCase("'1'")) {
             return "'1'";
         } else {
             return "'0'";
