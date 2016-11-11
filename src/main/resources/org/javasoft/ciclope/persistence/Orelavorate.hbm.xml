@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<!-- Generated 10-nov-2016 22.50.11 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="org.javasoft.ciclope.persistence.Orelavorate" table="orelavorate" catalog="ciclope" optimistic-lock="version">
-        <id name="idOreLavorate" type="int">
+        <id name="idOreLavorate" type="java.lang.Integer">
             <column name="idOreLavorate" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <many-to-one name="personale" class="org.javasoft.ciclope.persistence.Personale" fetch="select">
             <column name="personale" not-null="true" />
@@ -14,11 +14,11 @@
         <many-to-one name="pratica" class="org.javasoft.ciclope.persistence.Pratica" fetch="select">
             <column name="pratica" not-null="true" />
         </many-to-one>
-        <property name="ore" type="java.lang.Float">
-            <column name="ore" />
+        <property name="ore" type="big_decimal">
+            <column name="ore" precision="3" scale="1" />
         </property>
         <property name="giornata" type="date">
-            <column name="giornata" length="10" />
+            <column name="giornata" length="10" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
 package org.javasoft.ciclope.persistence;
-// Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
+// Generated 10-nov-2016 22.50.10 by Hibernate Tools 4.3.1
 
 
 
@@ -10,23 +10,17 @@ public class Lavoropratica  implements java.io.Serializable {
 
 
      private LavoropraticaId id;
-     private Pratica pratica;
-     private Tipolavoro tipolavoro;
      private String descrizioneAltro;
 
     public Lavoropratica() {
     }
 
 	
-    public Lavoropratica(LavoropraticaId id, Pratica pratica, Tipolavoro tipolavoro) {
+    public Lavoropratica(LavoropraticaId id) {
         this.id = id;
-        this.pratica = pratica;
-        this.tipolavoro = tipolavoro;
     }
-    public Lavoropratica(LavoropraticaId id, Pratica pratica, Tipolavoro tipolavoro, String descrizioneAltro) {
+    public Lavoropratica(LavoropraticaId id, String descrizioneAltro) {
        this.id = id;
-       this.pratica = pratica;
-       this.tipolavoro = tipolavoro;
        this.descrizioneAltro = descrizioneAltro;
     }
    
@@ -36,20 +30,6 @@ public class Lavoropratica  implements java.io.Serializable {
     
     public void setId(LavoropraticaId id) {
         this.id = id;
-    }
-    public Pratica getPratica() {
-        return this.pratica;
-    }
-    
-    public void setPratica(Pratica pratica) {
-        this.pratica = pratica;
-    }
-    public Tipolavoro getTipolavoro() {
-        return this.tipolavoro;
-    }
-    
-    public void setTipolavoro(Tipolavoro tipolavoro) {
-        this.tipolavoro = tipolavoro;
     }
     public String getDescrizioneAltro() {
         return this.descrizioneAltro;

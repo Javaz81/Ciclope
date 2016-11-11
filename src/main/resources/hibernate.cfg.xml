@@ -26,17 +26,19 @@
         <property name="hibernate.c3p0.timeout">3</property>
         <property name="hibernate.c3p0.max_statements">10</property>
 
-
-
-        <mapping resource="org/javasoft/ciclope/persistence/Orelavorate.hbm.xml"/>
+        
         <mapping resource="org/javasoft/ciclope/persistence/Veicolo.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Lavoropratica.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Categoriatipolavoro.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Tipolavoro.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Cliente.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Materialepratica.hbm.xml"/>
-        <mapping resource="org/javasoft/ciclope/persistence/Personale.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Orelavorate.hbm.xml"/>
         <mapping resource="org/javasoft/ciclope/persistence/Pratica.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Tipolavoro.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Lavoropratica.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Personale.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Lavoripratichestandard.hbm.xml"/>
         <mapping resource="org/javasoft/ciclope/persistence/Articolo.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Cliente.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Pratichespeciali.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Categoriatipolavoro.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Materialepratica.hbm.xml"/>
+        <mapping resource="org/javasoft/ciclope/persistence/Lavoripratichecustom.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

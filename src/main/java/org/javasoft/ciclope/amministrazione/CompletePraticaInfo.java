@@ -43,6 +43,10 @@ public class CompletePraticaInfo {
     private String collaudo_usl_data;
 
     private String registro_di_controllo_data;
+    
+    private String cliente_temporaneo;
+    
+    private String veicolo_temporaneo;
 
     /* cliente */
     private String idCliente;
@@ -90,6 +94,8 @@ public class CompletePraticaInfo {
         cpi.setIdVeicolo("-1");
         cpi.setKilometraggioVeicolo("");
         cpi.setLavori_segnalati("");
+        cpi.setCliente_temporaneo("");
+        cpi.setVeicolo_temporaneo("");
         cpi.setLocalitaCliente("");
         cpi.setMarcaVeicolo("");
         cpi.setMatricolaVeicolo("");
@@ -107,6 +113,22 @@ public class CompletePraticaInfo {
         cpi.setTipoVeicolo("");
         cpi.setUscita("");
         return cpi;
+    }
+
+    public String getCliente_temporaneo() {
+        return cliente_temporaneo;
+    }
+
+    public String getVeicolo_temporaneo() {
+        return veicolo_temporaneo;
+    }
+
+    public void setCliente_temporaneo(String cliente_temporaneo) {
+        this.cliente_temporaneo = cliente_temporaneo;
+    }
+
+    public void setVeicolo_temporaneo(String veicolo_temporaneo) {
+        this.veicolo_temporaneo = veicolo_temporaneo;
     }
 
     /**

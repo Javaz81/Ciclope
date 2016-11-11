@@ -1,5 +1,5 @@
 package org.javasoft.ciclope.persistence;
-// Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
+// Generated 10-nov-2016 22.50.10 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -22,9 +22,8 @@ public class Cliente  implements java.io.Serializable {
     }
 
 	
-    public Cliente(String nome, String cognome) {
+    public Cliente(String nome) {
         this.nome = nome;
-        this.cognome = cognome;
     }
     public Cliente(String nome, String cognome, String cellulare, String localita, Set praticas) {
        this.nome = nome;

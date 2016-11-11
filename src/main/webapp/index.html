@@ -74,7 +74,10 @@
                                 theme: 'b',
                                 html: ""
                             });
-                            $.mobile.loading("hide");
+                            setTimeout(function () {
+                                $.mobile.loading("hide");
+                                $.mobile.navigate("#pgMagazzino");
+                            }, 1000);
                         } else {
                             $.mobile.loading('show', {
                                 text: data.message,

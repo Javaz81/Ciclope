@@ -1,27 +1,26 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-nov-2016 22.50.11 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="org.javasoft.ciclope.persistence.Tipolavoro" table="tipolavoro" catalog="ciclope" optimistic-lock="version">
-        <id name="idTipoLavoro" type="java.lang.Integer">
-            <column name="idTipoLavoro" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="categoriatipolavoro" class="org.javasoft.ciclope.persistence.Categoriatipolavoro" fetch="select">
-            <column name="categoria" not-null="true" />
-        </many-to-one>
-        <property name="codice" type="string">
-            <column name="codice" length="10" not-null="true" />
-        </property>
-        <property name="descrizione" type="string">
-            <column name="descrizione" length="120" />
-        </property>
-        <set name="lavoropraticas" table="lavoropratica" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="tipolavoro" not-null="true" />
-            </key>
-            <one-to-many class="org.javasoft.ciclope.persistence.Lavoropratica" />
-        </set>
-    </class>
+  <class catalog="ciclope" name="org.javasoft.ciclope.persistence.Tipolavoro" optimistic-lock="version" table="tipolavoro">
+    <id name="idTipoLavoro" type="java.lang.Integer">
+      <column name="idTipoLavoro"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="org.javasoft.ciclope.persistence.Categoriatipolavoro" fetch="select" name="categoriatipolavoro">
+      <column name="categoria" not-null="true"/>
+    </many-to-one>
+    <property name="codice" type="string">
+      <column length="10" name="codice" not-null="true"/>
+    </property>
+    <property name="descrizione" type="string">
+      <column length="120" name="descrizione"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="lavoripratichestandards" table="lavoripratichestandard">
+      <key>
+        <column name="tipolavoro" not-null="true"/>
+      </key>
+      <one-to-many class="org.javasoft.ciclope.persistence.Lavoripratichestandard"/>
+    </set>
+  </class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
 package org.javasoft.ciclope.persistence;
-// Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
+// Generated 10-nov-2016 22.50.10 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ public class Tipolavoro  implements java.io.Serializable {
      private Categoriatipolavoro categoriatipolavoro;
      private String codice;
      private String descrizione;
-     private Set lavoropraticas = new HashSet(0);
+     private Set lavoripratichestandards = new HashSet(0);
 
     public Tipolavoro() {
     }
@@ -25,11 +25,11 @@ public class Tipolavoro  implements java.io.Serializable {
         this.categoriatipolavoro = categoriatipolavoro;
         this.codice = codice;
     }
-    public Tipolavoro(Categoriatipolavoro categoriatipolavoro, String codice, String descrizione, Set lavoropraticas) {
+    public Tipolavoro(Categoriatipolavoro categoriatipolavoro, String codice, String descrizione, Set lavoripratichestandards) {
        this.categoriatipolavoro = categoriatipolavoro;
        this.codice = codice;
        this.descrizione = descrizione;
-       this.lavoropraticas = lavoropraticas;
+       this.lavoripratichestandards = lavoripratichestandards;
     }
    
     public Integer getIdTipoLavoro() {
@@ -60,12 +60,12 @@ public class Tipolavoro  implements java.io.Serializable {
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
     }
-    public Set getLavoropraticas() {
-        return this.lavoropraticas;
+    public Set getLavoripratichestandards() {
+        return this.lavoripratichestandards;
     }
     
-    public void setLavoropraticas(Set lavoropraticas) {
-        this.lavoropraticas = lavoropraticas;
+    public void setLavoripratichestandards(Set lavoripratichestandards) {
+        this.lavoripratichestandards = lavoripratichestandards;
     }
 
 

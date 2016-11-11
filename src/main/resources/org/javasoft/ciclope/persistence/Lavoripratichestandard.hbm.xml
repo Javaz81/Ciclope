@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-nov-2016 22.50.11 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="ciclope" name="org.javasoft.ciclope.persistence.Lavoripratichestandard" optimistic-lock="version" table="lavoripratichestandard">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="org.javasoft.ciclope.persistence.Pratica" fetch="select" name="pratica">
+      <column name="pratica" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="org.javasoft.ciclope.persistence.Tipolavoro" fetch="select" name="tipolavoro">
+      <column name="tipolavoro" not-null="true"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>

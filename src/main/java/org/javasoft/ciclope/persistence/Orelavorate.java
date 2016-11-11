@@ -1,7 +1,8 @@
 package org.javasoft.ciclope.persistence;
-// Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
+// Generated 10-nov-2016 22.50.10 by Hibernate Tools 4.3.1
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -10,34 +11,33 @@ import java.util.Date;
 public class Orelavorate  implements java.io.Serializable {
 
 
-     private int idOreLavorate;
+     private Integer idOreLavorate;
      private Personale personale;
      private Pratica pratica;
-     private Byte ore;
+     private BigDecimal ore;
      private Date giornata;
 
     public Orelavorate() {
     }
 
 	
-    public Orelavorate(int idOreLavorate, Personale personale, Pratica pratica) {
-        this.idOreLavorate = idOreLavorate;
+    public Orelavorate(Personale personale, Pratica pratica, Date giornata) {
         this.personale = personale;
         this.pratica = pratica;
+        this.giornata = giornata;
     }
-    public Orelavorate(int idOreLavorate, Personale personale, Pratica pratica, Byte ore, Date giornata) {
-       this.idOreLavorate = idOreLavorate;
+    public Orelavorate(Personale personale, Pratica pratica, BigDecimal ore, Date giornata) {
        this.personale = personale;
        this.pratica = pratica;
        this.ore = ore;
        this.giornata = giornata;
     }
    
-    public int getIdOreLavorate() {
+    public Integer getIdOreLavorate() {
         return this.idOreLavorate;
     }
     
-    public void setIdOreLavorate(int idOreLavorate) {
+    public void setIdOreLavorate(Integer idOreLavorate) {
         this.idOreLavorate = idOreLavorate;
     }
     public Personale getPersonale() {
@@ -54,11 +54,11 @@ public class Orelavorate  implements java.io.Serializable {
     public void setPratica(Pratica pratica) {
         this.pratica = pratica;
     }
-    public Byte getOre() {
+    public BigDecimal getOre() {
         return this.ore;
     }
     
-    public void setOre(Byte ore) {
+    public void setOre(BigDecimal ore) {
         this.ore = ore;
     }
     public Date getGiornata() {

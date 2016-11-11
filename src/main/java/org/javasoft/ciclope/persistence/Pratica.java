@@ -1,5 +1,5 @@
 package org.javasoft.ciclope.persistence;
-// Generated 27-apr-2016 0.09.05 by Hibernate Tools 4.3.1
+// Generated 10-nov-2016 22.50.10 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -12,8 +12,9 @@ import java.util.Set;
 public class Pratica  implements java.io.Serializable {
 
 
-     private int idPratica;
+     private Integer idPratica;
      private Cliente cliente;
+     private Veicolo veicolo;
      private String arrivo;
      private Date dataArrivo;
      private String uscita;
@@ -31,21 +32,19 @@ public class Pratica  implements java.io.Serializable {
      private Date registroDiControlloData;
      private Integer ore;
      private Integer kilometraggio;
+     private String clienteTemporaneo;
+     private String veicoloTemporaneo;
+     private Set lavoripratichecustoms = new HashSet(0);
+     private Set lavoripratichestandards = new HashSet(0);
      private Set orelavorates = new HashSet(0);
-     private Set lavoropraticas = new HashSet(0);
      private Set materialepraticas = new HashSet(0);
 
     public Pratica() {
     }
 
-	
-    public Pratica(int idPratica, Cliente cliente) {
-        this.idPratica = idPratica;
-        this.cliente = cliente;
-    }
-    public Pratica(int idPratica, Cliente cliente, String arrivo, Date dataArrivo, String uscita, Date dataUscita, String lavoriSegnalati, String numeroFattura, Date dataFattura, Boolean preventivoLavori, Boolean revisioneMctc, Boolean collaudoUsl, Boolean registroDiControllo, Date preventivoLavoriData, Date revisioneMctcData, Date collaudoUslData, Date registroDiControlloData, Set orelavorates, Set lavoropraticas, Set materialepraticas, Integer ore, Integer kilometraggio) {
-       this.idPratica = idPratica;
+    public Pratica(Cliente cliente, Veicolo veicolo, String arrivo, Date dataArrivo, String uscita, Date dataUscita, String lavoriSegnalati, String numeroFattura, Date dataFattura, Boolean preventivoLavori, Boolean revisioneMctc, Boolean collaudoUsl, Boolean registroDiControllo, Date preventivoLavoriData, Date revisioneMctcData, Date collaudoUslData, Date registroDiControlloData, Integer ore, Integer kilometraggio, String clienteTemporaneo, String veicoloTemporaneo, Set lavoripratichecustoms, Set lavoripratichestandards, Set orelavorates, Set materialepraticas) {
        this.cliente = cliente;
+       this.veicolo = veicolo;
        this.arrivo = arrivo;
        this.dataArrivo = dataArrivo;
        this.uscita = uscita;
@@ -61,18 +60,21 @@ public class Pratica  implements java.io.Serializable {
        this.revisioneMctcData = revisioneMctcData;
        this.collaudoUslData = collaudoUslData;
        this.registroDiControlloData = registroDiControlloData;
-       this.orelavorates = orelavorates;
-       this.lavoropraticas = lavoropraticas;
-       this.materialepraticas = materialepraticas;
        this.ore = ore;
        this.kilometraggio = kilometraggio;
+       this.clienteTemporaneo = clienteTemporaneo;
+       this.veicoloTemporaneo = veicoloTemporaneo;
+       this.lavoripratichecustoms = lavoripratichecustoms;
+       this.lavoripratichestandards = lavoripratichestandards;
+       this.orelavorates = orelavorates;
+       this.materialepraticas = materialepraticas;
     }
    
-    public int getIdPratica() {
+    public Integer getIdPratica() {
         return this.idPratica;
     }
     
-    public void setIdPratica(int idPratica) {
+    public void setIdPratica(Integer idPratica) {
         this.idPratica = idPratica;
     }
     public Cliente getCliente() {
@@ -81,6 +83,13 @@ public class Pratica  implements java.io.Serializable {
     
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+    public Veicolo getVeicolo() {
+        return this.veicolo;
+    }
+    
+    public void setVeicolo(Veicolo veicolo) {
+        this.veicolo = veicolo;
     }
     public String getArrivo() {
         return this.arrivo;
@@ -187,19 +196,54 @@ public class Pratica  implements java.io.Serializable {
     public void setRegistroDiControlloData(Date registroDiControlloData) {
         this.registroDiControlloData = registroDiControlloData;
     }
+    public Integer getOre() {
+        return this.ore;
+    }
+    
+    public void setOre(Integer ore) {
+        this.ore = ore;
+    }
+    public Integer getKilometraggio() {
+        return this.kilometraggio;
+    }
+    
+    public void setKilometraggio(Integer kilometraggio) {
+        this.kilometraggio = kilometraggio;
+    }
+    public String getClienteTemporaneo() {
+        return this.clienteTemporaneo;
+    }
+    
+    public void setClienteTemporaneo(String clienteTemporaneo) {
+        this.clienteTemporaneo = clienteTemporaneo;
+    }
+    public String getVeicoloTemporaneo() {
+        return this.veicoloTemporaneo;
+    }
+    
+    public void setVeicoloTemporaneo(String veicoloTemporaneo) {
+        this.veicoloTemporaneo = veicoloTemporaneo;
+    }
+    public Set getLavoripratichecustoms() {
+        return this.lavoripratichecustoms;
+    }
+    
+    public void setLavoripratichecustoms(Set lavoripratichecustoms) {
+        this.lavoripratichecustoms = lavoripratichecustoms;
+    }
+    public Set getLavoripratichestandards() {
+        return this.lavoripratichestandards;
+    }
+    
+    public void setLavoripratichestandards(Set lavoripratichestandards) {
+        this.lavoripratichestandards = lavoripratichestandards;
+    }
     public Set getOrelavorates() {
         return this.orelavorates;
     }
     
     public void setOrelavorates(Set orelavorates) {
         this.orelavorates = orelavorates;
-    }
-    public Set getLavoropraticas() {
-        return this.lavoropraticas;
-    }
-    
-    public void setLavoropraticas(Set lavoropraticas) {
-        this.lavoropraticas = lavoropraticas;
     }
     public Set getMaterialepraticas() {
         return this.materialepraticas;
@@ -208,23 +252,10 @@ public class Pratica  implements java.io.Serializable {
     public void setMaterialepraticas(Set materialepraticas) {
         this.materialepraticas = materialepraticas;
     }
-    
-    public void setOre(Integer ore) {
-        this.ore = ore;
-    }
-    
-    public Integer getOre() {
-        return this.ore;
-    }
-    
-    public void setKilometraggio(Integer kilometraggio){
-        this.kilometraggio = kilometraggio;
-    }
-    
-    public Integer getKilometraggio(){
-        return this.kilometraggio;
-    }
-    
+
+
+
+
 }
 
 

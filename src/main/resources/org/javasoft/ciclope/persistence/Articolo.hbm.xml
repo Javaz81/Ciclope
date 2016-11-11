@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27-apr-2016 0.09.06 by Hibernate Tools 4.3.1 -->
+<!-- Generated 10-nov-2016 22.50.11 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="org.javasoft.ciclope.persistence.Articolo" table="articolo" catalog="ciclope" optimistic-lock="version">
         <id name="idArticolo" type="int">
@@ -11,19 +11,19 @@
         <property name="descrizione" type="string">
             <column name="descrizione" length="100" not-null="true" />
         </property>
-        <property name="scortaRimanente" type="java.math.BigDecimal">
-            <column name="scorta_rimanente" not-null="true" />
+        <property name="scortaRimanente" type="big_decimal">
+            <column name="scorta_rimanente" precision="10" scale="3" not-null="true" />
         </property>
-        <property name="scortaMinima" type="java.math.BigDecimal">
-            <column name="scorta_minima" not-null="true">
+        <property name="scortaMinima" type="big_decimal">
+            <column name="scorta_minima" precision="10" scale="3" not-null="true">
                 <comment>serve per sapere quando segnalare l'allarme</comment>
             </column>
         </property>
         <property name="unitaDiMisura" type="string">
             <column name="unita_di_misura" length="3" not-null="true" />
         </property>
-        <property name="approvvigionamento" type="java.math.BigDecimal">
-            <column name="approvvigionamento">
+        <property name="approvvigionamento" type="big_decimal">
+            <column name="approvvigionamento" precision="10" scale="3">
                 <comment>quantit&#224; cumulativa per approvvigionamento. Di solito indica qual'&#232; la quantit&#224; di un certo articolo che deve essere ordinata
                 nell'immediato futuro.L'amministrazione o chi di dovere provvede a ordinare e poi a riazzerare tale quantit&#224;, sommandola contemporaneamente al valore del
                 campo 'scorta_rimanente'</comment>
