@@ -182,23 +182,19 @@
                     var marca = $("#marca1").val();
                     var modello = $("#modello1").val();
                     var targa = $("#targa1").val();
-                    var kilometraggio = $("#kilometraggio1").val();
                     var anno = $("#anno1").val();
                     var tipo = $("input[name=tipo1]:checked").val();
                     var matricola = $("#matricola1").val();
-                    var ore = $("#ore1").val();
 
                     var p = {
                         marca: marca,
                         modello: modello,
                         targa: targa,
-                        kilometraggio: kilometraggio,
                         anno: anno,
                         tipo: tipo,
-                        matricola: matricola,
-                        ore: ore
+                        matricola: matricola
                     };
-                    requestJson = JSON.stringify(p);
+                    requestJson = encodeURIComponent(JSON.stringify(p));
                     $.ajax({
                         url: "AddVeicolo",
                         cache: false,
@@ -210,11 +206,11 @@
                             if (data !== undefined) {
                                 if (data.result === "ok") {
                                     //compila veicolo
-                                    var values = data.row.split("#");
+                                    var values = data.veicolo.split("#");
                                     var tipo = values[5];
                                     $("#idVeicolo").val(values[0]);
-                                    $("#modello").val(values[1]);
-                                    $("#marca").val(values[2]);
+                                    $("#marca").val(values[1]);
+                                    $("#modello").val(values[2]);
                                     $("#targa").val(values[3]);
                                     $("#anno").val(values[4]);
                                     if (tipo === "PLE") {
@@ -267,8 +263,8 @@
                                         var values = data.row.split("#");
                                         var tipo = values[5];
                                         $("#idVeicolo").val(values[0]);
-                                        $("#modello").val(values[1]);
-                                        $("#marca").val(values[2]);
+                                        $("#marca").val(values[1]);
+                                        $("#modello").val(values[2]);
                                         $("#targa").val(values[3]);
                                         $("#anno").val(values[4]);
                                         if (tipo === "PLE") {
@@ -358,7 +354,7 @@
                         cellulare: cellulare,
                         localita: localita
                     };
-                    requestJson = JSON.stringify(p);
+                    requestJson = encodeURIComponent(JSON.stringify(p));
                     $.ajax({
                         url: "AddCliente",
                         cache: false,
@@ -734,6 +730,8 @@
                     var lavori_segnalati = $("#lavori_segnalati").val();
                     var fattura = $("#fattura").val();
                     var fattura_data = $("#fattura_data").val();
+                    var cliente_temp = $("#cliente_temp").val();
+                    var veicolo_temp = $("#veicolo_temp").val();
 
                     var p = {
                         praticaId: praticaId,
@@ -746,6 +744,8 @@
                         modello: modello,
                         targa: targa,
                         kilometraggio: kilometraggio,
+                        cliente_temporaneo: cliente_temp,
+                        veicolo_temporaneo: veicolo_temp,
                         anno: anno,
                         tipo: tipo,
                         matricola: matricola,
@@ -936,7 +936,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-12 ">
+                        <div class="col-lg-6 ">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
                                     <div class="panel-title">
@@ -957,6 +957,36 @@
                                                 <div class="col-lg-6">
                                                     <label>Ore</label>
                                                     <input class="form-control" id="ore" <% out.print("value=\"" + praticaInfos.get(0).getOreVeicolo() + "\""); %> >
+                                                </div>                  
+                                            </div>
+                                            <!-- /.row -->
+                                        </div>                                 
+                                    </div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>                           
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <i class="fa fa-file fw"></i>
+                                        <a style="margin-left:1em"data-toggle="collapse"
+                                           href="#collapseDatiTemporaneiPratica">Dati forniti dal magazzino:</a>
+                                    </div>                                    
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-collapse collapse in" id="collapseDatiTemporaneiPratica">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-lg-6">
+                                                    <label>Info sul cliente:</label>
+                                                    <input class="form-control" id="cliente_temp"  <% out.print("value=\"" + praticaInfos.get(0).getCliente_temporaneo()+ "\""); %> >
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label>Info sulla riparazione:</label>
+                                                    <input class="form-control" id="veicolo_temp" <% out.print("value=\"" + praticaInfos.get(0).getVeicolo_temporaneo()+ "\""); %> >
                                                 </div>                  
                                             </div>
                                             <!-- /.row -->
@@ -1552,8 +1582,6 @@
                             <input class="form-control" id="modello1"  val="" >
                             <label>Targa</label>
                             <input class="form-control" id="targa1" val="" >
-                            <label>Kilometraggio</label>
-                            <input class="form-control" id="kilometraggio1"  val="" >
                             <label>Anno</label>
                             <input class="form-control" id="anno1"  val="">
                             <script>
@@ -1577,8 +1605,6 @@
                             </div>
                             <label>Matricola</label>
                             <input class="form-control" id="matricola1" value="" >
-                            <label>Ore</label>
-                            <input class="form-control" id="ore1" value="" >
                         </div>
                     </div>
                     <div class="modal-footer">

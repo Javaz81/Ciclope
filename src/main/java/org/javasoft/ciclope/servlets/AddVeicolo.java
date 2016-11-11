@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -52,6 +53,7 @@ public class AddVeicolo extends HttpServlet {
             json = br.readLine();
             Object obj = null;
             JSONParser p = new JSONParser();
+            json = URLDecoder.decode(json, "UTF-8");
             if (json != null) {
                 try {
                     obj = p.parse(json);

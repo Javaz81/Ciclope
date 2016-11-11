@@ -104,6 +104,8 @@ public class SavePratica extends HttpServlet {
                 String modello = parseParam(((JSONObject) obj).get("modello").toString().replace("'", "''"));
                 String targa = parseParam(((JSONObject) obj).get("targa").toString().replace("'", "''"));
                 String kilometraggio = parseParam(((JSONObject) obj).get("kilometraggio").toString().replace("'", "''"));
+                String cliente_temporaneo = parseParam(((JSONObject) obj).get("cliente_temporaneo").toString().replace("'", "''"));
+                String veicolo_temporaneo = parseParam(((JSONObject) obj).get("veicolo_temporaneo").toString().replace("'", "''"));
                 String anno = parseParam(((JSONObject) obj).get("anno").toString().replace("'", "''"));
                 String tipo = parseParam(((JSONObject) obj).get("tipo").toString().replace("'", "''"));
                 String matricola = parseParam(((JSONObject) obj).get("matricola").toString().replace("'", "''"));
@@ -211,7 +213,9 @@ public class SavePratica extends HttpServlet {
                             + "Cliente_idCliente,"
                             + "Veicolo,"
                             + "ore,"
-                            + "kilometraggio"
+                            + "kilometraggio,"
+                            + "cliente_temporaneo,"
+                            + "veicolo_temporaneo"
                             + ")"
                             + "VALUES "
                             + "("
@@ -232,7 +236,9 @@ public class SavePratica extends HttpServlet {
                             + idCliente + ","
                             + veicoloId +","
                             + ore+","
-                            + kilometraggio
+                            + kilometraggio+","
+                            + cliente_temporaneo +","
+                            + veicolo_temporaneo
                             + ")");
                     int n_row = q.executeUpdate();
                     if (n_row != 1) {
@@ -264,7 +270,9 @@ public class SavePratica extends HttpServlet {
                             + "Cliente_idCliente=" + idCliente + ", "
                             + "veicolo=" + veicoloId + ", "
                             + "ore=" + ore + ", "
-                            + "kilometraggio="+ kilometraggio + " "
+                            + "kilometraggio="+ kilometraggio + ", "
+                            + "cliente_temporaneo="+cliente_temporaneo + ", "
+                            + "veicolo_temporaneo="+veicolo_temporaneo + " "
                             + "WHERE ciclope.pratica.idPratica" + (praticaId.contains("NULL") ? " IS " : " = ") + praticaId);
                     int n_row = q.executeUpdate();
                     if (n_row != 1) {

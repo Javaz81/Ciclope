@@ -101,7 +101,9 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                         + " ciclope.veicolo.targa as targa,\n"
                         + " ciclope.veicolo.tipo as tipo,\n"
                         + " ciclope.pratica.data_arrivo as data_pratica,\n"
-                        + " ciclope.veicolo.matricola as matricola\n"
+                        + " ciclope.veicolo.matricola as matricola,\n"
+                        + " ciclope.pratica.cliente_temporaneo as cliente_temporaneo,\n"
+                        + " ciclope.pratica.veicolo_temporaneo as veicolo_temporaneo\n"
                         + " from ciclope.pratica\n"
                         + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
                         + " where ciclope.pratica.uscita is null"
@@ -123,6 +125,8 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                 jo.put("tipo", ob[5].toString());
                 jo.put("matricola", ob[7] == null ? "(NO_MATRICOLA)":ob[7].toString());
                 jo.put("data_arrivo", DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
+                jo.put("cliente_temporaneo", ob[8]==null?"":ob[8].toString());
+                jo.put("veicolo_temporaneo", ob[9]==null?"":ob[9].toString());
                 array.add(jo);
             }
             out.println(array.toJSONString());

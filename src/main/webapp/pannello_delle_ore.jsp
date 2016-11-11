@@ -109,7 +109,7 @@
                         if (data !== undefined) {
                             $("#editing_ore_lavorate").append('<div class="list-group" id="lista_editing">');
                             for (var i = 0; i < data.length; i++) {
-                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" onClick="updateData(' + data[i].operatoreId + ',\'' + data[i].day + '\',\''+data[i].operatore+'\')" href="" class="list-group-item">\n\
+                                $("#lista_editing").append('<a data-toggle="modal" data-target="#add_new_pratiche" onClick="updateData(' + data[i].operatoreId + ',\'' + data[i].day + '\',\''+data[i].operatore.replace("'","\\'")+'\')" href="" class="list-group-item">\n\
                                 <span class="operatore" style="display:none">' + data[i].operatoreId + '</span><span class="giornata" style="display: none">' + data[i].day + '</span>\n\
                 <span style="font-weight:bold">' + data[i].operatore + '</span><span style="margin-left:2em">' + data[i].day + '</span>\n\
 <span class="pull-right text-muted small">\n\
@@ -198,7 +198,7 @@
                 });
                 $("#addNewPraticaButton").on('click', function () {
                     praticaId = "-1";
-                    operatore = OPERATORE_SELEZIONATO.toString(); //serve perchè senno la servlet lo interpreta come long
+                    operatore = OPERATORE_SELEZIONATO.toString(); //serve perchè senno la servlet lo interpreta come long                    
                     ore = $("#ore_assengate").val();
                     $("#giornateNonCoperteTable tbody tr.selected").each(function (index, value) {
                         praticaId = value.childNodes[0].innerText;
