@@ -449,6 +449,13 @@
                         type: "POST"
                     },
                     sDom: 'lrtip', //to hide global search input box.
+                    language: {
+                        lengthMenu: "Mostra _MENU_ elementi per pagina",
+                        zeroRecords: "Nessuna corrispondenza - spiacente",
+                        info: "Pagina numero _PAGE_ di _PAGES_",
+                        infoEmpty: "Nessun elemento presente",
+                        infoFiltered: "(filtrato da _MAX_ elementi totali)"
+                    },
 
                     initComplete: function () {
                         this.api().columns().every(function () {

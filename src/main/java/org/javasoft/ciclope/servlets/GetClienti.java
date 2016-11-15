@@ -7,6 +7,7 @@ package org.javasoft.ciclope.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -71,7 +72,7 @@ public class GetClienti extends HttpServlet {
                         extSearch.append("");
                     } else {
                         extSearch.append(i != 0 ? columnNames[i] : "idCliente")
-                                .append(" LIKE '")
+                                .append(" LIKE '%")
                                 .append(e.getValue()[0])
                                 .append("%'");
                         extSearch.append(" AND ");
@@ -94,6 +95,10 @@ public class GetClienti extends HttpServlet {
                     + "LIMIT " + extSearchLimit + " "
                     + "OFFSET " + startSearchLimit).addEntity(Cliente.class);
             List<Cliente> aicrecs = q.list();
+            q = s.createSQLQuery("SELECT count(*) FROM ciclope.cliente "
+                    + (extSearch.toString().trim().equals("")
+                    ? "" : "WHERE " + extSearch.toString()));
+            BigInteger total =(BigInteger) q.list().get(0);
             t.commit();
 
             // Changing "draw" variable let the jquery datatables redraw itself 
@@ -109,8 +114,8 @@ public class GetClienti extends HttpServlet {
             JSONObject jo;
             jo = new JSONObject();
             jo.put("draw", draw);
-            jo.put("recordsTotal", Integer.toString(aicrecs.size()));
-            jo.put("recordsFiltered", Integer.toString(aicrecs.size()));
+            jo.put("recordsTotal", aicrecs.size());
+            jo.put("recordsFiltered", total );
             JSONArray row;
             JSONArray array = new JSONArray();
             for (Cliente ob : aicrecs) {
