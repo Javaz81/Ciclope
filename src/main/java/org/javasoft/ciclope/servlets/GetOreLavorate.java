@@ -77,8 +77,18 @@ public class GetOreLavorate extends HttpServlet {
             Session s = SessionUtils.getCiclopeSession();
             Transaction t = s.getTransaction();
             t.begin();
-            Query q = s.createSQLQuery("select personale.Nome, personale.Cognome, orelavorate.giornata,"
-                    + " veicolo.matricola, veicolo.marca, veicolo.modello, orelavorate.ore, pratica.idPratica, orelavorate.IdOreLavorate \n"
+            Query q = s.createSQLQuery("select "
+                    + "personale.Nome, "
+                    + "personale.Cognome, "
+                    + "orelavorate.giornata,"
+                    + "veicolo.matricola, "
+                    + "veicolo.marca,"
+                    + "veicolo.modello,"
+                    + "orelavorate.ore,"
+                    + "pratica.idPratica,"
+                    + "orelavorate.IdOreLavorate,\n"
+                    + "pratica.cliente_temporaneo,\n"
+                    + "pratica.veicolo_temporaneo \n"
                     + "from orelavorate\n"
                     + "inner join ciclope.pratica on orelavorate.pratica = pratica.idPratica\n"
                     + "inner join ciclope.veicolo on ciclope.pratica.Veicolo = veicolo.idVeicolo\n"
@@ -111,6 +121,8 @@ public class GetOreLavorate extends HttpServlet {
                 jo.put("ore", ob[6].toString());
                 jo.put("praticaId",ob[7].toString());
                 jo.put("IdOreLavorate", ob[8].toString());
+                jo.put("cliente_temporaneo",ob[9]==null?"":ob[9].toString());
+                jo.put("veicolo_temporaneo",ob[10]==null?"":ob[10].toString());
                 jo.put("oreTotali", aicrecs2.get(0) == null?"0":aicrecs2.get(0).toString());
                 array.add(jo);
             }

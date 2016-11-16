@@ -27,6 +27,9 @@
             var listaMateriali = null;
             var materialeAggiornato = null;
             var approvvigionamentoAggiornato = null;
+            function escapeJS(stringa) {
+                return stringa.replace(/(['"])/g, "\\$1");
+            }
             function MaterialeMagazzino(codice, description, qty) {
                 this._codice = codice;
                 this._description = description;
@@ -190,8 +193,13 @@
                             items.push('<li>Stai gia seguendo tutte le pratiche possibili odierne...</li>');
                         } else {
                             for (var i = 0; i < data.length; i++) {
-                                items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                        + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                if (data[i].veicolo_temporaneo === '' && data[i].cliente_temporaneo === '') {
+                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                            + data[i].marca + ' - ' + data[i].modello + '</a></li>');
+                                } else {
+                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                            + data[i].cliente_temporaneo + ' - ' + data[i].veicolo_temporaneo + '</a></li>');
+                                }
                             }
                             items = items.concat(items2);
                             items.sort(function (a, b) {
@@ -226,7 +234,7 @@
                 });
             }
             function updatePraticaId(id, header) {
-                var pratica = {"praticaId": id.toString(), "praticaHeader": header};
+                var pratica = {"praticaId": id.toString(), "praticaHeader": encodeURIComponent(header)};
                 praticaName = $("#".concat(id)).text();
                 praticaHeaderName = header;
                 praticaJson = JSON.stringify(pratica);
@@ -633,10 +641,12 @@
                             items.push('<li>Nessuna pratica presente...</li>');
                             $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
                         } else {
+                            var isTemp = false; 
                             for (var i = 0; i < data.length; i++) {
+                                isTemp = (data[i].cliente_temporaneo !== '' && data[i].veicolo_temporaneo !== '');
                                 items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
                 data-position-to="window" data-transition="slidefade" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
-                                        + data[i].marca + " " + data[i].modello + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                                        + (isTemp?data[i].cliente_temporaneo:data[i].marca) + " " + (isTemp?data[i].veicolo_temporaneo:data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
                 <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
 onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                             }
@@ -815,21 +825,23 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 items.push('<li>Nessun materiale utilizzato al momento...</li>');
                             } else {
                                 for (var i = 0; i < data.length; i++) {
-                                    if( (data[i].cliente_temporaneo.trim().toString() === '' ) && 
-                                            (data[i].veicolo_temporaneo.trim().toString() === '')){
-                                    items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                            + 'MARCHIO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].marca + "</span>" +
-                                            ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].modello + "</span>" +
-                                            ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].targa + "</span>" +
-                                            ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].matricola + "</span>" +
-                                            '</a></li>'
-                                            );
-                                    }else{
-                                         items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
-                                            + 'RIPARAZIONE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].veicolo_temporaneo + "</span>" +
-                                            ' - CLIENTE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].cliente_temporaneo + "</span>" +
-                                            '</a></li>'
-                                            );
+                                    if ((data[i].cliente_temporaneo.trim().toString() === '') &&
+                                            (data[i].veicolo_temporaneo.trim().toString() === '')) {
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].marca) + ' - ' + escapeJS(data[i].modello) + '\')">'
+                                                + 'MARCHIO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].marca + "</span>" +
+                                                ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].modello + "</span>" +
+                                                ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].targa + "</span>" +
+                                                ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].matricola + "</span>" +
+                                                '</a></li>'
+                                                );
+                                    } else {
+                                        //sanitizzare le stringhe cliente_temporaneo e veicolo_temporaneo...
+
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].cliente_temporaneo) + ' - ' + escapeJS(data[i].veicolo_temporaneo) + '\')">'
+                                                + 'RIPARAZIONE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].veicolo_temporaneo + "</span>" +
+                                                ' - CLIENTE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].cliente_temporaneo + "</span>" +
+                                                '</a></li>'
+                                                );
                                     }
                                 }
 
@@ -946,10 +958,12 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 items.push('<li>Nessuna pratica presente...</li>');
                                 $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
                             } else {
+                                var isTemp = false;
                                 for (var i = 0; i < data.length; i++) {
+                                    isTemp = (data[i].cliente_temporaneo !== '' && data[i].veicolo_temporaneo !== '');
                                     items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
                 data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
-                                            + data[i].marca + " " + data[i].modello + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                                             + (isTemp?data[i].cliente_temporaneo:data[i].marca) + " " + (isTemp?data[i].veicolo_temporaneo:data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
                 <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
 onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                                 }
@@ -1015,6 +1029,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     $.ajax({
                         url: "GetMaterialiRiparazione",
                         cache: false,
+                        contentType: 'application/json;charset=UTF-8',
                         data: praticaJson,
                         dataType: 'json',
                         type: 'POST',
@@ -1055,7 +1070,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             $.mobile.loading("hide");
                         },
                         error: function (xhttpjqr, err, data) {
-                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                            $(":mobile-pagecontainer").pagecontainer("change", "#pgMagazzino");
                         },
                         complete: function (xhttpjqr, evtobj, data) {
                             $.mobile.loading("hide");
@@ -1283,7 +1298,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     <label for="lavori_segnalati">LAVORI segnalati all'arrivo:</label>
                     <textarea cols="80" rows="8" name="lavori_segnalati" id="lavori_segnalati"></textarea>
                     <div style="margin:2em">
-                    <input data-theme="b" type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
+                        <input data-theme="b" type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
                     </div>
                 </form>
             </div>

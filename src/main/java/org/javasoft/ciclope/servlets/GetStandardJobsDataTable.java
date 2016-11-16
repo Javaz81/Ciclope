@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.javasoft.ciclope.servlets.utils.QuerySupportUtils;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -74,10 +75,10 @@ public class GetStandardJobsDataTable extends HttpServlet {
                     else{                        
                         extSearch.append(" and ").
                                 append(i!=0?columnNames[i]:"nome").
-                                append(" = ").
-                                append("\"").
+                                append(" LIKE ").
+                                append("\"%").
                                 append(e.getValue()[0]).
-                                append("\"");
+                                append("%\"");
                     }
                     i++;
                 }

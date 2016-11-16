@@ -79,7 +79,9 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
                     + "ciclope.veicolo.marca as marca,\n"
                     + "ciclope.veicolo.modello as modello,\n"
                     + "ciclope.veicolo.targa as targa,\n"
-                    + "ciclope.veicolo.tipo as tipo\n"
+                    + "ciclope.veicolo.tipo as tipo,\n"
+                    + "ciclope.pratica.cliente_temporaneo as cliente_temporaneo,\n"
+                    + "ciclope.pratica.veicolo_temporaneo as veicolo_temporaneo\n"
                     + "from ciclope.pratica\n"
                     + "left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo\n"
                     + "where ciclope.pratica.uscita is null\n"
@@ -103,6 +105,8 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
                 jo.put("modello", ob[3].toString());
                 jo.put("targa", ob[4] == null ? "Speciale" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
+                jo.put("cliente_temporaneo", ob[6] == null ? "":ob[6].toString());
+                jo.put("veicolo_temporaneo", ob[7] == null ? "":ob[7].toString());
                 array.add(jo);
             }
             out.println(array.toJSONString());
