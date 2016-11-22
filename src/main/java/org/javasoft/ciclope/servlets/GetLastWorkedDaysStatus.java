@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -75,8 +76,12 @@ public class GetLastWorkedDaysStatus extends HttpServlet {
                 List<DayHours> thswpd = AmministrazioneUtils.GetTotalHourWorkedPerDay(personale.getIdPersonale(), Integer.parseInt(lastDays));
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YY");
                 int count = 0;
+                boolean isSaturday = false;
                 for (DayHours d : thswpd) {
-                    if (d.getHours() < 8f) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(d.getDay());
+                    isSaturday = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+                    if (d.getHours() < 8f && !isSaturday) {
                         count++;
                     }
                     if (d.equals(todayDh)) {
