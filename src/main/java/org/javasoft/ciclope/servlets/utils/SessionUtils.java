@@ -5,8 +5,10 @@
  */
 package org.javasoft.ciclope.servlets.utils;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.javasoft.ciclope.persistence.HibernateUtil;
 
 /**
@@ -17,8 +19,11 @@ public class SessionUtils {
     public static Session getCiclopeSession(){
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session s = sf.getCurrentSession();
+        Transaction t = s.getTransaction();
+        if(t.isActive()){
+            t.rollback();
+        }
         if(!s.isOpen()){
-            s.getTransaction().rollback();
             s= sf.getCurrentSession();
         }
         return s;

@@ -233,8 +233,13 @@
                     }
                 });
             }
-            function updatePraticaId(id, header) {
-                var pratica = {"praticaId": id.toString(), "praticaHeader": encodeURIComponent(header)};
+            function updatePraticaId(id, header, encode) {
+                var pratica = "";
+                if(encode === 'true'){
+                    pratica = {"praticaId": id.toString(), "praticaHeader": encodeURIComponent(header)};
+                }else{
+                    pratica = {"praticaId": id.toString(), "praticaHeader": header};
+                }
                 praticaName = $("#".concat(id)).text();
                 praticaHeaderName = header;
                 praticaJson = JSON.stringify(pratica);
@@ -827,7 +832,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 for (var i = 0; i < data.length; i++) {
                                     if ((data[i].cliente_temporaneo.trim().toString() === '') &&
                                             (data[i].veicolo_temporaneo.trim().toString() === '')) {
-                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].marca) + ' - ' + escapeJS(data[i].modello) + '\')">'
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].marca) + ' - ' + escapeJS(data[i].modello) + '\',\'false\')">'
                                                 + 'MARCHIO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].marca + "</span>" +
                                                 ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].modello + "</span>" +
                                                 ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].targa + "</span>" +
@@ -837,7 +842,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     } else {
                                         //sanitizzare le stringhe cliente_temporaneo e veicolo_temporaneo...
 
-                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].cliente_temporaneo) + ' - ' + escapeJS(data[i].veicolo_temporaneo) + '\')">'
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].cliente_temporaneo) + ' - ' + escapeJS(data[i].veicolo_temporaneo) + '\',\'true\')">'
                                                 + 'RIPARAZIONE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].veicolo_temporaneo + "</span>" +
                                                 ' - CLIENTE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].cliente_temporaneo + "</span>" +
                                                 '</a></li>'
