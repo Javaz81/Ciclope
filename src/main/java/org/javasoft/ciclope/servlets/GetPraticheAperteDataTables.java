@@ -7,6 +7,7 @@ package org.javasoft.ciclope.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -80,7 +81,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             extSearch.append("");
             int i = 0;
             int schColIdx = 0;
-            String colNameVal = "";
+            String colNameVal;
             for(String name: columnNames){
                 if( name.equals("cognome")){
                     i++;
@@ -94,7 +95,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
                             String tval =  maps.get("columns["+schColIdx+"][search][value]")[0];
                             colNameVal = TimeStampConverter.commonDateToMySQLDate(tval, "ciclope.pratica.data_arrivo");
                         }else{
-                            colNameVal = " LIKE '"+maps.get("columns["+schColIdx+"][search][value]")[0]+"%'";
+                            colNameVal = " LIKE '%"+maps.get("columns["+schColIdx+"][search][value]")[0]+"%'";
                         }
                     }
                     if(columnNames[i].equals("nome")){
@@ -110,7 +111,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             }
             String json = null;
             JSONObject obj = null;
-            Query q = null;
+            Query q;
             
             //elenca le pratiche chiuse?
             boolean pc;
@@ -140,10 +141,18 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             );
 
             List<Object[]> aicrecs = q.list();
+            q = s.createSQLQuery("SELECT count(*) "
+                    + "FROM ciclope.pratica "
+                    + "left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                    + "left join ciclope.cliente on ciclope.pratica.Cliente_IdCliente = ciclope.cliente.idCliente \n"
+                    + "WHERE (ciclope.pratica.uscita is "+(pc?"not null":"null")+" OR ciclope.pratica.data_uscita is "+(pc?"not null":"null")+") "
+            +(extSearch.toString().trim()));
+            BigInteger total =(BigInteger) q.list().get(0);
             t.commit();
+            
             JSONObject jo = null;
             JSONObject jo1 = new JSONObject();
-            JSONArray row = null;
+            JSONArray row;
             JSONArray arraytop = new JSONArray();
             // Changing "draw" variable let the jquery datatables redraw itself 
             // after click on column to resorting rows, avoiding the 
@@ -157,7 +166,7 @@ public class GetPraticheAperteDataTables extends HttpServlet {
             //Finally we build the datatables format response.
             jo1.put("draw", draw);
             jo1.put("recordsTotal", Integer.toString(aicrecs.size()));
-            jo1.put("recordsFiltered", Integer.toString(aicrecs.size()));
+            jo1.put("recordsFiltered", total);
             for (Object[] ob : aicrecs) {
                 row = new JSONArray();
                 for(int idx = 0; idx < ob.length; idx++){
