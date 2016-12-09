@@ -1220,7 +1220,7 @@
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
-                                                    <label>del</label>
+                                                    <label>Eseguito il:</label>
                                                     <input class="form-control" id="preventivo_lavori_data"  <% out.print("value=\"" + praticaInfos.get(0).getPreventivo_lavori_data() + "\""); %>>
                                                     <script>
                                                         $("#preventivo_lavori_data").datepicker();
@@ -1243,7 +1243,7 @@
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
-                                                    <label>del</label>
+                                                    <label>Eseguito il:</label>
                                                     <input class="form-control" id="revisione_mctc_data" <% out.print("value=\"" + praticaInfos.get(0).getRevisione_mctc_data() + "\""); %>>
                                                     <script>
                                                         $("#revisione_mctc_data").datepicker();
@@ -1266,7 +1266,7 @@
                                                     </select>
                                                 </div>
                                                 <div class='col-lg-6'>
-                                                    <label>del</label>
+                                                    <label>Eseguito il:</label>
                                                     <input class="form-control" id="collaudo_usl_data"  <% out.print("value=\"" + praticaInfos.get(0).getCollaudo_usl_data() + "\""); %> >
                                                     <script>
                                                         $("#collaudo_usl_data").datepicker();
@@ -1295,7 +1295,7 @@
                                                     <input class="form-control" id='fattura' <% out.print("value=\"" + praticaInfos.get(0).getNumero_fattura() + "\""); %>>
                                                 </div>
                                                 <div class='col-lg-6'>
-                                                    <label>del</label>
+                                                    <label>Eseguito il:</label>
                                                     <input class="form-control" id="fattura_data" <% out.print("value=\"" + praticaInfos.get(0).getData_fattura() + "\""); %>>
                                                     <script>
                                                         $("#fattura_data").datepicker();
