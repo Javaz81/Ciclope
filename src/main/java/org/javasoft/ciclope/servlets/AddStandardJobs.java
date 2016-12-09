@@ -91,7 +91,7 @@ public class AddStandardJobs extends HttpServlet {
                     i += 1;
                 }
                 StringBuilder qs = new StringBuilder("SELECT ciclope.lavoripratichestandard.id, tipolavoro.descrizione, ciclope.tipolavoro.codice\n"
-                        + "FROM ciclope.lavoripratichestandard INNER JOIN ciclope.tipoLavoro\n"
+                        + "FROM ciclope.lavoripratichestandard INNER JOIN ciclope.tipolavoro\n"
                         + "ON ciclope.lavoripratichestandard.tipolavoro = ciclope.tipolavoro.idTipoLavoro\n"
                         + "WHERE ciclope.lavoripratichestandard.pratica = " + praticaId + " AND ciclope.tipolavoro.codice IN (");
                 for (Object ob : jobCodes) {
