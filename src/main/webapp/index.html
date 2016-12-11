@@ -194,10 +194,10 @@
                         } else {
                             for (var i = 0; i < data.length; i++) {
                                 if (data[i].veicolo_temporaneo === '' && data[i].cliente_temporaneo === '') {
-                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                    items2.push('<li> <a id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
                                             + data[i].marca + ' - ' + data[i].modello + '</a></li>');
                                 } else {
-                                    items2.push('<li> <a data-rel="back" id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
+                                    items2.push('<li> <a id="' + data[i].praticaId + '" onClick="AddPraticaLavorataOdierna(this.id,\'' + data[i].marca + ' - ' + data[i].modello + '\')">'
                                             + data[i].cliente_temporaneo + ' - ' + data[i].veicolo_temporaneo + '</a></li>');
                                 }
                             }
@@ -235,9 +235,9 @@
             }
             function updatePraticaId(id, header, encode) {
                 var pratica = "";
-                if(encode === 'true'){
+                if (encode === 'true') {
                     pratica = {"praticaId": id.toString(), "praticaHeader": encodeURIComponent(header)};
-                }else{
+                } else {
                     pratica = {"praticaId": id.toString(), "praticaHeader": header};
                 }
                 praticaName = $("#".concat(id)).text();
@@ -632,6 +632,7 @@
                     theme: 'z',
                     html: ""
                 });
+                GetPraticheOreLavorateDlg();
                 $.ajax({
                     url: "GetOreLavorate",
                     cache: false,
@@ -646,12 +647,12 @@
                             items.push('<li>Nessuna pratica presente...</li>');
                             $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
                         } else {
-                            var isTemp = false; 
+                            var isTemp = false;
                             for (var i = 0; i < data.length; i++) {
                                 isTemp = (data[i].cliente_temporaneo !== '' && data[i].veicolo_temporaneo !== '');
                                 items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
                 data-position-to="window" data-transition="slidefade" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
-                                        + (isTemp?data[i].cliente_temporaneo:data[i].marca) + " " + (isTemp?data[i].veicolo_temporaneo:data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                                        + (isTemp ? data[i].cliente_temporaneo : data[i].marca) + " " + (isTemp ? data[i].veicolo_temporaneo : data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
                 <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
 onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                             }
@@ -949,6 +950,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         theme: 'z',
                         html: ""
                     });
+                    GetPraticheOreLavorateDlg();
                     $.ajax({
                         url: "GetOreLavorate",
                         cache: false,
@@ -968,7 +970,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                     isTemp = (data[i].cliente_temporaneo !== '' && data[i].veicolo_temporaneo !== '');
                                     items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
                 data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
-                                             + (isTemp?data[i].cliente_temporaneo:data[i].marca) + " " + (isTemp?data[i].veicolo_temporaneo:data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                                            + (isTemp ? data[i].cliente_temporaneo : data[i].marca) + " " + (isTemp ? data[i].veicolo_temporaneo : data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
                 <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
 onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
                                 }
@@ -1334,27 +1336,39 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         <label for="giornata">Seleziona giornata:</label>
                         <input name="giornata"  id="giornata" type="text" data-role="datebox"
                                data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
+                        
+                        <div data-role="content" data-iscroll>
+                             <ul data-role="listview" id="lstPraticheLavorate" data-inset="true"
+                            data-filter="true" data-filter-placeholder="Seleziona la riparazione..." 
+                            data-autodividers="true">
+                            </ul>
+                        </div>
+                    
                     </div>
                     <div class="ui-block-b">  
                         <div id="ore_totali">
                             <h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>
                         </div>
-                        <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
-                           href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
-                           data-transition="pop">Aggiungi pratica lavorata</a>
-                        <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
-                            <div data-role="header" data-theme="a">
-                                <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
-                            </div>
-                            <div class="ui-content" role="main">
-                                <h3 class="ui-title">Seleziona pratica:</h3>
-                                <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
-                                    data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
-                                </ul>
-                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Indietro</a>
-                            </div>
-                        </div>
-
+                        <!--
+                      <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
+                         href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
+                         data-transition="pop">Aggiungi pratica lavorata</a>
+                        -->
+                        <!-- DIALOG POPUP per PRATICHE LAVORABILI ODIERNE-->
+                        <!--
+                          <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                              <div data-role="header" data-theme="a">
+                                  <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
+                              </div>
+                              <div class="ui-content" role="main">
+                                  <h3 class="ui-title">Seleziona pratica:</h3>
+                                  <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
+                                      data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                                  </ul>
+                                  <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Indietro</a>
+                              </div>
+                          </div>
+                        -->
                         <p>Lista delle pratiche seguite in questo giorno:</p>
                         <ul id="lstUltimePratiche" 
                             data-role="listview" data-split-icon="delete" 
