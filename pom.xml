@@ -4,7 +4,7 @@
 
     <groupId>org.javasoft</groupId>
     <artifactId>Ciclope</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
 
     <name>Ciclope</name>
@@ -130,5 +130,5 @@
             </plugin>
         </plugins>
     </build>
-
+    <description>Versione di inizio Ciclope per superAssistenza</description>
 </project>

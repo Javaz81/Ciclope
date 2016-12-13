@@ -7,6 +7,7 @@ package org.javasoft.ciclope.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -56,8 +57,7 @@ public class GetPraticheLavorabiliCoperturaOrario extends HttpServlet {
                 "cognome",
                 "marca",
                 "targa",
-                "matricola",
-            };
+                "matricola",};
             String orderColumn = null;
             String orderDir = maps.get("order[0][dir]")[0];
             int coln = Integer.valueOf(maps.get("order[0][column]")[0]);
@@ -85,7 +85,7 @@ public class GetPraticheLavorabiliCoperturaOrario extends HttpServlet {
                 }
                 if (!maps.get("columns[" + schColIdx + "][search][value]")[0].equals("")) {
                     if (maps.get("columns[" + schColIdx + "][search][value]")[0].equals("null")) {
-                        colNameVal = " IS NULL";                       
+                        colNameVal = " IS NULL";
                     } else {
                         colNameVal = " LIKE '" + maps.get("columns[" + schColIdx + "][search][value]")[0] + "%'";
                     }
@@ -99,7 +99,7 @@ public class GetPraticheLavorabiliCoperturaOrario extends HttpServlet {
                 i++;
                 schColIdx++;
             }
-            
+
             String json = null;
             JSONObject obj = null;
             Query q = null;
@@ -126,14 +126,30 @@ public class GetPraticheLavorabiliCoperturaOrario extends HttpServlet {
                     + "(\n"
                     + "select orelavorate.pratica\n"
                     + " FROM orelavorate\n"
-                    + " WHERE orelavorate.giornata = '"+TimeStampConverter.commonDateToMySQLDirectConversion(selectedDate)+"'\n"
-                    + "and orelavorate.personale = "+operatorId+"\n"
+                    + " WHERE orelavorate.giornata = '" + TimeStampConverter.commonDateToMySQLDirectConversion(selectedDate) + "'\n"
+                    + "and orelavorate.personale = " + operatorId + "\n"
                     + ")"
                     + " ORDER BY " + orderColumn + " " + orderDir + "\n"
                     + " LIMIT " + extSearchLimit + " OFFSET " + startSearchLimit
             );
 
             List<Object[]> aicrecs = q.list();
+            q = s.createSQLQuery("select count(*)"
+                    + " from ciclope.pratica\n"
+                    + " left join ciclope.veicolo on ciclope.pratica.Veicolo = ciclope.veicolo.idVeicolo \n"
+                    + " left join ciclope.cliente on ciclope.pratica.Cliente_IdCliente = ciclope.cliente.idCliente\n"
+                    + " where (ciclope.pratica.uscita is " + (pc ? "not null" : "null") + " OR ciclope.pratica.data_uscita is " + (pc ? "not null" : "null") + ")"
+                    + extSearch.toString()
+                    + " AND ciclope.pratica.idPratica NOT IN \n"
+                    + "(\n"
+                    + "select orelavorate.pratica\n"
+                    + " FROM orelavorate\n"
+                    + " WHERE orelavorate.giornata = '" + TimeStampConverter.commonDateToMySQLDirectConversion(selectedDate) + "'\n"
+                    + "and orelavorate.personale = " + operatorId + "\n"
+                    + ")"
+            );
+
+            BigInteger total =(BigInteger) q.list().get(0);
             t.commit();
             JSONObject jo = null;
             JSONObject jo1 = new JSONObject();
@@ -151,7 +167,7 @@ public class GetPraticheLavorabiliCoperturaOrario extends HttpServlet {
             //Finally we build the datatables format response.
             jo1.put("draw", draw);
             jo1.put("recordsTotal", Integer.toString(aicrecs.size()));
-            jo1.put("recordsFiltered", Integer.toString(aicrecs.size()));
+            jo1.put("recordsFiltered", total);
             for (Object[] ob : aicrecs) {
                 row = new JSONArray();
                 for (int idx = 0; idx < ob.length; idx++) {
