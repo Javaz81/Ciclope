@@ -120,7 +120,7 @@ public class GetRiparazioniCorrenti extends HttpServlet {
                 jo.put("praticaId", ob[0].toString());
                 jo.put("arrivo", ob[1].toString());
                 jo.put("marca", ob[2].toString());
-                jo.put("modello", ob[3].toString());
+                jo.put("modello", ob[3]==null?"(NO_MODELLO)":ob[3].toString());
                 jo.put("targa", ob[4] == null ? "(NO_TARGA)" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
                 jo.put("matricola", ob[7] == null ? "(NO_MATRICOLA)":ob[7].toString());
