@@ -101,8 +101,8 @@ public class GetPraticheOdierneLavorabili extends HttpServlet {
                 jo = new JSONObject();
                 jo.put("praticaId", ob[0].toString());
                 jo.put("arrivo", ob[1].toString());
-                jo.put("marca", ob[2].toString());
-                jo.put("modello", ob[3].toString());
+                jo.put("marca", ob[2]==null?"":ob[2].toString());
+                jo.put("modello", ob[3]==null?"":ob[3].toString());
                 jo.put("targa", ob[4] == null ? "Speciale" : ob[4].toString());
                 jo.put("tipo", ob[5].toString());
                 jo.put("cliente_temporaneo", ob[6] == null ? "":ob[6].toString());
