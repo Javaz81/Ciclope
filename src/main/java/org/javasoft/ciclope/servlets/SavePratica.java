@@ -304,7 +304,7 @@ public class SavePratica extends HttpServlet {
                 result.put("result", "ko");
                 result.put("messaggio", "Non è stato possibile aggiornare "
                         + "i dati del cliente. Contattare Andrea.\nErrore -> "
-                        + ex.getMessage());
+                        + (ex.getCause()!=null?ex.getCause().getMessage():ex.getMessage()));
                 jo.putAll(result);
                 out.println(jo.toJSONString());
                 return;

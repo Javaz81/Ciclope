@@ -166,7 +166,7 @@
                     },
                     sDom: 'lrtip', //to hide global search input box.
                     initComplete: function () {
-                         this.api().columns().every(function () {
+                        this.api().columns().every(function () {
                             var that = this;
                             $('input', this.footer()).on('keyup change', function () {
                                 if (that.search() !== this.value) {
@@ -269,19 +269,22 @@
                                         $("#modello").val(values[2]);
                                         $("#targa").val(values[3]);
                                         $("#anno").val(values[4]);
-                                        if (tipo === "PLE") {
-                                            $("#tipo_ple").prop('checked', true);
-                                            $("#tipo_pv").prop('checked', false);
-                                            $("#tipo_autogru").prop('checked', false);
-                                        } else if (tipo === "PV") {
-                                            $("#tipo_ple").prop('checked', false);
-                                            $("#tipo_pv").prop('checked', true);
-                                            $("#tipo_autogru").prop('checked', false);
-                                        } else {
-                                            $("#tipo_ple").prop('checked', false);
-                                            $("#tipo_pv").prop('checked', false);
-                                            $("#tipo_autogru").prop('checked', true);
-                                        }
+                                        $("select[name='tipo']").val(tipo).change();
+                                        /*
+                                         if (tipo === "PLE") {
+                                         $("#tipo_ple").prop('checked', true);
+                                         $("#tipo_pv").prop('checked', false);
+                                         $("#tipo_autogru").prop('checked', false);
+                                         } else if (tipo === "PV") {
+                                         $("#tipo_ple").prop('checked', false);
+                                         $("#tipo_pv").prop('checked', true);
+                                         $("#tipo_autogru").prop('checked', false);
+                                         } else {
+                                         $("#tipo_ple").prop('checked', false);
+                                         $("#tipo_pv").prop('checked', false);
+                                         $("#tipo_autogru").prop('checked', true);
+                                         }
+                                         */
                                         $("#matricola").val(values[6]);
                                     } else {
                                         alert("Errore nel DB->" + data.result);
@@ -458,7 +461,6 @@
                         infoEmpty: "Nessun elemento presente",
                         infoFiltered: "(filtrato da _MAX_ elementi totali)"
                     },
-
                     initComplete: function () {
                         this.api().columns().every(function () {
                             var that = this;
@@ -712,7 +714,7 @@
                     var targa = $("#targa").val();
                     var kilometraggio = $("#kilometraggio").val();
                     var anno = $("#anno").val();
-                    var tipo = $("input[name=tipo]:checked").val();
+                    var tipo = $("select[name='tipo']").val();
                     var matricola = $("#matricola").val();
                     var ore = $("#ore").val();
                     var idCliente = $("#idCliente").val();
@@ -991,11 +993,11 @@
                                             <div class="form-group">
                                                 <div class="col-lg-6">
                                                     <label>Info sul cliente:</label>
-                                                    <input class="form-control" id="cliente_temp"  <% out.print("value=\"" + praticaInfos.get(0).getCliente_temporaneo()+ "\""); %> >
+                                                    <input class="form-control" id="cliente_temp"  <% out.print("value=\"" + praticaInfos.get(0).getCliente_temporaneo() + "\""); %> >
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label>Info sulla riparazione:</label>
-                                                    <input class="form-control" id="veicolo_temp" <% out.print("value=\"" + praticaInfos.get(0).getVeicolo_temporaneo()+ "\""); %> >
+                                                    <input class="form-control" id="veicolo_temp" <% out.print("value=\"" + praticaInfos.get(0).getVeicolo_temporaneo() + "\""); %> >
                                                 </div>                  
                                             </div>
                                             <!-- /.row -->
@@ -1128,16 +1130,30 @@
                                             </script>
                                             <div class="form-group" style="margin-top:1em; margin-bottom: 1em" id="tipo">
                                                 <label>Tipo:</label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE") ? "checked" : "")); %> >PLE
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio"  name="tipo" id="tipo_pv" value="PV" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PV") ? "checked" : "")); %>>PV
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU") ? "checked" : "")); %> >AUTOGRU
-                                                </label>
+                                                <select class="form-control" style="margin-top:1em; margin-bottom: 1em" name="tipo">
+                                                    <option id="tipo_ple" value="PLE" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE") ? "selected=\"selected\"" : "")); %>>PLE</option>
+                                                    <option id="tipo_pv" value="PV"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PL") ? "selected=\"selected\"" : "")); %>>PV</option>
+                                                    <option id="tipo_autogru" value="AUTOGRU"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU") ? "selected=\"selected\"" : "")); %>>AUTOGRU</option>
+                                                    <option id="tipo_caricatore" value="CARICATORE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("CARICATORE") ? "selected=\"selected\"" : "")); %>>CARICATORE</option>
+                                                    <option id="tipo_scarrabile" value="SCARRABILE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("SCARRABILE") ? "selected=\"selected\"" : "")); %>>SCARRABILE</option>
+                                                    <option id="tipo_caricatore_fisso" value="CARICATORE FISSO"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("CARICATORE FISSO") ? "selected=\"selected\"" : "")); %>>CARICATORE FISSO</option>
+                                                    <option id="tipo_caricatore_scarrabile" value="CARICATORE SCARRABILE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("CARICATORE SCARRABILE") ? "selected=\"selected\"" : "")); %>>CARICATORE SCARRABILE</option>
+                                                    <option id="tipo_compattatore" value="COMPATTATORE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("COMPATTATORE") ? "selected=\"selected\"" : "")); %>>COMPATTATORE</option>
+                                                    <option id="tipo_rimorchio" value="RIMORCHIO"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("RIMORCHIO") ? "selected=\"selected\"" : "")); %>>RIMORCHIO</option>
+                                                </select>
                                             </div>
+                                            <!--                                            <div class="form-group" style="margin-top:1em; margin-bottom: 1em" id="tipo">
+                                                                                            <label>Tipo:</label>
+                                                                                            <label class="radio-inline">
+                                                                                                <input type="radio" name="tipo" id="tipo_ple" value="PLE"  <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PLE") ? "checked" : "")); %> >PLE
+                                                                                            </label>
+                                                                                            <label class="radio-inline">
+                                                                                                <input type="radio"  name="tipo" id="tipo_pv" value="PV" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("PV") ? "checked" : "")); %>>PV
+                                                                                            </label>
+                                                                                            <label class="radio-inline">
+                                                                                                <input type="radio" name="tipo" id="tipo_autogru" value="AUTOGRU" <% out.print((praticaInfos.get(0).getTipoVeicolo().equalsIgnoreCase("AUTOGRU") ? "checked" : "")); %> >AUTOGRU
+                                                                                            </label>
+                                                                                        </div>-->
                                             <label>Matricola</label>
                                             <input class="form-control" id="matricola" <% out.print("value=\"" + praticaInfos.get(0).getMatricolaVeicolo() + "\""); %> >                                                                                   </div>
                                         <!-- /.row -->
