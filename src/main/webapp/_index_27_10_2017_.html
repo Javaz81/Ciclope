@@ -3,7 +3,7 @@
     <head>
         <title>CICLOPE - SUPER ASSISTENZA</title>
         <!-- Include meta tag to ensure proper rendering and touch zooming -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=0.5, user-scalable=no"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
 
         <!-- Include jQuery Mobile stylesheets -->
         <link rel="stylesheet" href="js/libs/jquery-mobile/jquery.mobile.min.css"/>
@@ -742,57 +742,6 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                     }
                 });
             }
-            function getArticoloAndRefreshList(codice_descrizione, inputType) {
-                var dati = {"codice_descrizione": codice_descrizione, "inputType": inputType};
-                datiJSON = JSON.stringify(dati);
-                $("#lista_rifornimenti").empty();
-                $.mobile.loading('show', {
-                    text: 'Caricamento dati, attendere...',
-                    textVisible: true,
-                    theme: 'z',
-                    html: ""
-                });
-                $.ajax({
-                    url: "GetRifornimenti",
-                    cache: false,
-                    data: datiJSON,
-                    dataType: 'json',
-                    type: 'POST',
-                    async: false,
-                    success: function (data) {
-                        var items2 = [];
-                        var items = [];
-                        for (var i = 0; i < data.length; i++) {
-                            items2.push('<li><a href="#dlgAggiornaRifornimento" \n\
-                     onClick="updateRifornimentoName(this.id,' + data[i].rimanenza + ')" id="' + data[i].codice + '">'
-                                    + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - APPROVVIGIONAMENTO (pz/mt):' + data[i].approvvigionamento + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].rimanenza + '</div>' + '</a></li>');
-                        }
-
-                        items = items.concat(items2);
-                        items.sort(function (a, b) {
-                            var valA = $(a).text(),
-                                    valB = $(b).text();
-                            if (valA < valB) {
-                                return -1;
-                            }
-                            if (valA > valB) {
-                                return 1;
-                            }
-                            return 0;
-                        });
-                        $("#lista_rifornimenti").empty();
-                        $("#lista_rifornimenti").html(items);
-                        $("#lista_rifornimenti").listview("refresh");
-                        $.mobile.loading("hide");
-                    },
-                    error: function (xhttpjqr, err, data) {
-                        $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
-                    },
-                    complete: function (xhttpjqr, evtobj, data) {
-                        $.mobile.loading("hide");
-                    }
-                });
-            }
             function reload() {
                 location.reload(true);
             }
@@ -861,7 +810,197 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
             });
             $(document).on("pagecontainershow", function (event, ui)
             {
-                if (ui.toPage[0].id === 'pgRifornimenti') {
+                if (ui.toPage[0].id === 'pgSelezioneEntrate')
+                {
+                    $("#lstRiparazioni").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetRiparazioniCorrenti",
+                        cache: false,
+                        dataType: 'json',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessun materiale utilizzato al momento...</li>');
+                            } else {
+                                for (var i = 0; i < data.length; i++) {
+                                    if ((data[i].cliente_temporaneo.trim().toString() === '') &&
+                                            (data[i].veicolo_temporaneo.trim().toString() === '')) {
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].marca) + ' - ' + escapeJS(data[i].modello) + '\',\'false\')">'
+                                                + 'MARCHIO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].marca + "</span>" +
+                                                ' - MODELLO:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].modello + "</span>" +
+                                                ' - TARGA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].targa + "</span>" +
+                                                ' - MATRICOLA:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].matricola + "</span>" +
+                                                '</a></li>'
+                                                );
+                                    } else {
+                                        //sanitizzare le stringhe cliente_temporaneo e veicolo_temporaneo...
+
+                                        items2.push('<li><a href="#pgMaterialeUtilizzato" id="' + data[i].praticaId + '" onClick="updatePraticaId(this.id,\'' + escapeJS(data[i].cliente_temporaneo) + ' - ' + escapeJS(data[i].veicolo_temporaneo) + '\',\'true\')">'
+                                                + 'RIPARAZIONE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].veicolo_temporaneo + "</span>" +
+                                                ' - CLIENTE:<span style="font-weight: normal;">&nbsp;&nbsp;' + data[i].cliente_temporaneo + "</span>" +
+                                                '</a></li>'
+                                                );
+                                    }
+                                }
+
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                            }
+                            $("#lstRiparazioni").empty();
+                            $("#lstRiparazioni").html(items);
+                            $("#lstRiparazioni").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgOreLavorate-main') {
+                    $("#lstOperatori").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetOperatori",
+                        cache: false,
+                        dataType: 'json',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessuna pratica presente...</li>');
+                            } else {
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li><a href="#pgOreLavorate-selezione" id="' + data[i].operatoreId + '" onClick="updatePersonaleName(this.id)">'
+                                            + data[i].nome_cognome + '</a></li>');
+                                }
+
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                            }
+                            $("#lstOperatori").empty();
+                            $("#lstOperatori").html(items);
+                            $("#lstOperatori").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgOreLavorate-selezione') {
+
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    giornata_corrente = dd + '/' + mm + '/' + yyyy;
+                    var dp = $('input[name="giornata"]');
+                    dp.val(giornata_corrente);
+                    $("#lstUltimePratiche").empty();
+                    var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
+                    orelavorateJson = JSON.stringify(orelavorate);
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    GetPraticheOreLavorateDlg();
+                    $.ajax({
+                        url: "GetOreLavorate",
+                        cache: false,
+                        data: orelavorateJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length === 0) {
+                                items.push('<li>Nessuna pratica presente...</li>');
+                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>');
+                            } else {
+                                var isTemp = false;
+                                for (var i = 0; i < data.length; i++) {
+                                    isTemp = (data[i].cliente_temporaneo !== '' && data[i].veicolo_temporaneo !== '');
+                                    items2.push('<li><a href="#popupAggiornaOreLavoratePratica" id="' + data[i].IdOreLavorate + '" data-rel="popup"\n\
+                data-position-to="window" data-transition="pop" onClick="updatePraticaOreLavorate(this.id,' + data[i].ore + ')">'
+                                            + (isTemp ? data[i].cliente_temporaneo : data[i].marca) + " " + (isTemp ? data[i].veicolo_temporaneo : data[i].modello) + '<div class="ui-li-count">' + data[i].ore + ' ore</div></a>\n\
+                <a href="#popupEliminaPraticaOreLavorate" data-rel="popup" data-position-to="window" data-transition="pop" \n\
+onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore + ')">Elimina</a></li>');
+                                }
+                                items = items.concat(items2);
+                                items.sort(function (a, b) {
+                                    var valA = $(a).text(),
+                                            valB = $(b).text();
+                                    if (valA < valB) {
+                                        return -1;
+                                    }
+                                    if (valA > valB) {
+                                        return 1;
+                                    }
+                                    return 0;
+                                });
+                                $("#ore_totali").html('<h2>TOTALE ORE: <span style="font-weight: bold">' + data[0].oreTotali + '</span></h2>');
+                            }
+                            $("#lstUltimePratiche").empty();
+                            $("#lstUltimePratiche").html(items);
+                            $("#lstUltimePratiche").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgMaterialeUtilizzato') {
                     //Initialize BARCODE
                     $(document).scannerDetection({
                         timeBeforeScanTest: 200, // wait for the next character for upto 200ms
@@ -874,24 +1013,184 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             console.log('Barcode: ' + barcode);
                             var element = $("#" + barcode);
                             if (this.getElementById(barcode) === null) {
-                                var articolo = getArticoloAndRefreshList(barcode, "scanner");
-                                if (this.getElementById(barcode) === null) {
-                                    $.mobile.loading('show', {
-                                        text: 'Codice articolo sconosciuto...',
-                                        textVisible: true,
-                                        theme: 'z',
-                                        html: ""
-                                    });
-                                    setTimeout(function () {
-                                        $.mobile.loading("hide");
-                                    }, 1500);
-
-                                } else {
-                                    var desc = $("#" + barcode).text().toString();
-                                    var filterCode = desc.split("-")[0];
-                                    $("#filterRifornimenti").val(filterCode);
-                                    $("#lista_rifornimenti").listview("refresh");
+                                console.log('NUOVO ' + barcode);
+                                addMaterialePratica(barcode);
+                            } else {
+                                console.log('INCREMENTA ' + barcode);
+                                var count = parseInt($("#" + barcode + " .ui-li-count").text());
+                                $("#" + barcode + " .ui-li-count").text(count + 1);
+                                AggiornaQuantitaMateriale(barcode.toString(), count.toString());
+                            }
+                        },
+                        onError: function (string) {
+                            console.log('Errore: ' + string);
+                        }
+                    });
+                    $("#lista_materiale").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetMaterialiRiparazione",
+                        cache: false,
+                        contentType: 'application/json;charset=UTF-8',
+                        data: praticaJson,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            if (data.length > 0) {
+                                $("#nome_riparazione").empty();
+                                $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
+                                for (var i = 0; i < data.length; i++) {
+                                    items2.push('<li><a href="#dlgAggiornaQuantita" \n\
+                     onClick="updateMaterialName(this.id,' + parseFloat(data[i].quantita_consumata) + ')" id="' + data[i].codice + '">'
+                                            + data[i].descrizione + ' <div class="ui-li-count count_prev">' + parseFloat(data[i].quantita_consumata) + '</div></a></li>');
                                 }
+                            } else {
+                                $("#nome_riparazione").html("<h1>" + praticaHeaderName + "</h1>");
+                                $("#lista_materiale").html("<li>Nessuna materiale utilizzato per la riparazione</li>");
+                                return;
+                            }
+
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $("#lista_materiale").empty();
+                            $("#lista_materiale").html(items);
+                            $("#lista_materiale").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "#pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgApprovvigionamenti') {
+                    //Initialize BARCODE
+                    $(document).scannerDetection({
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+                        startChar: [], // Prefix character for the cabled scanner (OPL6845R)
+                        endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+                        minLength: 4,
+                        onComplete: function (barcoderaw, qty) {
+                            var barcode = barcoderaw.replace(".", "");
+                            console.log('Barcode: ' + barcode);
+                            var element = $("#" + barcode);
+                            if (this.getElementById(barcode) === null) {
+                                console.log('NUOVO ' + barcode);
+                                addMaterialePratica(barcode);
+                            } else {
+
+                            }
+                            if (this.getElementById(barcode) === null) {
+                                $.mobile.loading('show', {
+                                    text: 'Nessun materiale con questo codice trovato...',
+                                    textVisible: true,
+                                    theme: 'z',
+                                    html: ""
+                                });
+                                setTimeout(function () {
+                                    $.mobile.loading("hide");
+                                }, 1500);
+                            } else {
+                                console.log('INCREMENTA ' + barcode);
+                                var desc = $("#" + barcode).text().toString();
+                                var filterCode = desc.split("-")[0];
+                                $("#filterApprovvigionamenti").val(filterCode);
+                                $("#lista_approvvigionamenti").listview("refresh");
+                            }
+                        },
+                        onError: function (string) {
+                            console.log('Errore: ' + string);
+                        }
+                    });
+                    $("#lista_approvvigionamenti").empty();
+                    $.mobile.loading('show', {
+                        text: 'Caricamento dati, attendere...',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    });
+                    $.ajax({
+                        url: "GetApprovvigionamenti",
+                        cache: false,
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        success: function (data) {
+                            var items2 = [];
+                            var items = [];
+                            for (var i = 0; i < data.length; i++) {
+                                items2.push('<li><a href="#dlgAggiornaApprovvigionamento" \n\
+                     onClick="updateApprovvigionamentoName(this.id,' + data[i].approvvigionamento + ')" id="' + data[i].codice + '">'
+                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
+                            }
+
+                            items = items.concat(items2);
+                            items.sort(function (a, b) {
+                                var valA = $(a).text(),
+                                        valB = $(b).text();
+                                if (valA < valB) {
+                                    return -1;
+                                }
+                                if (valA > valB) {
+                                    return 1;
+                                }
+                                return 0;
+                            });
+                            $("#lista_approvvigionamenti").empty();
+                            $("#lista_approvvigionamenti").html(items);
+                            $("#lista_approvvigionamenti").listview("refresh");
+                            $.mobile.loading("hide");
+                        },
+                        error: function (xhttpjqr, err, data) {
+                            $(":mobile-pagecontainer").pagecontainer("change", "pgMagazzino");
+                        },
+                        complete: function (xhttpjqr, evtobj, data) {
+                            $.mobile.loading("hide");
+                        }
+                    });
+                } else if (ui.toPage[0].id === 'pgRifornimenti') {
+                    //Initialize BARCODE
+                    $(document).scannerDetection({
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+                        startChar: [], // Prefix character for the cabled scanner (OPL6845R)
+                        endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
+                        minLength: 4,
+                        onComplete: function (barcoderaw, qty) {
+                            var barcode = barcoderaw.replace(".", "");
+                            console.log('Barcode: ' + barcode);
+                            var element = $("#" + barcode);
+                            if (this.getElementById(barcode) === null) {
+                                $.mobile.loading('show', {
+                                    text: 'Nessun materiale con questo codice trovato...',
+                                    textVisible: true,
+                                    theme: 'z',
+                                    html: ""
+                                });
+                                setTimeout(function () {
+                                    $.mobile.loading("hide");
+                                }, 1500);
                             } else {
                                 var desc = $("#" + barcode).text().toString();
                                 var filterCode = desc.split("-")[0];
@@ -967,10 +1266,197 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
             </div>
             <div data-role="content">
                 <div id="main_content">
-                    <a data-role="button" href="#pgRifornimenti">Carico\Scarico Magazzino</a>                
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgCreazionePratica">Crea Pratica temporanea</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" id="btnMagazzino" href="#pgSelezioneEntrate">Pratiche Attive</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgOreLavorate-main">Segna-Ore</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgRifornimenti">Rifornimenti</a>
+                    </div>
+                    <div class="ui-grid-solo">
+                        <a data-role="button" href="#pgApprovvigionamenti">Ordinazioni</a>
+                        <canvas id="myCanvas" height="100" width="100"></canvas>
+                    </div>                    
                 </div>
             </div>
         </div>
+        <!-- Creazione pratica temporanea -->
+        <div data-role="page" id="pgCreazionePratica" data-title="Ciclope - Creazione pratica temporanea">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Creazione lista temporanea</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+            </div>
+            <div data-role="content">
+                <form>
+                    <label for="nome_cliente">Ragione Sociale/Cliente:</label>
+                    <input type="text" name="nome_cliente" id="nome_cliente" placeholder="Nome per il cliente..." value="">
+                    <label for="dati_veicolo">Dati veicolo:</label>
+                    <input type="text" name="dati_veicolo" id="dati_veicolo" placeholder="Marca,modello,matricola veicolo o piattaforma..." value="">
+                    <span style="display:inline-block">
+                        <label for="kilometri_correnti">Kilometri correnti:</label>
+                        <input type="number" name="kilometri_correnti" id="kilometri_correnti" placeholder="Kilometri del veicolo..." value="">
+                    </span>
+                    <label for="lavori_segnalati">LAVORI segnalati all'arrivo:</label>
+                    <textarea cols="80" rows="8" name="lavori_segnalati" id="lavori_segnalati"></textarea>
+                    <div style="margin:2em">
+                        <input data-theme="b" type="button" onClick = "creaPraticaTemporanea()" value="Crea Pratica">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div data-role="page" id="pgOreLavorate-main" data-title="Magazzino - Selezione Operatore">
+            <div data-role="header" data-position="fixed">
+                <h1>Selezione Operatore</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                   data-icon="back">Indietro</a>
+                <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <p>Chi sei?</p>
+                <ul class=" ui-content" data-role="listview" id="lstOperatori" data-inset="true">
+
+                </ul>
+            </div>
+        </div>
+        <div data-role="page" id="pgOreLavorate-selezione" data-title="Magazzino - Selezione Pratica">
+            <div data-role="header" data-position="fixed">
+                <h1>Seleziona Veicolo/Piattaforma</h1>
+                <a data-role="button" data-rel="back"
+                   data-icon="back">Indietro</a>
+            </div>
+            <div data-role="content">
+                <div class="ui-grid-a ">
+                    <div class="ui-block-a seleziona-ore">
+                        <label for="giornata">Seleziona giornata:</label>
+                        <input name="giornata"  id="giornata" type="text" data-role="datebox"
+                               data-options='{"mode":"calbox", "useLang":"it", "closeCallback": "AggiornaOreLavorate" }' />
+                        
+                        <div data-role="content" data-iscroll>
+                             <ul data-role="listview" id="lstPraticheLavorate" data-inset="true"
+                            data-filter="true" data-filter-placeholder="Seleziona la riparazione..." 
+                            data-autodividers="true">
+                            </ul>
+                        </div>
+                    
+                    </div>
+                    <div class="ui-block-b">  
+                        <div id="ore_totali">
+                            <h2>TOTALE ORE: <span style="font-weight: bold">0</span></h2>
+                        </div>
+                        <!--
+                      <a data-role="button"  data-icon="plus" data-inline="true" data-iconpos="right"
+                         href="#popupAggiungiPraticaOreLavorate" data-rel="popup" data-position-to="window" 
+                         data-transition="pop">Aggiungi pratica lavorata</a>
+                        -->
+                        <!-- DIALOG POPUP per PRATICHE LAVORABILI ODIERNE-->
+                        <!--
+                          <div data-role="popup" id="popupAggiungiPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                              <div data-role="header" data-theme="a">
+                                  <h1>Aggiungi pratica tra quelle lavorate in questa giornata.</h1>
+                              </div>
+                              <div class="ui-content" role="main">
+                                  <h3 class="ui-title">Seleziona pratica:</h3>
+                                  <ul data-role="listview" id="lstPraticheLavorate" data-inset="true" data-filter="true"
+                                      data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                                  </ul>
+                                  <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Indietro</a>
+                              </div>
+                          </div>
+                        -->
+                        <p>Lista delle pratiche seguite in questo giorno:</p>
+                        <ul id="lstUltimePratiche" 
+                            data-role="listview" data-split-icon="delete" 
+                            data-split-theme="a" data-inset="true"
+                            data-autodividers="true">
+                        </ul>
+                        <div data-role="popup" id="popupEliminaPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
+                            <div data-role="header" data-theme="a">
+                                <h1>Eliminazione ore su pratica.</h1>
+                            </div>
+                            <div class="ui-content" role="main">
+                                <h3 class="ui-title">Eliminare le ore lavorate OGGI su questa pratica?</h3>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                   onclick="CancellaOreLavoratePratica()" data-rel="back">Elimina!</a>
+                            </div>
+                        </div>
+                        <div data-role="popup" id="popupAggiornaOreLavoratePratica" data-theme="a" data-overlay-theme="b" class="ui-content">
+                            <div data-role="header" data-theme="a">
+                                <h1>Aggiorna ore lavorate sulla pratica.</h1>
+                            </div>
+                            <div class="ui-content" role="main">
+                                <h3 class="ui-title">Aggiornare le ore lavorate OGGI su questa pratica?</h3>
+                                <input type="number" id="ore_da_aggiornare" name="ore_da_aggiornare" value="">
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
+                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                   onclick="AggiornaOreLavoratePratica()" data-rel="back">Aggiorna!</a>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Selezione delle pratiche attive --> 
+        <div data-role="page" id="pgSelezioneEntrate" data-title="Magazzino - Selezione Veicolo\Piattaforma">
+            <div data-role="header" data-position="fixed">
+                <h1>Seleziona Veicolo/Piattaforma</h1>
+                <a data-role="button" href="#pgMagazzino" data-rel="page"
+                   data-icon="back">Indietro</a>
+                <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <div>
+                    <ul data-role="listview" id="lstRiparazioni" data-inset="true" data-filter="true"
+                        data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Materiale Utilizzato nelle pratiche -->
+        <div data-role="page" id="pgMaterialeUtilizzato" data-title="Ciclope - materiale utilizzato per riparazioni.">
+            <div data-role="header" data-position="fixed">
+                <h1>Materiale Utilizzato per la Riparazione</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" href="#pgSelezioneEntrate" data-icon="back">Riparazioni</a>
+            </div>
+            <div data-role="content">
+                <div id="nome_riparazione">
+                    <h1>Riparazione aaa 2</h1>
+                </div>
+                <ol data-role="listview" id="lista_materiale" data-inset="true" data-filter="true"
+                    data-filter-placeholder="Cerca materiale...">
+
+                </ol>
+            </div>
+        </div>
+        <!-- Approvvigionamenti -->
+        <div data-role="page" id="pgApprovvigionamenti" data-title="Ciclope - Approvvigionamenti">
+            <div data-role="header" data-position="fixed">
+                <h1>Ciclope - Lista Approvvigionamenti</h1>
+                <a data-role="button" href="#pgMagazzino"
+                   data-rel="page" data-icon="home">Home</a>
+                <a data-role="button" class="ui-btn-right" data-icon="refresh"  onClick="reload()" href="#pgApprovvigionamenti">Aggiorna</a>
+            </div>
+            <div data-role="content">
+                <form class="ui-filterable">
+                    <input id="filterApprovvigionamenti" data-type="search">
+                </form>
+
+                <ul data-role="listview" id="lista_approvvigionamenti" data-inset="true"
+                    data-input="#filterApprovvigionamenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
+
+                </ul>
+            </div>
+        </div>
+
+
         <!-- Rifornimenti -->
         <div data-role="page" id="pgRifornimenti" data-title="Ciclope - Rifornimenti">
             <div data-role="header" data-position="fixed">
@@ -983,11 +1469,11 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 <form class="ui-filterable">
                     <input id="filterRifornimenti" data-type="search">
                 </form>
-                <div style="width: auto; overflow: scroll;height: 50em;" >
-                    <ul data-role="listview" id="lista_rifornimenti" data-inset="true"
-                        data-input="#filterRifornimenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
-                    </ul>
-                </div>
+
+                <ul data-role="listview" id="lista_rifornimenti" data-inset="true"
+                    data-input="#filterRifornimenti" data-filter="true" data-filter-placeholder="Cerca Materiale...">
+
+                </ul>
             </div>
         </div>
 

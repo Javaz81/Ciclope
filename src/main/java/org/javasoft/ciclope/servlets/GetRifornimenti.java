@@ -9,8 +9,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +24,8 @@ import org.javasoft.ciclope.persistence.Articolo;
 import org.javasoft.ciclope.servlets.utils.SessionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -42,16 +45,40 @@ public class GetRifornimenti extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {            
+        response.setContentType("application/json");
+        try (PrintWriter out = response.getWriter()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String json;
             json = br.readLine();
-            
+            Object obj = null;
+            JSONParser p = new JSONParser();
+            String idToSearch = null;
+            String inputType = null;
+            if (json != null) {
+                try {
+                    obj = p.parse(json);
+                    idToSearch = (String) ((JSONObject) obj).get("codice_descrizione");//eventuale
+                    inputType = (String) ((JSONObject) obj).get("inputType");//eventuale
+                } catch (ParseException ex) {                  
+                    Logger.getLogger(GetRifornimentiDaFare.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String queryPaginationLimit = "limit 1000000000";
             Session s = SessionUtils.getCiclopeSession();
-            Transaction t= s.getTransaction();
+            Transaction t = s.getTransaction();
             t.begin();
-            Query q = s.createSQLQuery("select * from articolo").addEntity(Articolo.class);
+            StringBuilder queryString = new StringBuilder();            
+            queryString.append("select * from articolo ");
+            if(idToSearch!=null){
+                if("scanner".equals(inputType)){
+                   queryString.append("where idArticolo >= ").append(idToSearch).append(" ");
+                }else if ("manual".equals(inputType)){
+                    queryString.append("where descrizione like \"").append(idToSearch).append("%\" ");
+                }                
+            }
+            queryString.append("order by descrizione asc ");
+            queryString.append(queryPaginationLimit);
+            Query q = s.createSQLQuery(queryString.toString()).addEntity(Articolo.class);
             List<Articolo> aicrecs = q.list();
             t.commit();
             JSONObject jo;
@@ -62,10 +89,10 @@ public class GetRifornimenti extends HttpServlet {
                 jo.put("codice", ob.getIdArticolo());
                 jo.put("descrizione", ob.getDescrizione());
                 jo.put("rimanenza", ob.getScortaRimanente());
-                jo.put("scorta_minima",ob.getScortaRimanente());
+                jo.put("scorta_minima", ob.getScortaRimanente());
                 jo.put("unita_di_misura", ob.getUnitaDiMisura());
-                jo.put("approvvigionamento",ob.getApprovvigionamento());
-                jo.put("color", (ob.getScortaRimanente().doubleValue() - ob.getScortaMinima().doubleValue()) < 0 ? "red":"blue");
+                jo.put("approvvigionamento", ob.getApprovvigionamento());
+                jo.put("color", (ob.getScortaRimanente().doubleValue() - ob.getScortaMinima().doubleValue()) < 0 ? "red" : "blue");
                 array.add(jo);
             }
             out.println(array.toJSONString());

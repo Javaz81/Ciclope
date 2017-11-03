@@ -247,7 +247,7 @@
             <!-- Navigation -->
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="index.html"> CICLOPE - SUPERASSISTENZA</a>
+                    <a class="navbar-brand" href="_index_27_10_2017_.html"> CICLOPE - SUPERASSISTENZA</a>
                 </div>
                 <!-- /.navbar-top-links -->
                 <div class="navbar-default sidebar" role="navigation">
