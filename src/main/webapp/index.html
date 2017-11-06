@@ -1114,7 +1114,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             } else {
                                 console.log('INCREMENTA ' + barcode);
                                 var desc = $("#" + barcode).text().toString();
-                                var filterCode = desc.split("-")[0];
+                                var filterCode = desc.split("---")[0];
                                 $("#filterApprovvigionamenti").val(filterCode);
                                 $("#lista_approvvigionamenti").listview("refresh");
                             }
@@ -1142,7 +1142,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#dlgAggiornaApprovvigionamento" \n\
                      onClick="updateApprovvigionamentoName(this.id,' + data[i].approvvigionamento + ')" id="' + data[i].codice + '">'
-                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
+                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> --- RIMANENZA (pz/mt):' + data[i].rimanenza + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].approvvigionamento + '</div>' + '</a></li>');
                             }
 
                             items = items.concat(items2);
@@ -1193,7 +1193,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                                 }, 1500);
                             } else {
                                 var desc = $("#" + barcode).text().toString();
-                                var filterCode = desc.split("-")[0];
+                                var filterCode = desc.split("---")[0];
                                 $("#filterRifornimenti").val(filterCode);
                                 $("#lista_rifornimenti").listview("refresh");
                             }
@@ -1221,7 +1221,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             for (var i = 0; i < data.length; i++) {
                                 items2.push('<li><a href="#dlgAggiornaRifornimento" \n\
                      onClick="updateRifornimentoName(this.id,' + data[i].rimanenza + ')" id="' + data[i].codice + '">'
-                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> - APPROVVIGIONAMENTO (pz/mt):' + data[i].approvvigionamento + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].rimanenza + '</div>' + '</a></li>');
+                                        + data[i].descrizione + '<span style="color:' + data[i].color + ';font-size:1em; font-weight:normal"> --- APPROVVIGIONAMENTO (pz/mt):' + data[i].approvvigionamento + '</span>' + ' <div class="ui-li-count count_prev">' + data[i].rimanenza + '</div>' + '</a></li>');
                             }
 
                             items = items.concat(items2);
