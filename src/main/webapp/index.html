@@ -1026,7 +1026,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             console.log('Errore: ' + string);
                         }
                     });
-                    $("#lista_materiale").empty();
+                    $("#lista_materiale").empty();                    
                     $.mobile.loading('show', {
                         text: 'Caricamento dati, attendere...',
                         textVisible: true,
@@ -1124,6 +1124,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         }
                     });
                     $("#lista_approvvigionamenti").empty();
+                    $("#filterApprovvigionamenti").val("");
                     $.mobile.loading('show', {
                         text: 'Caricamento dati, attendere...',
                         textVisible: true,
@@ -1172,10 +1173,10 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 } else if (ui.toPage[0].id === 'pgRifornimenti') {
                     //Initialize BARCODE
                     $(document).scannerDetection({
-                        timeBeforeScanTest: 5000, // wait for the next character for upto 200ms
+                        timeBeforeScanTest: 200, // wait for the next character for upto 200ms
                         startChar: [], // Prefix character for the cabled scanner (OPL6845R)
                         endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
-                        avgTimeByChar: 2000, // it's not a barcode if a character takes longer than 40ms
+                        avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
                         minLength: 4,
                         onComplete: function (barcoderaw, qty) {
                             var barcode = barcoderaw.replace(".", "");
@@ -1203,6 +1204,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         }
                     });
                     $("#lista_rifornimenti").empty();
+                    $("#filterRifornimenti").val("");
                     $.mobile.loading('show', {
                         text: 'Caricamento dati, attendere...',
                         textVisible: true,
@@ -1370,11 +1372,13 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                           </div>
                         -->
                         <p>Lista delle pratiche seguite in questo giorno:</p>
-                        <ul id="lstUltimePratiche" 
-                            data-role="listview" data-split-icon="delete" 
-                            data-split-theme="a" data-inset="true"
-                            data-autodividers="true">
-                        </ul>
+                        <div style="width: auto; overflow: scroll;height: 50em;" >
+                            <ul id="lstUltimePratiche" 
+                                data-role="listview" data-split-icon="delete" 
+                                data-split-theme="a" data-inset="true"
+                                data-autodividers="true">
+                            </ul>
+                        </div>
                         <div data-role="popup" id="popupEliminaPraticaOreLavorate" data-theme="a" data-overlay-theme="b" class="ui-content">
                             <div data-role="header" data-theme="a">
                                 <h1>Eliminazione ore su pratica.</h1>
@@ -1411,7 +1415,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                 <a data-role="button" class="ui-btn-right" onClick="reload()" data-icon="refresh">Aggiorna</a>
             </div>
             <div data-role="content">
-                 <div style="width: auto; overflow: scroll;height: 50em;" >
+                <div style="width: auto; overflow: scroll;height: 50em;" >
                     <ul data-role="listview" id="lstRiparazioni" data-inset="true" data-filter="true"
                         data-filter-placeholder="Seleziona la riparazione..." data-autodividers="true">
                     </ul>
