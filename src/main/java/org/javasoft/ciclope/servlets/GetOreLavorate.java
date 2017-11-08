@@ -112,12 +112,12 @@ public class GetOreLavorate extends HttpServlet {
             String[] sq;
             for (Object[] ob : aicrecs) {
                 jo = new JSONObject();
-                jo.put("nome", ob[0].toString());
-                jo.put("cognome", ob[1].toString());
-                jo.put("giornata", ob[2].toString());
-                jo.put("matricola", ob[3].toString());
-                jo.put("marca", ob[4].toString());
-                jo.put("modello", ob[5].toString());
+                jo.put("nome", ob[0]==null?"":ob[0].toString());
+                jo.put("cognome", ob[1]==null?"":ob[1].toString());
+                jo.put("giornata", ob[2]==null?"":ob[2].toString());
+                jo.put("matricola", ob[3]==null?"":ob[3].toString());
+                jo.put("marca", ob[4]==null?"":ob[4].toString());
+                jo.put("modello", ob[5]==null?"":ob[5].toString());
                 jo.put("ore", ob[6].toString());
                 jo.put("praticaId",ob[7].toString());
                 jo.put("IdOreLavorate", ob[8].toString());

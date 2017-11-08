@@ -622,6 +622,12 @@
                 });
 
             }
+            function inviaOreModificateSuPratica(e) {
+                if (e.keyCode === 13) {
+                    $("#buttonAggiornaOre").click();
+                    return false;
+                }
+            }
             function AggiornaOreLavorate(date) {
                 giornata_corrente = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
                 var orelavorate = {"personaleId": personale_corrente, "giornata": giornata_corrente};
@@ -1026,7 +1032,7 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             console.log('Errore: ' + string);
                         }
                     });
-                    $("#lista_materiale").empty();                    
+                    $("#lista_materiale").empty();
                     $.mobile.loading('show', {
                         text: 'Caricamento dati, attendere...',
                         textVisible: true,
@@ -1396,9 +1402,9 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                             </div>
                             <div class="ui-content" role="main">
                                 <h3 class="ui-title">Aggiornare le ore lavorate OGGI su questa pratica?</h3>
-                                <input type="number" id="ore_da_aggiornare" name="ore_da_aggiornare" value="">
+                                <input type="number" id="ore_da_aggiornare" name="ore_da_aggiornare" value="" onkeypress="return inviaOreModificateSuPratica(event)">
                                 <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-rel="back">Annulla</a>
-                                <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
+                                <a id="buttonAggiornaOre" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" href="#" data-transition="flow"
                                    onclick="AggiornaOreLavoratePratica()" data-rel="back">Aggiorna!</a>
                             </div>
                         </div> 
