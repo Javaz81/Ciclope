@@ -118,13 +118,13 @@ public class GetRiparazioniCorrenti extends HttpServlet {
             for (Object[] ob : aicrecs) {
                 jo = new JSONObject();
                 jo.put("praticaId", ob[0].toString());
-                jo.put("arrivo", ob[1].toString());
-                jo.put("marca", ob[2].toString());
+                jo.put("arrivo",ob[1]==null?"": ob[1].toString());
+                jo.put("marca", ob[2]==null?"":ob[2].toString());
                 jo.put("modello", ob[3]==null?"(NO_MODELLO)":ob[3].toString());
                 jo.put("targa", ob[4] == null ? "(NO_TARGA)" : ob[4].toString());
-                jo.put("tipo", ob[5].toString());
+                jo.put("tipo", ob[5]==null?"":ob[5].toString());
                 jo.put("matricola", ob[7] == null ? "(NO_MATRICOLA)":ob[7].toString());
-                jo.put("data_arrivo", DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
+                jo.put("data_arrivo", ob[6]==null?"(No_DataArrivo)":DateUtils.isToday((Date) ob[6])?"Oggi":DateUtils.formatDate((Date)ob[6], Locale.ITALY));
                 jo.put("cliente_temporaneo", ob[8]==null?"":ob[8].toString());
                 jo.put("veicolo_temporaneo", ob[9]==null?"":ob[9].toString());
                 array.add(jo);
