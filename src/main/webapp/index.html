@@ -716,6 +716,8 @@ onClick="updatePraticaOreLavorate(' + data[i].IdOreLavorate + ',' + data[i].ore 
                         if (data.length > 0) {
                             $("#nome_riparazione").empty();
                             $("#nome_riparazione").html("<h1>" + data[0].praticaHeader + "</h1>");
+                        }else{
+                            items.push('<li>Nessun materiale utilizzato al momento...</li>');
                         }
                         for (var i = 0; i < data.length; i++) {
                             items2.push('<li><a href="#dlgAggiornaQuantita" \n\

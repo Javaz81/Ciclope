@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -74,27 +75,34 @@ public class AddMaterialeInRiparazione extends HttpServlet {
             Transaction t = s.getTransaction();
             try {
                 t.begin();
-                //Inserisci il materiale nella pratica ed aggiorna di una quantita.
-                Query q = s.createSQLQuery("INSERT INTO ciclope.materialepratica (pratica, articolo, quantita_consumata)"
-                        + " VALUES ('" + praticaId + "', '" + materialeId + "', '1')");
-                int n_row = q.executeUpdate();
-                if (n_row != 1) {
-                    t.rollback();
-                    JSONObject jo = new JSONObject();
-                    jo.put("qty", Integer.toString(qty_cur));
-                    jo.put("result", "ko");
-                    out.println(jo.toJSONString());
-                    return;
-                }
-                q = s.createSQLQuery(" UPDATE `ciclope`.`articolo` SET `scorta_rimanente`=scorta_rimanente-'" + qty_upd + "' WHERE `idArticolo`='" + materialeId + "'");
-                n_row = q.executeUpdate();
-                if (n_row != 1) {
-                    t.rollback();
-                    JSONObject jo = new JSONObject();
-                    jo.put("qty", Integer.toString(qty_cur));
-                    jo.put("result", "ko");
-                    out.println(jo.toJSONString());
-                    return;
+                //Controlla se il codice materiale esiste
+                Query q = s.createSQLQuery("SELECT count(*) FROM `ciclope`.`articolo` WHERE idArticolo = '" + materialeId + "'");
+                int n_row = ((BigInteger) q.uniqueResult()).intValue();
+                //SE il materiale c'è allora fai l'inserimento e l'update altrimenti 
+                //rifai la lista intera di quelli già assegnati
+                if (n_row == 1) {
+                    //Inserisci il materiale nella pratica ed aggiorna di una quantita.
+                    q = s.createSQLQuery("INSERT INTO ciclope.materialepratica (pratica, articolo, quantita_consumata)"
+                            + " VALUES ('" + praticaId + "', '" + materialeId + "', '1')");
+                    n_row = q.executeUpdate();
+                    if (n_row != 1) {
+                        t.rollback();
+                        JSONObject jo = new JSONObject();
+                        jo.put("qty", Integer.toString(qty_cur));
+                        jo.put("result", "ko");
+                        out.println(jo.toJSONString());
+                        return;
+                    }
+                    q = s.createSQLQuery(" UPDATE `ciclope`.`articolo` SET `scorta_rimanente`=scorta_rimanente-'" + qty_upd + "' WHERE `idArticolo`='" + materialeId + "'");
+                    n_row = q.executeUpdate();
+                    if (n_row != 1) {
+                        t.rollback();
+                        JSONObject jo = new JSONObject();
+                        jo.put("qty", Integer.toString(qty_cur));
+                        jo.put("result", "ko");
+                        out.println(jo.toJSONString());
+                        return;
+                    }
                 }
                 q = s.createSQLQuery("select"
                         + " ciclope.articolo.idArticolo as codice,\n"
@@ -135,9 +143,14 @@ public class AddMaterialeInRiparazione extends HttpServlet {
                     array.add(jo);
                 }
                 out.println(array.toJSONString());
+
             } catch (Exception ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                 t.rollback();
+                String msg = ex.getMessage();
+                if (ex.getCause().getMessage().contains("Cannot")) {
+                    msg = "Codice non trovato!";
+                }
                 HashMap<String, String> resMap = new HashMap<String, String>();
                 resMap.put("result", "ko");
                 resMap.put("messaggio", ex.getMessage());
